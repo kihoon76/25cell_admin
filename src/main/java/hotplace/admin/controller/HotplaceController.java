@@ -14,4 +14,9 @@ public class HotplaceController {
 		return "main";
 	}
 	
+	@GetMapping("signin")
+	public String signin() {
+		return "signin";
+	}
+	
 }

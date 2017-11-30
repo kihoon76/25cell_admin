@@ -35,7 +35,7 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 			throw new UsernameNotFoundException("접속자 정보 DB에서  문제가 발생했습니다. ");
 		}
 		
-		if(user == null) throw new UsernameNotFoundException("접속자 정보(ID)를 찾을수 없습니다 ");
+		//if(user == null) throw new UsernameNotFoundException("접속자 정보(ID)를 찾을수 없습니다 ");
 		
 		// TODO 디비에서 가져온 정보로 비교로직
 		

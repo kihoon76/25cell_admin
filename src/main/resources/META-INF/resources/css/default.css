@@ -1,0 +1,75 @@
+@font-face {font-family:ngttf; src:url(NanumGothic.ttf);}
+@font-face {font-family:ngeot; src:url(NanumGothic.eot);}
+
+.x-tab-inner {
+	font-size : 12px;
+}
+.x-grid-cell-inner {
+	font-size : 12px;
+}
+
+.x-btn-default-toolbar-small .x-btn-inner {
+    font-size: 12px;
+}
+.x-datepicker-header .x-btn-inner {font-size:13px;}
+.x-datepicker-inner span{
+	font-size : 13px;
+}
+.x-column-header .x-column-header-text {font-size : 12px;}
+.x-menu-item .x-menu-item-text {font-size : 12px;}
+
+#loading-mask {
+  position: absolute;
+  left:     0;
+  top:      0;
+  width:    100%;
+  height:   100%;
+  z-index:  20000;
+  background-color: white;
+}
+
+#loading {
+  position: absolute;
+  left:     50%;
+  top:      50%;
+  padding:  2px;
+  z-index:  20001;
+  height:   auto;
+  margin:   -35px 0 0 -30px;
+}
+
+#loading .loading-indicator {
+  background: url(../images/loading.gif) no-repeat;
+  color:      #555;
+  font:       bold 13px tahoma,arial,helvetica;
+  padding:    8px 42px;
+  margin:     0;
+  text-align: center;
+  width : 200px;
+  height: 200px;
+}
+
+.x-window-header-text-default {
+	font-size:15px;
+}
+
+.x-border-box .x-form-text {
+	height: 30px;
+}
+
+.x-mask.splashscreen {
+    background-color: #FFF;
+    opacity: 1;
+    background-position: center;
+    background-image: url('../images/loading.gif') !important;
+	background-repeat: no-repeat;
+	z-index:90000;
+}
+
+
+
+
+
+
+
+

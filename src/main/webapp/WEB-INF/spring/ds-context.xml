@@ -25,6 +25,11 @@
 		<property name="mapperLocations" value="classpath:/mappers/*Mapper.xml" />
 	</bean>
 	
+	<!-- MyBatis MSsqlSessionWeb -->
+	<bean id="msSqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg name="sqlSessionFactory" ref="msSqlSessionFactory" />
+	</bean>
+	
 	<!-- Transaction -->
 	<tx:annotation-driven transaction-manager="mssqlTransactionManager" />
 	<bean id="mssqlTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">

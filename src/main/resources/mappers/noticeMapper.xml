@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.noticeMapper">
+	<resultMap id="RM_selectNotice" type="Notice">
+		<result column="글번호"	property="num" javaType="string"/>
+		<result column="제목"		property="title" javaType="string"/>
+		<result column="작성일"  property="writeDate" javaType="string" />
+	</resultMap>
+	
+	<resultMap id="RM_selectNoticeList" type="ExtjsStoreVO" >
+		<result column="글수" property="total" javaType="int"/>
+		<result column="검색타입" property="searchType" javaType="string"/>
+		<result column="검색값" property="searchValue" javaType="string"/>
+		<result column="시작" property="start" javaType="int" />
+		<result column="끝" property="limit" javaType="int" />
+		<collection property="datas" column="{start=시작, limit=끝, searchType=검색타입, searchValue=검색값}" 
+					javaType="java.util.ArrayList"
+					ofType="Notice" 
+					select="selectNotice"
+					/>
+	</resultMap>
+	
+	<select id="selectNoticeList" parameterType="hashmap" resultMap="RM_selectNoticeList">
+		select (
+				select count(*) 
+				  from [웹].[dbo].[공지사항]
+				  <if test='searchType != null and searchValue != null'>
+				  	<if test='searchType.equals("title")'>
+				  	where 제목 like '%' + #{searchValue} + '%' escape '\'
+				  	</if>
+				  	<if test='searchType.equals("content")'>
+				  	where 내용 like '%' + #{searchValue} + '%' escape '\'
+				  	</if>
+				  </if>
+				) 글수, #{searchType} 검색타입, #{searchValue} 검색값, #{start} 시작, #{limit} 끝
+	</select>
+	
+	
+	<select id="selectNotice" parameterType="hashmap" resultMap="RM_selectNotice">
+		select 글번호, 제목, 작성일
+		  from (
+		  	select row_number() over(order by 글번호 desc) rownum, *
+		  	  from [웹].[dbo].[공지사항]
+		  	  <if test="searchType != null and searchValue != null">
+		  	  	<if test="searchType == 'title'">
+				where 제목 like '%' + #{searchValue} + '%' escape '\'
+				</if>
+				<if test="searchType == 'content'">
+				  	where 내용 like '%' + #{searchValue} + '%' escape '\'
+				</if>
+		  	  </if>
+		  ) tb1
+		 where rownum between (#{start} + 1) and #{limit}
+	</select>
+	
+	<select id="selectNoticeContent" parameterType="int" resultType="string">
+		select 내용
+		  from [웹].[dbo].[공지사항]
+		 where 글번호 = #{writeNum}
+	</select>
+</mapper>

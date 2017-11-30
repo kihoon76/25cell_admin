@@ -3,9 +3,4 @@
 	<title>25cell 관리자</title>
 </head>
 <body>
-<content tag="script">
-
-
-</content>
-
 </body>

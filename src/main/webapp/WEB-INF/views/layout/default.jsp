@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="c"	uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -7,14 +6,34 @@
 	<meta charset="UTF-8">
 	<title><sitemesh:write property="title" /></title>
 	
-	<!-- Bootstrap -->
-    <link rel="stylesheet" href="/resources/bootstrap/3.3.7-1/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="/resources/core/ver/4.1.1-rc2/css/ext-all-gray.css"/>
+	<link rel="stylesheet" href="/resources/css/default.css"/>
+	<link rel="stylesheet" href="/resources/css/icon.css"/>
+	<!-- <link rel="stylesheet" href="/resources/ux/css/CheckHeader.css"/> -->
     
 	<sitemesh:write property="head" />
 </head>
 <body>
 	<sitemesh:write property="body" /> 
-	<script type="text/javascript" src="/resources/jquery/1.11.1/jquery.min.js"></script>
-	<script type="text/javascript" src="/resources/bootstrap/3.3.7-1/js/bootstrap.min.js"></script>
+	<script src="/resources/core/ver/4.1.1-rc2/js/ext-all.js"></script>
+	
+	<!-- locale -->
+	<script src="/resources/core/locale/ext-lang-ko.js"></script>
+	
+	<script>
+		Ext.onReady(function() {
+			Ext.getDoc().on('keydown', function(e, t) {
+				if(e.getKey() == e.BACKSPACE) {
+					if(t.hasAttribute('readonly')) {
+						return false;
+					}
+				}
+				else if(t.nodeName == 'BODY' || t.nodeName == 'DIV') return false;
+			});
+		});
+	</script>
+	
+	<!-- App Files -->
+	<script src="/resources/app.js" charset="utf-8"></script>
 </body>
 </html>
