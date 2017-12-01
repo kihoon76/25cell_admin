@@ -14,6 +14,8 @@
     
     <!-- Bootstrap -->
     <link rel="stylesheet" href="/resources/bootstrap/3.3.7-1/css/bootstrap.min.css" />
+    <!-- wait me -->
+    <link rel="stylesheet" href="/resources/os/waitMe/css/waitMe.min.css" />
     <link rel="stylesheet" href="/resources/css/iframe.css" />
 	<sitemesh:write property="head" />
 </head>
@@ -22,6 +24,8 @@
 <sitemesh:write property="body" />
 <script type="text/javascript" src="/resources/jquery/1.11.1/jquery.min.js"></script>
 <script type="text/javascript" src="/resources/bootstrap/3.3.7-1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/resources/os/waitMe/js/waitMe.min.js"></script>
+<script type="text/javascript" src="/resources/js/if/common.js"></script>
 <sitemesh:write property="page.script" />
 </body>
 </html>

@@ -10,5 +10,7 @@ public interface NoticeDao {
 	ExtjsStoreVO<Notice> selectNoticeList(Map map);
 
 	Notice selectNoticeOne(int writeNum);
+
+	int updateNoticeOne(Map map);
 	
 }

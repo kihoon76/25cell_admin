@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import hotplace.admin.domain.AjaxVO;
 import hotplace.admin.domain.ExtjsStoreVO;
 import hotplace.admin.domain.Notice;
 import hotplace.admin.service.NoticeService;
@@ -43,11 +44,37 @@ public class NoticeController {
 	}
 	
 	@GetMapping("if/content/{writeNum}")
-	public String getNoticeContent(@PathVariable("writeNum") int writeNum, ModelMap map) {
+	public String getNoticeOne(@PathVariable("writeNum") int writeNum, ModelMap map) {
 		
 		Notice notice = noticeService.getNoticeOne(writeNum);
 		map.addAttribute("notice", notice);
 		return "notice/content";
+	}
+	
+	@PostMapping("if/content/{writeNum}")
+	@ResponseBody
+	public AjaxVO modifyNoticeOne(@PathVariable("writeNum") int writeNum,
+								  @RequestParam("content") String content) {
+		Map map = new HashMap();
+		map.put("writeNum", writeNum);
+		map.put("content", content);
+		
+		AjaxVO vo = new AjaxVO();
+		vo.setSuccess(false);
+		
+		try {
+			int result = noticeService.modifyNoticeOne(map);
+			
+			if(result == 1) {
+				vo.setSuccess(true);
+			}
+		}
+		catch(Exception e) {
+			vo.setErrMsg(e.getMessage());
+		}
+		
+		
+		return vo;
 	}
 	
 }

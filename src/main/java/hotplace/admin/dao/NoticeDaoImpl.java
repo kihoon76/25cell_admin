@@ -27,5 +27,10 @@ public class NoticeDaoImpl implements NoticeDao {
 	public Notice selectNoticeOne(int writeNum) {
 		return msSqlSession.selectOne(namespace + ".selectNoticeOne", writeNum);
 	}
+
+	@Override
+	public int updateNoticeOne(Map map) {
+		return msSqlSession.update(namespace + ".updateNoticeOne", map);
+	}
 	
 }

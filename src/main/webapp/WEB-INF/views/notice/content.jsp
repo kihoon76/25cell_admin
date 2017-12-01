@@ -17,7 +17,7 @@
 		</tr>
 		<tr>
 			<td>
-				<textarea id="noticeEditor" style="max-width: 100%;">
+				<textarea id="noticeEditor" style="max-width: 100%;"  data-num="<c:out value='${notice.num}' />">
 				<c:out value="${notice.content}" />
 				</textarea>
 			</td>

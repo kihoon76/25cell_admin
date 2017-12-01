@@ -21,8 +21,11 @@ public class NoticeService {
 	}
 
 	public Notice getNoticeOne(int writeNum) {
-		// TODO Auto-generated method stub
 		return noticeDao.selectNoticeOne(writeNum);
+	}
+
+	public int modifyNoticeOne(Map map) {
+		return noticeDao.updateNoticeOne(map);
 	}
 
 	

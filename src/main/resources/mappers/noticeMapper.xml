@@ -58,4 +58,10 @@
 		  from [웹].[dbo].[공지사항]
 		 where 글번호 = #{writeNum}
 	</select>
+	
+	<update id="updateNoticeOne" parameterType="map">
+		update [웹].[dbo].[공지사항]
+		   set 내용 = #{content}
+		 where 글번호 = #{writeNum}
+	</update>
 </mapper>
