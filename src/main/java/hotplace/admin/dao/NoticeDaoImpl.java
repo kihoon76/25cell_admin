@@ -22,5 +22,10 @@ public class NoticeDaoImpl implements NoticeDao {
 	public ExtjsStoreVO<Notice> selectNoticeList(Map map) {
 		return msSqlSession.selectOne(namespace + ".selectNoticeList", map);
 	}
+
+	@Override
+	public Notice selectNoticeOne(int writeNum) {
+		return msSqlSession.selectOne(namespace + ".selectNoticeOne", writeNum);
+	}
 	
 }

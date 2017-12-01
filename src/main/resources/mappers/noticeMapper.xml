@@ -53,8 +53,8 @@
 		 where rownum between (#{start} + 1) and (#{start} + #{limit})
 	</select>
 	
-	<select id="selectNoticeContent" parameterType="int" resultType="string">
-		select 내용
+	<select id="selectNoticeOne" parameterType="int" resultType="Notice">
+		select 글번호 as num, 제목 as title, 내용 as content, 작성일 as writeDate
 		  from [웹].[dbo].[공지사항]
 		 where 글번호 = #{writeNum}
 	</select>

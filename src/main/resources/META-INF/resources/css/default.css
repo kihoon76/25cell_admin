@@ -1,6 +1,7 @@
 @font-face {font-family:ngttf; src:url(NanumGothic.ttf);}
 @font-face {font-family:ngeot; src:url(NanumGothic.eot);}
 
+
 .x-tab-inner {
 	font-size : 12px;
 }
@@ -65,11 +66,3 @@
 	background-repeat: no-repeat;
 	z-index:90000;
 }
-
-
-
-
-
-
-
-

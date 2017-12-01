@@ -1,7 +1,7 @@
 Ext.define('Hotplace.util.CommonFn', {
 	 singleton : true
     ,getFullUrl : function(url) {
-    	var fullUrl = Asher.util.Constants.context;
+    	var fullUrl = Hotplace.util.Constants.context;
     	if(!Ext.isEmpty(url)) {
     		if(url.indexOf('/') != 0) {
     			fullUrl += '/' + url;

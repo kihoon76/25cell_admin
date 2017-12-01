@@ -20,5 +20,10 @@ public class NoticeService {
 		return noticeDao.selectNoticeList(map);
 	}
 
+	public Notice getNoticeOne(int writeNum) {
+		// TODO Auto-generated method stub
+		return noticeDao.selectNoticeOne(writeNum);
+	}
+
 	
 }

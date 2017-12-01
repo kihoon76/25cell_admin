@@ -8,5 +8,7 @@ import hotplace.admin.domain.Notice;
 public interface NoticeDao {
 
 	ExtjsStoreVO<Notice> selectNoticeList(Map map);
+
+	Notice selectNoticeOne(int writeNum);
 	
 }
