@@ -85,7 +85,7 @@ Ext.define('Hotplace.view.Viewport', {
                 		  }
                 	  }
 
-                	  Ext.getCmp('app-results').collapse(Ext.Component.DIRECTION_BOTTOM, true);
+                	  //Ext.getCmp('app-results').collapse(Ext.Component.DIRECTION_BOTTOM, true);
                   }
                }
             }]

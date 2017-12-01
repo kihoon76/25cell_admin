@@ -6,6 +6,9 @@ Ext.define('Hotplace.view.panel.NoticeListGridPanel', {
 	initComponent: function() {
 		var store = Ext.create('Hotplace.store.NoticeListStore'),
 			constants = Hotplace.util.Constants,
+			controller = _hotplaceApp.getController('NoticeController'),
+			categoryPanel = Ext.getCmp('app-category'),
+			contentPanel = Ext.getCmp('app-contents'),
 			that = this;
 		
 		Ext.apply(this, {
@@ -20,7 +23,7 @@ Ext.define('Hotplace.view.panel.NoticeListGridPanel', {
 				flex: 1
 			}, {
 				text: '작성일자',
-				dataIndex: 'writedate',
+				dataIndex: 'writeDate',
 				flex: 0
 			}],
 			tbar: ['->',
@@ -61,7 +64,21 @@ Ext.define('Hotplace.view.panel.NoticeListGridPanel', {
 				})]
 			}],
 			listeners: {
-				
+				itemdblclick: function(grd, rec) {
+					var writeNum = rec.raw.num,
+						id = 'notice-grid-' + writeNum,
+						title = '공지글(' + writeNum + ')';
+					console.log(rec)
+					//console.dir(controller.addContentTabPanel);
+					
+					if(categoryPanel.isAttachedCategory(id)) {
+						contentPanel.setActiveTab(id + '-panel');
+					}
+					else {
+						controller.addContentTabPanel(id, title, {html:'tt'});
+					}
+					//controller.addContentTabPanel('test', 'test', {html:'tt'});
+				}
 			}
 		});
 		

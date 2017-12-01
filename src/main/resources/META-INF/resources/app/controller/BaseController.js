@@ -45,9 +45,9 @@ Ext.define('Hotplace.controller.BaseController', {
 		  conf.tbar = tbar;
 	   };
 
-	   this.contentPanel.add(Ext.create('Ext.panel.Panel',conf));
-	   this.contentPanel.setActiveTab(id + '-panel');
-	   this.categoryPanel.addCategoryInTab(id);
+	   (this.contentPanel  || Ext.getCmp('app-contents')).add(Ext.create('Ext.panel.Panel',conf));
+	   (this.contentPanel  || Ext.getCmp('app-contents')).setActiveTab(id + '-panel');
+	   (this.categoryPanel || Ext.getCmp('app-category')).addCategoryInTab(id);
    }
    ,addResultTabPanel : function(title, cont) {
 	   this.resultPanel.removeAll();

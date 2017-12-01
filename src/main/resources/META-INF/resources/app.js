@@ -38,9 +38,13 @@ Ext.application({
    ,appFolder: '/resources/app'
    ,autoCreateViewport: true
    ,controllers : [
-        'Hotplace.controller.NoticeController'
+        'Hotplace.controller.NoticeController',
+        'Hotplace.controller.MapTypesController'
    ]
    ,launch:function(){
+	   
+	 _hotplaceApp = this;
+	   
 	 //similar to jQuerys $(document).ready, fired on when application is ready
 	 String.prototype.replaceAt = function(index, character) {
 		 return this.substr(0, index) + character + this.substr(index+character.length);

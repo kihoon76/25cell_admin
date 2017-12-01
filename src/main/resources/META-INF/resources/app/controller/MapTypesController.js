@@ -6,7 +6,7 @@ Ext.define('Hotplace.controller.MapTypesController', {
 	}
 	,onItemClick : function(tree, record, item, idx, e) {
 		var recObj = record.raw;
-
+		
 		if(recObj.leaf) {
 			if(!this.categoryPanel.isAttachedCategory(recObj.id)) {
 				switch(recObj.id) {

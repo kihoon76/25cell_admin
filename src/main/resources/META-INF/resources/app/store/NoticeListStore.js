@@ -11,7 +11,7 @@ Ext.define('Hotplace.store.NoticeListStore', {
 	          ,totalProperty : 'total'
 	       }
 	  },
-	  fields : ['num', 'title', 'writedate'],
+	  fields : ['num', 'title', 'writeDate'],
 	  autoLoad : true,
 	  pageSize : Hotplace.util.Constants.gridPageSize
 });

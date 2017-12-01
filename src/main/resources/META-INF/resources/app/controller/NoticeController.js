@@ -3,16 +3,16 @@ Ext.define('Hotplace.controller.NoticeController', {
 	views: ['panel.NoticeListGridPanel'],
 	onLaunch : function() {
 		this.callParent(arguments);
-	}
-	,onItemClick : function(tree, record, item, idx, e) {
+	},
+	onItemClick : function(tree, record, item, idx, e) {
 		var recObj = record.raw;
-
+		
 		if(recObj.leaf) {
 			if(!this.categoryPanel.isAttachedCategory(recObj.id)) {
 				switch(recObj.id) {
 				case 'cate-notice-list' :
 					this.addContentTabPanel(recObj.id, recObj.text, {
-						xtype: 'noticegrid',
+						xtype: 'noticegrid'
 					});
 				default :
 					break;
