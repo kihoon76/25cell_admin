@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 @Alias("Authority")
 public class Authority implements GrantedAuthority {
 
+	private String authNum;
 	private String authName;
 	private String description;
 	
@@ -20,6 +21,12 @@ public class Authority implements GrantedAuthority {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	public String getAuthNum() {
+		return authNum;
+	}
+	public void setAuthNum(String authNum) {
+		this.authNum = authNum;
 	}
 	
 	@Override

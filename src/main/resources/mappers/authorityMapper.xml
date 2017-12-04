@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.authorityMapper">
+	
+	<resultMap id="RM_selectAuthorityList" type="ExtjsStoreVO">
+		<result column="total" property="total" javaType="int"/>
+		<collection property="datas" column="total" 
+					javaType="java.util.ArrayList"
+					ofType="Authority" 
+					select="selectAuthority" />
+	</resultMap>
+	
+	<select id="selectAuthorityList" resultMap="RM_selectAuthorityList">
+		select (select count(*) from [웹].[dbo].[권한]) as total 
+	</select>
+	
+	<select id="selectAuthority" parameterType="int" resultType="Authority">
+		select 권한번호 as authNum, 권한이름 as authName, 설명 as description
+		  from [웹].[dbo].[권한]
+	</select>
+</mapper>
