@@ -12,7 +12,13 @@
 	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
 	
 	<!-- Enables the Spring MVC @Controller programming model -->
-	<annotation-driven />
+	<annotation-driven>
+		<message-converters>
+			<beans:bean class="org.springframework.http.converter.json.GsonHttpMessageConverter">
+				
+			</beans:bean>
+		</message-converters>
+	</annotation-driven>
 	
 	<sec:global-method-security secured-annotations="enabled" pre-post-annotations="enabled" />
 

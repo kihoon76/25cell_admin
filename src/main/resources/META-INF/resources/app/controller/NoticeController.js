@@ -1,6 +1,6 @@
 Ext.define('Hotplace.controller.NoticeController', {
 	extend : 'Hotplace.controller.BaseController',
-	views: ['panel.NoticeListGridPanel'],
+	views: ['panel.NoticeListGridPanel', 'Hotplace.view.iframe.BaseIframe'],
 	onLaunch : function() {
 		this.callParent(arguments);
 	},
@@ -14,6 +14,13 @@ Ext.define('Hotplace.controller.NoticeController', {
 					this.addContentTabPanel(recObj.id, recObj.text, {
 						xtype: 'noticegrid'
 					});
+					break;
+				case 'cate-notice-reg' :
+					this.addContentTabPanel(
+							recObj.id,
+							recObj.text,
+							Ext.create('Hotplace.view.iframe.BaseIframe', { url: 'notice/if/regist' }));
+					break;
 				default :
 					break;
 				}

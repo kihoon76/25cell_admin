@@ -77,10 +77,10 @@ var Hotplace = (function() {
 					} 
 				},
 				contentType: params.contentType || 'application/x-www-form-urlencoded; charset=UTF-8',
-				dataType: params.dataType || 'json',
+				dataType: (params.method == 'DELETE') ? null : (params.dataType || 'json'),
 				method: params.method || 'POST',
 				context: params.context || document.body,
-				data: params.data,
+				data: (params.method == 'DELETE') ? null : params.data,
 				statusCode: {
 					404: function() {
 						console.log('Page not found');
@@ -133,6 +133,26 @@ var Hotplace = (function() {
 		},
 		hideMask: function() {
 			_loadEl.waitMe('hide');
+		},
+		showExtConfirm: function(param) {
+			parent.Ext.Msg.show({
+				title: param.title || '',
+				msg: param.msg,
+				buttons: (param.type == 'alert') ? parent.Ext.Msg.OK : (param.buttons || parent.Ext.Msg.OKCANCEL),
+				icon: (param.type == 'alert' && !param.icon) ?  parent.Ext.MessageBox.WARNING : (param.icon || parent.Ext.MessageBox.QUESTION),
+				fn: function(btn) {
+					switch(param.type) {
+					case 'alert' :
+						if(btn == 'ok') {
+							if(param.callback) param.callback(btn);
+						}
+						break;
+					case 'confirm' :
+						param.callback(btn);
+						break;
+					}
+				}
+			});
 		}
 	}
 })();

@@ -1,7 +1,7 @@
 Ext.define('Hotplace.view.panel.NoticeListGridPanel', {
 	extend: 'Ext.grid.Panel',
 	requires : ['Hotplace.util.Constants', 
-	            'Hotplace.view.iframe.NoticeIframe'],
+	            'Hotplace.view.iframe.BaseIframe'],
 	xtype: 'noticegrid',
 	id: 'noticeListGrid',
 	initComponent: function() {
@@ -76,7 +76,7 @@ Ext.define('Hotplace.view.panel.NoticeListGridPanel', {
 						contentPanel.setActiveTab(id + '-panel');
 					}
 					else {
-						controller.addContentTabPanel(id, title, /*{ xtype: 'noticeiframe' }*/ Ext.create('Hotplace.view.iframe.NoticeIframe', {writeNum: writeNum}));
+						controller.addContentTabPanel(id, title, /*{ xtype: 'noticeiframe' }*/ Ext.create('Hotplace.view.iframe.BaseIframe', { url : 'notice/if/content/' + writeNum }));
 					}
 				}
 			}

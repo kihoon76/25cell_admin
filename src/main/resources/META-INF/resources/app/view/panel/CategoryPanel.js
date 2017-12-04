@@ -13,6 +13,8 @@ Ext.define('Hotplace.view.panel.CategoryPanel', {
 					 ,children : [{
 						 text : '공지사항', expand : true, iconCls : 'tree-expand'
 						,children : [{
+							text : '공지글 등록', leaf : true, cate : 'notice', id : 'cate-notice-reg'
+						},{
 							text : '공지 리스트', leaf : true, cate : 'notice', id : 'cate-notice-list'
 						}]
 					 }]

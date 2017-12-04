@@ -36,3 +36,18 @@ CKEDITOR.editorConfig = function( config ) {
 	// Simplify the dialog windows.
 	config.removeDialogTabs = 'image:advanced;link:advanced';
 };
+
+CKEDITOR.on( 'instanceReady', function( ev ) {
+
+	var blockTags = ['div','h1','h2','h3','h4','h5','h6','p','pre','ul','li','table','td','tr','blockquote'];
+	for (var i = 0; i < blockTags.length; i++) {
+		ev.editor.dataProcessor.writer.setRules( blockTags[i], {
+			indent : false,
+	        breakBeforeOpen : true,
+	        breakAfterOpen : false,
+	        breakBeforeClose : false,
+	        breakAfterClose : true
+	     });
+	}
+	
+});

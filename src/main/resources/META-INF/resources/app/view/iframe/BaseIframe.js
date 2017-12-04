@@ -1,6 +1,6 @@
-Ext.define('Hotplace.view.iframe.NoticeIframe', {
+Ext.define('Hotplace.view.iframe.BaseIframe', {
 	extend: 'Ext.panel.Panel',
-	alias: 'widget.noticeiframe',
+	alias: 'widget.baseiframe',
 	uses: ['Hotplace.util.CommonFn'],
 	layout: 'fit',
 	constructor: function() {
@@ -15,7 +15,7 @@ Ext.define('Hotplace.view.iframe.NoticeIframe', {
 				autoEl: {
 					tag: 'iframe',
 					frameborder: 0,
-					src: Hotplace.util.CommonFn.getFullUrl('notice/if/content/' + that.param.writeNum)
+					src: Hotplace.util.CommonFn.getFullUrl(that.param.url)
 				}
 			}]
 		});

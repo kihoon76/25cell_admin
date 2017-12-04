@@ -61,7 +61,20 @@
 	
 	<update id="updateNoticeOne" parameterType="map">
 		update [웹].[dbo].[공지사항]
-		   set 내용 = #{content}
+		   set 내용 = #{content}, 제목 = #{title} 
 		 where 글번호 = #{writeNum}
 	</update>
+	
+	<insert id="insertNotice" parameterType="map">
+		insert into [웹].[dbo].[공지사항](제목, 내용, 작성자)
+		values (#{title}, #{content}, 'khnam')
+		
+		<selectKey keyProperty="id" resultType="string" order="AFTER">
+		select ident_current('[웹].[dbo].[공지사항]')
+		</selectKey>
+	</insert>
+	
+	<delete id="deleteNotice" parameterType="int">
+		delete from [웹].[dbo].[공지사항] where 글번호 = #{writeNum}
+	</delete>
 </mapper>

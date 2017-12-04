@@ -12,5 +12,9 @@ public interface NoticeDao {
 	Notice selectNoticeOne(int writeNum);
 
 	int updateNoticeOne(Map map);
+
+	int insertNotice(Map<String, String> map);
+
+	int deleteNotice(int writeNum);
 	
 }

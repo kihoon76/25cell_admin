@@ -28,5 +28,13 @@ public class NoticeService {
 		return noticeDao.updateNoticeOne(map);
 	}
 
+	public int writeNotice(Map<String, String> map) {
+		return noticeDao.insertNotice(map);
+	}
+
+	public int removeNoticeOne(int writeNum) {
+		return noticeDao.deleteNotice(writeNum);
+	}
+
 	
 }

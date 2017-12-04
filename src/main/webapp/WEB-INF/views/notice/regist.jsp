@@ -11,32 +11,21 @@
 	<table class="table">
 		<tr>
 			<td>
-				<button id="btnModifyNotice" class="btn btn-warning">수정</button>
-				<button id="btnDeleteNotice" class="btn btn-danger" data-num="<c:out value='${notice.num}' />">삭제</button>
+				<div class="form-group">
+    				<label for="noticeTitle">공지글 제목</label>
+    				<input type="text" class="form-control" id="noticeTitle">
+  				</div>
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<div class="form-group">
-	    			<label>글번호</label>
-	    			<span><c:out value='${notice.num}' /></span>
-	    			(<span><c:out value='${notice.writeDate}' /></span>)
-	  			</div>
-  			</td>
-		</tr>
-		<tr>
-			<td>
-				<div class="form-group">
-	    			<label for="noticeTitle">공지글 제목</label>
-	    			<input type="text" class="form-control" id="noticeTitle" value="<c:out value='${notice.title}' />">
-	  			</div>
-  			</td>
-		</tr>
-		<tr>
-			<td>
-				<textarea id="noticeEditor" style="max-width: 100%;"  data-num="<c:out value='${notice.num}' />">
-				<c:out value="${notice.content}" />
+				<textarea id="noticeEditor" style="max-width: 100%;">
 				</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<button class="btn btn-success" id="btnNoticeReg">등록</button>
 			</td>
 		</tr>
 	</table>
