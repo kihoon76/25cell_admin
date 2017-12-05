@@ -17,7 +17,7 @@
     
 	<sitemesh:write property="head" />
 </head>
-<body>
+<body data-url="${fn:substring(url, 0, fn:length(url) - fn:length(uri))}${req.contextPath}">
 	<sitemesh:write property="body" /> 
 	<script src="/resources/core/ver/4.1.1-rc2/js/ext-all.js"></script>
 	
@@ -34,6 +34,8 @@
 				}
 				else if(t.nodeName == 'BODY' || t.nodeName == 'DIV') return false;
 			});
+			
+			console.log(Ext.getBody().getAttribute('data-url'));
 		});
 	</script>
 	
