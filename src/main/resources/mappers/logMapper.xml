@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.logMapper">
+	
+	<resultMap id="RM_selectLog" type="AccessLog">
+		<result column="아이피주소"		property="ip" javaType="string"/>
+		<result column="아이디"		property="accountId" javaType="string"/>
+		<result column="유입경로"  	property="referer" javaType="string" />
+		<result column="요청리소스"		property="url" javaType="string"/>
+		<result column="파라미터"		property="parameter" javaType="string"/>
+		<result column="접속시간"		property="accessTime" javaType="string"/>
+	</resultMap>
+	
+	<resultMap id="RM_selectLogList" type="ExtjsStoreVO" >
+		<result column="글수" property="total" javaType="int"/>
+		<result column="검색타입" property="searchType" javaType="string"/>
+		<result column="검색값" property="searchValue" javaType="string"/>
+		<result column="시작" property="start" javaType="int" />
+		<result column="끝" property="limit" javaType="int" />
+		<collection property="datas" column="{start=시작, limit=끝, searchType=검색타입, searchValue=검색값}" 
+					javaType="java.util.ArrayList"
+					ofType="AccessLog" 
+					select="selectLog" />
+	</resultMap>
+	
+	<select id="selectLogList" resultMap="RM_selectLogList">
+		select (
+				select count(*) 
+				  from [웹].[dbo].[접속로그]
+				) 글수, #{searchType} 검색타입, #{searchValue} 검색값, #{start} 시작, #{limit} 끝
+	</select>
+	
+	<select id="selectLog" parameterType="hashmap" resultMap="RM_selectLog">
+		select 아이피주소, 아이디, 유입경로, 요청리소스, 파라미터, 접속시간
+		  from (
+		  	select row_number() over(order by 접속시간 desc) rownum, *
+		  	  from [웹].[dbo].[접속로그]
+		  	  <if test="searchType != null and searchValue != null">
+		  	  </if>
+		  ) tb1
+		 where rownum between (#{start} + 1) and (#{start} + #{limit})
+	</select>
+</mapper>

@@ -35,7 +35,6 @@
 				else if(t.nodeName == 'BODY' || t.nodeName == 'DIV') return false;
 			});
 			
-			console.log(Ext.getBody().getAttribute('data-url'));
 		});
 	</script>
 	

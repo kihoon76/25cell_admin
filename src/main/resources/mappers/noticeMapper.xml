@@ -16,8 +16,7 @@
 		<collection property="datas" column="{start=시작, limit=끝, searchType=검색타입, searchValue=검색값}" 
 					javaType="java.util.ArrayList"
 					ofType="Notice" 
-					select="selectNotice"
-					/>
+					select="selectNotice" />
 	</resultMap>
 	
 	<select id="selectNoticeList" parameterType="hashmap" resultMap="RM_selectNoticeList">
