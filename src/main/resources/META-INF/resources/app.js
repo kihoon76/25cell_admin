@@ -41,7 +41,8 @@ Ext.application({
         'Hotplace.controller.NoticeController',
         'Hotplace.controller.MapTypesController',
         'Hotplace.controller.AuthorityController',
-        'Hotplace.controller.LogController'
+        'Hotplace.controller.LogController',
+        'Hotplace.controller.ConfigureController'
    ]
    ,launch:function(){
 	   

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.configureMapper">
+	
+	<resultMap id="RM_selectConfigureList" type="ExtjsStoreVO">
+		<result column="total" property="total" javaType="int"/>
+		<collection property="datas" column="total" 
+					javaType="java.util.ArrayList"
+					ofType="Configure" 
+					select="selectConfigure" />
+	</resultMap>
+	
+	<select id="selectConfigureList" resultMap="RM_selectConfigureList">
+		select (select count(*) from [웹].[dbo].[시스템설정]) as total 
+	</select>
+	
+	<select id="selectConfigure" parameterType="int" resultType="Configure">
+		select 고유번호 as confNum, 
+			       설정내용 as confContent,
+			       설정값 as confValue,
+			       비고 as confBigo,
+			       설정일자 as confDate
+		  from [웹].[dbo].[시스템설정]
+	</select>
+	
+	<update id="updateConfigure" parameterType="Configure">
+		update [웹].[dbo].[시스템설정]
+		   set 설정내용 = #{confContent},
+		   	       설정값 = #{confValue},
+		   	       비고 = #{confBigo},
+		   	       설정일자 = getDate()
+		 where 고유번호 = #{confNum}
+	</update>
+</mapper>

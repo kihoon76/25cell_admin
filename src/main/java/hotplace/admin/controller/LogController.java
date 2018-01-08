@@ -5,7 +5,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,8 +38,5 @@ public class LogController {
 		map.put("limit", limit);
 		
 		return logService.getLogList(map);
-		
 	}
-	
-	
 }
