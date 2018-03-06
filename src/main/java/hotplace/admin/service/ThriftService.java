@@ -1,10 +1,9 @@
 package hotplace.admin.service;
 
-import org.apache.commons.codec.binary.StringUtils;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TMultiplexedProtocol;
-import org.apache.thrift.transport.TSocket;
+import org.apache.thrift.transport.TSSLTransportFactory;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,16 +23,29 @@ public class ThriftService {
 	@Value("#{thriftCfg['port']}")
 	private int port;
 	
+	@Value("#{thriftCfg['keys']}")
+	private String keyDir;
+	
+	@Value("#{thriftCfg['pwd']}")
+	private String passwd;
+	
+	@Value("#{thriftCfg['timeout']}")
+	private int timeout;
+	
 	private interface Client {
 		public void build(TBinaryProtocol protocol) throws TException;
 	};
 	
-	private AjaxVO run(Client c) {
-		TTransport transport = new TSocket(host, port);
+	private AjaxVO run(Client c) throws TTransportException {
+		
+		TSSLTransportFactory.TSSLTransportParameters params = new TSSLTransportFactory.TSSLTransportParameters();
+		params.setTrustStore(keyDir + "truststore.jks", passwd);
+		
+		TTransport transport = TSSLTransportFactory.getClientSocket(host, port, timeout, params); 
 		AjaxVO vo = new AjaxVO();
 		
 		try {
-			transport.open();
+			//transport.open();
 			
 			TBinaryProtocol protocol = new TBinaryProtocol(transport);
 			c.build(protocol);
@@ -61,7 +73,7 @@ public class ThriftService {
 		
 	}
 	
-	public AjaxVO runHotplace25Config() {
+	public AjaxVO runHotplace25Config() throws TTransportException {
 		return run(new Client() {
 
 			@Override
