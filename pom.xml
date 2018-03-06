@@ -24,6 +24,7 @@
 		<sitemesh-version>3.0.1</sitemesh-version>
 		
 		<bootstrap-version>3.3.7-1</bootstrap-version>
+		<thrift-version>0.10.0</thrift-version>
 	</properties>
 	
 	<dependencies>
@@ -232,6 +233,13 @@
 		    <artifactId>bootstrap</artifactId>
 		    <version>${bootstrap-version}</version>
 		</dependency> 
+		
+		<!-- thrift -->
+		<dependency>
+		    <groupId>org.apache.thrift</groupId>
+		    <artifactId>libthrift</artifactId>
+		    <version>${thrift-version}</version>
+		</dependency>
 	</dependencies>
 	
     <build>

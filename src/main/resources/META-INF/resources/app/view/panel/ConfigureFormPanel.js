@@ -59,7 +59,9 @@ Ext.define('Hotplace.view.panel.ConfigureFormPanel', {
 	            listeners: {
 	            	afterlayout: function(t) {
 	            		try{
-	            			t.getSelectionModel().select(0);
+	            			if(!selectedRecord){
+	            				t.getSelectionModel().select(0);
+	            			}
 	            		}
 	            		catch(e) {}
 	            		
@@ -67,9 +69,10 @@ Ext.define('Hotplace.view.panel.ConfigureFormPanel', {
 	                selectionchange: function(model, records) {
 	                    if (records[0]) {
 	                    	selectedRecord = records[0];
-	                        this.up('form').getForm().loadRecord(records[0]);
+	                        this.up('form').getForm().loadRecord(selectedRecord);
 	                    }
 	                }
+	
 	            }
 			}, {
 				 columnWidth: 0.4,
@@ -114,7 +117,6 @@ Ext.define('Hotplace.view.panel.ConfigureFormPanel', {
 		            	text:'설정변경',
 		            	listeners: {
 		            		click: function() {
-		            			console.log(Ext.getCmp('idConfContent').getValue());
 		            			var data = selectedRecord.data;
 		            			
 		            			Ext.Ajax.request({
@@ -128,12 +130,23 @@ Ext.define('Hotplace.view.panel.ConfigureFormPanel', {
 		            				},
 		            				timeout:60000,
 		            				success: function(response) {
-		            					console.log(response);
+		            					
+		            					var jo = Ext.decode(response.responseText);
+		            					
 		            					that.child('gridpanel').getStore().reload();
-		            					Ext.Msg.alert('', '설정이 수정되었습니다.');
+		            					if(jo.success) {
+		            						if(!jo.errMsg) {
+		            							Ext.Msg.alert('', '설정이 수정되었습니다.');
+		            						}
+		            						else {
+		            							Ext.Msg.alert('', '설정이 수정되었으나 hotplace25가 touch되지 않았습니다');
+		            						}
+		            					}
+		            					
 		            				},
 		            				failure: function(response) {
 		            					console.log(response)
+		            					Ext.Msg.alert('', '오류가 발생했습니다.');
 		            				}
 		            			});
 		            			

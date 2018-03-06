@@ -15,6 +15,7 @@ import hotplace.admin.domain.AjaxVO;
 import hotplace.admin.domain.Configure;
 import hotplace.admin.domain.ExtjsStoreVO;
 import hotplace.admin.service.ConfigureService;
+import hotplace.admin.service.ThriftService;
 
 @RequestMapping("/configure")
 @Controller
@@ -22,6 +23,9 @@ public class ConfigureController {
 	
 	@Resource(name="configureService")
 	ConfigureService configureService;
+	
+	@Resource(name="thriftService")
+	ThriftService thriftService;
 
 	@PostMapping("list")
 	@ResponseBody
@@ -48,7 +52,11 @@ public class ConfigureController {
 		try {
 			Configure r = configureService.modifyConfig(param);
 			if(r != null) {
+				AjaxVO result = thriftService.runHotplace25Config();
 				vo.setSuccess(true);
+				if(!result.isSuccess()) {
+					vo.setErrMsg("hotplace25 not touched....");
+				}
 				vo.addObject(r);
 			}
 			else {
