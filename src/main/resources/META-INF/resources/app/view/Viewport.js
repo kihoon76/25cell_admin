@@ -18,8 +18,10 @@ Ext.define('Hotplace.view.Viewport', {
                 id     : 'app-header'
                ,xtype  : 'toolbar'//'box'
                ,region : 'north'
-			   ,height : 30
-			   ,items: ['->',{
+			   ,height : 50
+			   ,items: [{
+				   html:'<img src="resources/images/logo.png" style="width:54px; height:40px"><span style="position:relative; top:-15px; left:5px; font-size:1.5em;">Hotplace 25</span>'
+			   }, '->',{
 					xtype: 'button',
 					text: '로그아웃',
 					listeners: {

@@ -142,6 +142,9 @@ Ext.define('Hotplace.view.panel.ConfigureFormPanel', {
 		            							Ext.Msg.alert('', '설정이 수정되었으나 hotplace25가 touch되지 않았습니다');
 		            						}
 		            					}
+		            					else {
+		            						Ext.Msg.alert('에러', jo.errMsg);
+		            					}
 		            					
 		            				},
 		            				failure: function(response) {
