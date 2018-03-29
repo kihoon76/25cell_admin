@@ -18,4 +18,11 @@
 		select 권한번호 as authNum, 권한이름 as authName, 설명 as description
 		  from [웹].[dbo].[권한]
 	</select>
+	
+	<update id="updateAuthority" parameterType="Authority">
+		update [웹].[dbo].[권한]
+		   set 권한이름 = #{authName},
+		   	       설명 = #{description}
+		 where 권한번호 = #{authNum}
+	</update>
 </mapper>

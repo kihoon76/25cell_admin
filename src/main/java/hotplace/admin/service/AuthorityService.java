@@ -18,4 +18,8 @@ public class AuthorityService {
 		return authorityDao.selectAuthorityList();
 	}
 
+	public boolean modifyDefine(Authority authority) {
+		return 1 == authorityDao.updateDefine(authority);
+	}
+
 }

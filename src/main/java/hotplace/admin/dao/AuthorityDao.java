@@ -6,4 +6,7 @@ import hotplace.admin.domain.ExtjsStoreVO;
 public interface AuthorityDao {
 
 	public ExtjsStoreVO<Authority> selectAuthorityList();
+
+	public int updateDefine(Authority authority);
+
 }

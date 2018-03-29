@@ -79,6 +79,7 @@ Ext.define('Hotplace.view.panel.ConfigureFormPanel', {
 		            margin: '0 0 0 10',
 		            xtype: 'fieldset',
 		            title:'설정 상세보기',
+		            height: 400,
 		            defaults: {
 		                width: 240,
 		                labelWidth: 90
@@ -105,7 +106,8 @@ Ext.define('Hotplace.view.panel.ConfigureFormPanel', {
 		                xtype: 'textareafield',
 		                anchor: '100%',
 		                id: 'idConfBigo',
-		                grow: true
+		                grow: true,
+		                height:190
 		            },{
 		                fieldLabel: '설정일자',
 		                anchor: '100%',

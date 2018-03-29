@@ -21,4 +21,9 @@ public class AuthorityDaoImpl implements AuthorityDao {
 		return msSqlSession.selectOne(namespace + ".selectAuthorityList");
 	}
 
+	@Override
+	public int updateDefine(Authority authority) {
+		return msSqlSession.update(namespace + ".updateAuthority", authority);
+	}
+
 }
