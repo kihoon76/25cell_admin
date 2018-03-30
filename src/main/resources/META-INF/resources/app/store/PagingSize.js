@@ -1,7 +1,7 @@
 Ext.define('Hotplace.store.PagingSize', {
 	 extend   : 'Ext.data.Store'
     ,fields   : ['name', 'value']
-    ,data     : [
+    ,data     : [{'name' : '2', 'value' : '2'},
          {'name' : '10', 'value' : '10'}
         ,{'name' : '20', 'value' : '20'}
         ,{'name' : '30', 'value' : '30'}

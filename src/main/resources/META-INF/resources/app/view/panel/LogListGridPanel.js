@@ -47,7 +47,7 @@ Ext.define('Hotplace.view.panel.LogListGridPanel', {
 				xtype: 'pagingtoolbar',
 				store: store,
 				displayInfo: true,
-				displayMsg: '공지사항 리스트 {0} - {1} of {2}',
+				displayMsg: '로그 리스트 {0} - {1} of {2}',
 				dock: 'bottom',
 				doRefresh: function() {
 					Ext.getCmp('logListGrid').getStore().load();

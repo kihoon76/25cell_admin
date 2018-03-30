@@ -7,11 +7,13 @@ import org.apache.ibatis.type.Alias;
 @Alias("Account")
 public class Account {
 
-	private String id;
+	private String accountId;
 	private String userName;
 	private String password;
 	private String phone;
 	private String email;
+	private String regDate;
+	private String grade;
 	
 	private List<Authority> authorities;
 	
@@ -26,12 +28,6 @@ public class Account {
 	}
 	public void setAuthorities(List<Authority> authorities) {
 		this.authorities = authorities;
-	}
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
 	}
 	public String getUserName() {
 		return userName;
@@ -50,5 +46,23 @@ public class Account {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public String getRegDate() {
+		return regDate;
+	}
+	public void setRegDate(String regDate) {
+		this.regDate = regDate;
+	}
+	public String getGrade() {
+		return grade;
+	}
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
+	public String getAccountId() {
+		return accountId;
+	}
+	public void setAccountId(String accountId) {
+		this.accountId = accountId;
 	}
 }

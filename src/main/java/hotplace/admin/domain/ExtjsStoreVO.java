@@ -9,7 +9,7 @@ public class ExtjsStoreVO<T> {
 
 	private int total;
 	private String searchType;
-	private String seachValue;
+	private String searchValue;
 	private int start;
 	private int limit;
 	private List<T> datas;
@@ -32,11 +32,11 @@ public class ExtjsStoreVO<T> {
 	public void setSearchType(String searchType) {
 		this.searchType = searchType;
 	}
-	public String getSeachValue() {
-		return seachValue;
+	public String getSearchValue() {
+		return searchValue;
 	}
-	public void setSeachValue(String seachValue) {
-		this.seachValue = seachValue;
+	public void setSearchValue(String searchValue) {
+		this.searchValue = searchValue;
 	}
 	public int getStart() {
 		return start;

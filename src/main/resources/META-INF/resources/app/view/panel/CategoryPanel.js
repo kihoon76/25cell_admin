@@ -27,6 +27,13 @@ Ext.define('Hotplace.view.panel.CategoryPanel', {
 						},{
 							text : '공지 리스트', leaf : true, cate : 'notice', id : 'cate-notice-list'
 						}]
+					 },{
+						 text : '회원관리', expand : true, iconCls : 'tree-expand'
+						,children : [{
+							text : '회원리스트', leaf : true, cate : 'user', id : 'cate-user-list'
+						},{
+							text : '회원등급', leaf : true, cate : 'user', id : 'cate-user-grade'
+						}]
 					 }, {
 						 text: '로그관리', expand: true, iconCls : 'tree-expand'
 						,children : [{

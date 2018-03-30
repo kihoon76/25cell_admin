@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.userMapper">
+	
+	<resultMap id="RM_selectUser" type="Account">
+		<result column="아이디"		property="accountId" javaType="string"/>
+		<result column="이름"			property="userName" javaType="string"/>
+		<result column="연락처"  		property="phone" javaType="string" />
+		<result column="이메일"		property="email" javaType="string"/>
+		<result column="가입일자"		property="regDate" javaType="string"/>
+		<result column="권한이름"		property="grade" javaType="string"/>
+	</resultMap>
+	
+	
+	<resultMap id="RM_selectUserList" type="ExtjsStoreVO">
+		<result column="회원수" property="total" javaType="int"/>
+		<result column="검색타입" property="searchType" javaType="string"/>
+		<result column="검색값" property="searchValue" javaType="string"/>
+		<result column="시작" property="start" javaType="int" />
+		<result column="끝" property="limit" javaType="int" />
+		<collection property="datas" column="{start=시작, limit=끝, searchType=검색타입, searchValue=검색값}" 
+					javaType="java.util.ArrayList"
+					ofType="Account" 
+					select="selectUser" />
+	</resultMap>
+	
+	
+	<select id="selectUserList" resultMap="RM_selectUserList" parameterType="map">
+		select (
+			select count(*) 
+			  from [웹].[dbo].[계정]
+			) 회원수, #{searchType} 검색타입, #{searchValue} 검색값, #{start} 시작, #{limit} 끝
+	</select>
+	
+	<select id="selectUser" parameterType="hashmap" resultMap="RM_selectUser">
+		select 아이디, 이름, 연락처, 이메일, 가입일자, 권한이름
+		  from (
+		  	select row_number() over(order by 가입일자 desc) rownum, *
+		  	  from [웹].[dbo].[계정]
+		  	  <choose>
+		  	  	<when test="searchType != null and searchType == 'accountId'">
+		  	  		where 아이디 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'userName'">
+		  	  		where 이름 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'phone'">
+		  	  		where 연락처 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'email'">
+		  	  		where 이메일 = #{searchValue}
+		  	  	</when>
+		  	  	<otherwise></otherwise>
+		  	  </choose>
+
+		  ) tb1
+		  left outer join ( select 계정_아이디, 권한번호 from [웹].[dbo].[계정_권한] where 권한번호 != 3) tb2 on tb1.아이디 = tb2.계정_아이디
+		  left outer join [웹].[dbo].[권한] tb3 on tb3.권한번호 = tb2.권한번호
+		 where rownum between (#{start} + 1) and (#{start} + #{limit})
+	</select>
+</mapper>
