@@ -120,7 +120,9 @@ Ext.define('Hotplace.view.panel.UserListGridPanel', {
 							value: that.columns[i].dataIndex
 						});
 					}
+					
 					searchComboStore.loadData(searchComboArr);
+					Ext.getCmp('user-searchtype-combo').select('all');
 				}
 			}
 		});
