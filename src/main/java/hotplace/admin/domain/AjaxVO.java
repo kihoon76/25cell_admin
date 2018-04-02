@@ -34,4 +34,16 @@ public class AjaxVO<T> {
 	public void addObject(T t) {
 		datas.add(t);
 	}
+
+	public List<T> getDatas() {
+		return datas;
+	}
+
+	public void setDatas(List<T> datas) {
+		this.datas = datas;
+	}
+
+	public String getErrCode() {
+		return errCode;
+	}
 }

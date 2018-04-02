@@ -12,7 +12,52 @@ Ext.define('Hotplace.view.panel.UserListGridPanel', {
 			 fields   : ['name', 'value']
 		});
 		
+		var gradeComboStore = Ext.create('Ext.data.Store', {
+			fields : ['name', 'value'],
+			proxy : {
+				type: 'ajax',
+				url: 'authority/define',
+				reader: {
+					type: 'json',
+					successProperty: 'success',
+					root: 'datas'
+				}
+			}
+		});
+		
 		var searchComboArr = [], searchType = '', searchValue = '';
+		
+		function search() {
+			searchType = Ext.getCmp('user-searchtype-combo').getValue();
+			searchValue = Ext.getCmp('user-search-text').getValue() ;
+			  
+			if(searchType != 'all') {
+				if(searchType == 'grade') {
+					searchValue = Ext.getCmp('user-searchgrade-combo').getValue();
+				}
+				
+				if(!searchValue) {
+					Ext.Msg.alert('알림', '값을 입력하세요');
+					return;
+				}
+				
+				store.load({
+					params: {
+						searchType: searchType,
+						searchValue: searchValue
+					}
+				});    
+			}
+		}
+		
+		function clearSearchTxt(t) {
+			if('all' == Ext.getCmp('user-searchtype-combo').getValue()) {
+				t.setValue('');
+				return true;
+			}
+			
+			return false;
+		}
 		
 		Ext.apply(this, {
 			store: store,
@@ -49,31 +94,64 @@ Ext.define('Hotplace.view.panel.UserListGridPanel', {
 			    	   displayField: 'name',
 			    	   valueField: 'value',
 			    	   editable: false,
-			    	   store:searchComboStore
+			    	   store:searchComboStore,
+			    	   listeners: {
+			    		   change: function(combo, nV, oV) {
+			    			   if(nV == 'all') {
+			    				   Ext.getCmp('user-search-text').setValue('');
+			    				   store.load();      
+			    			   }
+			    			   else if(nV == 'grade') {
+			    				  Ext.getCmp('user-search-text').hide();
+			    				  Ext.getCmp('user-searchgrade-combo').show();
+			    			   }
+			    			   
+			    			   //이전값이 grade이면
+			    			   if(oV == 'grade') {
+			    				   Ext.getCmp('user-search-text').show();
+				    			   Ext.getCmp('user-searchgrade-combo').hide();  
+			    			   }
+			    		   }
+			    	   }
+			       }), Ext.create('Ext.form.field.ComboBox', {
+			    	   queryMode: 'remote',
+			    	   emptyText: '회원등급',
+			    	   id:'user-searchgrade-combo',
+			    	   displayField: 'name',
+			    	   valueField: 'value',
+			    	   editable: false,
+			    	   hidden: true,
+			    	   store: gradeComboStore,
+			    	   listeners: {
+			    		   change: function(combo, nV, oV) {
+			    			  
+			    		   }
+			    	   }
 			       }), {
 					   xtype: 'textfield',
-					   id: 'user-search-text'
+					   id: 'user-search-text',
+					   enableKeyEvents: true,
+					   listeners: {
+						   keydown: function(t, e) {
+							   console.log(e.keyCode);
+							   
+							   //전체를 선택한 경우 동작 안함
+							   if(e.keyCode == 13) {
+								   if(!clearSearchTxt(t)) {
+									  search();
+								   } 
+							   }
+						   },
+						   blur: function(t) {
+							   clearSearchTxt(t);
+						   }
+					   }
 				   }, {
 					   xtype: 'button',
 					   iconCls: 'icon-search',
 					   listeners: {
 						   click: function(btn, e) {
-							  searchType = Ext.getCmp('user-searchtype-combo').getValue();
-							  searchValue = Ext.getCmp('user-search-text').getValue() ;
-							  
-							  if(searchValue == 'all') {
-								  Ext.getCmp('user-search-text').setValue('');
-								  store.load();  
-							  }
-							  else {
-								  store.load({
-									  params: {
-										  searchType: searchType,
-										  searchValue: searchValue
-									  }
-								  });  
-							  }
-							  
+							   search();
 						   }
 					   }
 				   }

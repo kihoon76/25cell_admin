@@ -9,6 +9,7 @@
 		<result column="이메일"		property="email" javaType="string"/>
 		<result column="가입일자"		property="regDate" javaType="string"/>
 		<result column="권한이름"		property="grade" javaType="string"/>
+		<result column="권한번호"		property="gradeNum" javaType="string" />
 	</resultMap>
 	
 	
@@ -33,7 +34,7 @@
 	</select>
 	
 	<select id="selectUser" parameterType="hashmap" resultMap="RM_selectUser">
-		select 아이디, 이름, 연락처, 이메일, 가입일자, 권한이름
+		select 아이디, 이름, 연락처, 이메일, 가입일자, 권한이름, tb3.권한번호
 		  from (
 		  	select row_number() over(order by 가입일자 desc) rownum, *
 		  	  from [웹].[dbo].[계정]
@@ -57,5 +58,9 @@
 		  left outer join ( select 계정_아이디, 권한번호 from [웹].[dbo].[계정_권한] where 권한번호 != 3) tb2 on tb1.아이디 = tb2.계정_아이디
 		  left outer join [웹].[dbo].[권한] tb3 on tb3.권한번호 = tb2.권한번호
 		 where rownum between (#{start} + 1) and (#{start} + #{limit})
+		 <if test="searchType != null and searchType == 'grade'">
+		 and tb3.권한번호 = #{searchValue}
+		 </if>
+		   
 	</select>
 </mapper>

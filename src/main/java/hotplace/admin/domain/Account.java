@@ -14,6 +14,7 @@ public class Account {
 	private String email;
 	private String regDate;
 	private String grade;
+	private String gradeNum;
 	
 	private List<Authority> authorities;
 	
@@ -64,5 +65,11 @@ public class Account {
 	}
 	public void setAccountId(String accountId) {
 		this.accountId = accountId;
+	}
+	public String getGradeNum() {
+		return gradeNum;
+	}
+	public void setGradeNum(String gradeNum) {
+		this.gradeNum = gradeNum;
 	}
 }

@@ -1,5 +1,8 @@
 package hotplace.admin.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.apache.ibatis.session.SqlSession;
@@ -24,6 +27,11 @@ public class AuthorityDaoImpl implements AuthorityDao {
 	@Override
 	public int updateDefine(Authority authority) {
 		return msSqlSession.update(namespace + ".updateAuthority", authority);
+	}
+
+	@Override
+	public List<Map<String, String>> selectAuthorityDefineList() {
+		return msSqlSession.selectList(namespace + ".selectAuthorityDefineList");
 	}
 
 }

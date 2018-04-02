@@ -16,9 +16,6 @@ Ext.define('Hotplace.controller.UserController', {
 					});
 					break;
 				case 'cate-user-grade' :
-					this.addContentTabPanel(recObj.id, recObj.text, {
-						xtype: 'usergrid'
-					});
 					break;
 				default :
 					break;
