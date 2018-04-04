@@ -66,3 +66,5 @@
 	background-repeat: no-repeat;
 	z-index:90000;
 }
+
+#user-auth-grade-combo-inputEl.x-form-text {height: 22px;}

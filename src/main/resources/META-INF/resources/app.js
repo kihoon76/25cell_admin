@@ -1,4 +1,6 @@
 Ext.Loader.setConfig({enabled: true});
+Ext.Loader.setPath('Ext.ux.form', '/resources/ux');
+
 Ext.apply(Ext.form.field.VTypes, {
    daterange : function(val, field) {
 	   if(field.startDateField) {

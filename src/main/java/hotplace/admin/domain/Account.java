@@ -15,6 +15,7 @@ public class Account {
 	private String regDate;
 	private String grade;
 	private String gradeNum;
+	private String admin;
 	
 	private List<Authority> authorities;
 	
@@ -71,5 +72,11 @@ public class Account {
 	}
 	public void setGradeNum(String gradeNum) {
 		this.gradeNum = gradeNum;
+	}
+	public String getAdmin() {
+		return admin;
+	}
+	public void setAdmin(String admin) {
+		this.admin = admin;
 	}
 }

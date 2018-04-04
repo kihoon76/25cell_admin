@@ -23,4 +23,14 @@ public class UserDaoImpl implements UserDao {
 		return msSqlSession.selectOne(namespace + ".selectUserList", map);
 	}
 
+	@Override
+	public int deleteUserGrade(Account account) {
+		return msSqlSession.delete(namespace + ".deleteUserGrade", account);
+	}
+
+	@Override
+	public int insertUserGrade(Account account) {
+		return msSqlSession.insert(namespace + ".insertUserGrade", account);
+	}
+
 }

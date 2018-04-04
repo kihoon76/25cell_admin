@@ -1,6 +1,6 @@
 Ext.define('Hotplace.controller.UserController', {
 	extend: 'Hotplace.controller.BaseController',
-	views: ['panel.UserListGridPanel'],
+	views: ['panel.UserListGridPanel', 'panel.UserAuthorityFormPanel'],
 	onLaunch : function() {
 		this.callParent(arguments);
 	},
@@ -16,6 +16,9 @@ Ext.define('Hotplace.controller.UserController', {
 					});
 					break;
 				case 'cate-user-grade' :
+					this.addContentTabPanel(recObj.id, recObj.text, {
+						xtype: 'userauthpanel'
+					});
 					break;
 				default :
 					break;

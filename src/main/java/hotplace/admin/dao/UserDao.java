@@ -9,4 +9,8 @@ public interface UserDao {
 
 	ExtjsStoreVO<Account> selectUserList(Map map);
 
+	int deleteUserGrade(Account account);
+
+	int insertUserGrade(Account account);
+
 }

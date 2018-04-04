@@ -29,6 +29,6 @@
 	<select id="selectAuthorityDefineList" resultType="map">
 		select 권한한글명 as name, convert(varchar(10), 권한번호) as value
 		  from [웹].[dbo].[권한]
-		 where 권한번호 != 3
+		 where 권한번호 != 3 and 권한번호 != 1
 	</select>
 </mapper>
