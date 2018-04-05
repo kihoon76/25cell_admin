@@ -52,6 +52,10 @@ public class UserController {
 		AjaxVO vo = new AjaxVO();
 		
 		try {
+			if("-1".equals(account.getGradeNum())) {
+				account.setGradeNum(null);
+			}
+			
 			boolean result = userService.modifyUserAuth(account);
 			if(result) {
 				vo.setSuccess(true);

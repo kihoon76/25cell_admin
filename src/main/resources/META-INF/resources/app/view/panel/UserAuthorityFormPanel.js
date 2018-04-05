@@ -181,7 +181,7 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	    						combo.setValue(data.gradeNum);
 	    					}
 	    					else {
-	    						combo.clearValue();
+	    						combo.setValue('-1');
 	    					}
 	    					
 	    					chkAdm.setDisabled(false);
@@ -220,11 +220,18 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		        			fields : ['name', 'value'],
 		        			proxy : {
 		        				type: 'ajax',
-		        				url: 'authority/define',
+		        				url: 'authority/define?no=Y',
 		        				reader: {
 		        					type: 'json',
 		        					successProperty: 'success',
 		        					root: 'datas'
+		        				}
+		        			},
+		        			listeners: {
+		        				load: function(store, records, success) {
+		        					if(success) {
+		        						console.log(store);
+		        					}
 		        				}
 		        			}
 		        		}),

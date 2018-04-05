@@ -34,10 +34,8 @@ public class UserService {
 			userDao.insertUserGrade(account);
 		}
 		
-		account.setGradeNum("1");
-		userDao.deleteUserGrade(account);
-		
 		if("Y".equals(account.getAdmin())) {
+			account.setGradeNum("1");
 			userDao.insertUserGrade(account);
 		}
 		

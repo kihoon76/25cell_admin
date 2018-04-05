@@ -67,7 +67,7 @@
 	</select>
 	
 	<delete id="deleteUserGrade" parameterType="Account">
-		delete from [웹].[dbo].[계정_권한] where 계정_아이디 = #{accountId} and 권한번호 = #{gradeNum}
+		delete from [웹].[dbo].[계정_권한] where 계정_아이디 = #{accountId} and 권한번호 != 3 
 	</delete>
 	
 	<insert id="insertUserGrade" parameterType="Account">
