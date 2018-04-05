@@ -6,5 +6,5 @@
 
 	<mapping path="/notice/if/*" decorator="/WEB-INF/views/layout/defaultiframe.jsp" />
 	<mapping path="/*" decorator="/WEB-INF/views/layout/default.jsp" />
-	
+	<mapping path="/signin" exclude="true" />
 </sitemesh>

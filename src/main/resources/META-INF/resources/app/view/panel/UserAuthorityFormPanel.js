@@ -164,6 +164,9 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	    					var data = record.data;
 	    					Ext.getCmp('user-auth-userName').setValue(data.userName);
 	    					Ext.getCmp('user-auth-accountId').setValue(data.accountId);
+	    					Ext.getCmp('user-auth-phone').setValue(data.phone);
+	    					Ext.getCmp('user-auth-email').setValue(data.email);
+	    					Ext.getCmp('user-auth-regDate').setValue(data.regDate);
 	    					
 	    					var chkAdm = Ext.getCmp('user-auth-admin-check');
 	    					//관리자여부
@@ -211,6 +214,24 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		                id: 'user-auth-accountId',
 		                readOnly: true,
 		            },{
+		                fieldLabel: '회원연락처',
+		                anchor: '100%',
+		                name: 'phone',
+		                id: 'user-auth-phone',
+		                readOnly: true,
+		            },{
+		                fieldLabel: '회원이메일',
+		                anchor: '100%',
+		                name: 'email',
+		                id: 'user-auth-email',
+		                readOnly: true,
+		            },{
+		                fieldLabel: '회원가입일자',
+		                anchor: '100%',
+		                name: 'regDate',
+		                id: 'user-auth-regDate',
+		                readOnly: true,
+		            },{
 		            	xtype: 'combobox',
 		            	id: 'user-auth-grade-combo',
 		            	fieldLabel: '회원등급',
@@ -225,13 +246,6 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		        					type: 'json',
 		        					successProperty: 'success',
 		        					root: 'datas'
-		        				}
-		        			},
-		        			listeners: {
-		        				load: function(store, records, success) {
-		        					if(success) {
-		        						console.log(store);
-		        					}
 		        				}
 		        			}
 		        		}),

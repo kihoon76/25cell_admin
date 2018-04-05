@@ -7,18 +7,6 @@ Ext.define('Hotplace.view.panel.ConfigureFormPanel', {
 		var that = this;
 		var selectedRecord = null;
 		
-		function authFormat(val){
-			if(val){
-				return '<span style="color:red;">' + val.substring(0,5) + '</span>' + val.substring(5);
-			}
-			
-			return '';
-		}
-		
-		function modify() {
-			
-		}
-		           
 		Ext.apply(this,{
 			frame: true,
 			bodyPadding: 5,
@@ -99,6 +87,14 @@ Ext.define('Hotplace.view.panel.ConfigureFormPanel', {
 		                fieldLabel: '설정값',
 		                anchor: '100%',
 		                name: 'confValue',
+		                xtype: 'combo',
+		                store: Ext.create('Ext.data.Store', {
+		                	fields: ['name', 'value'],
+		                	data: [{name:'ON', value:'on'}, {name:'OFF', value:'off'}]
+		                }),
+		                displayField: 'name',
+		                valueField: 'value',
+		                editable: false,
 		                id: 'idConfValue'
 		            },{
 		                fieldLabel: '비고',

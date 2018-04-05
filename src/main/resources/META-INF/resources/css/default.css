@@ -66,5 +66,7 @@
 	background-repeat: no-repeat;
 	z-index:90000;
 }
-
+/*회원등급 combo*/
+#idConfValue-inputEl.x-form-text {height: 22px;}
+/*설정리스트 설정값 combo*/
 #user-auth-grade-combo-inputEl.x-form-text {height: 22px;}
