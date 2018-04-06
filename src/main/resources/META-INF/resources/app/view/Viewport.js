@@ -24,12 +24,15 @@ Ext.define('Hotplace.view.Viewport', {
 			   }, '->',{
 					xtype: 'button',
 					text: '로그아웃',
+					iconCls: 'icon-logout',
+					//pressed: true,
+					height: 30,
 					listeners: {
 						click: function() {
 							
 							Ext.Msg.confirm(
 								'로그아웃',
-								'로그아웃 히시겠습니까?',
+								'로그아웃 하시겠습니까?',
 								function(button) {
 									if(button == 'yes') {
 										var url = Ext.getBody().getAttribute('data-url');

@@ -33,6 +33,8 @@ Ext.define('Hotplace.view.panel.CategoryPanel', {
 							text : '회원리스트', leaf : true, cate : 'user', id : 'cate-user-list'
 						},{
 							text : '회원등급', leaf : true, cate : 'user', id : 'cate-user-grade'
+						}, {
+							text : '회원통계', leaf : true, cate : 'user', id: 'cate-user-statistic'
 						}]
 					 }, {
 						 text: '로그관리', expand: true, iconCls : 'tree-expand'

@@ -16,7 +16,33 @@
 	
 	<script>
 		Ext.onReady(function() {
-			console.log(Ext.getBody().getAttribute('data-ttt'))
+			
+			function submit() {
+				var form = Ext.getCmp('form').getForm();
+	        	if (form.isValid()) {
+	            	form.submit({
+	            		success: function(form, action) {
+	                        window.location.href = '/main';
+	                     },
+	                     failure: function(form, action) {
+	                     	var result = action.result;
+	                    	var msg;
+	                    	 
+	                    	switch(result.errCode) {
+	                    	case '103' :
+	                    		msg = '권한이 없습니다';
+	                    		break;
+	                    	default :
+	                    		msg = '아이디/패스워드 정보가 올바르지 않습니다';
+	                    		break;
+	                    	 }
+	                    	 
+	                        Ext.Msg.alert('실패', msg);
+	                     }
+	            	});
+	            }
+			}
+			
 			Ext.getDoc().on('keydown', function(e, t) {
 				if(e.getKey() == e.BACKSPACE) {
 					if(t.hasAttribute('readonly')) {
@@ -54,45 +80,30 @@
 					items: [{
 						fieldLabel: '아이디',
 						name: 'id',
-						height: 30
+						height: 30,
+						allowBlank: false,
 					},{
 						fieldLabel: '비번',
 						inputType: 'password',
 						name: 'pw',
-						height: 30
+						height: 30,
+						allowBlank: false,
+						enableKeyEvents: true,
+						listeners: {
+							keydown: function(btn, e) {
+								if(e.keyCode == 13) {
+									submit();
+								}
+							}
+						}
 					}]
-				
 				}],
 				buttons: [{
 					text: '로그인',
 					formBind: true, //only enabled once the form is valid
+					id: 'btnLogin',
 				    handler: function() {
-				    	var form = Ext.getCmp('form').getForm();
-			        	if (form.isValid()) {
-			            	form.submit({
-			            		success: function(form, action) {
-			                        window.location.href = '/main';
-			                     },
-			                     failure: function(form, action) {
-			                    	 var result = action.result;
-			                    	 var msg;
-			                    	 
-			                    	 switch(result.errCode) {
-			                    	 case '101' :
-			                    		msg = '아이디/패스워드 정보가 올바르지 않습니다';
-			                    		break;
-			                    	 case '103' :
-			                    		 msg = '권한이 없습니다';
-			                    		 break;
-			                    	default :
-			                    		msg = '사용자 계정 오류';
-			                    		break;
-			                    	 }
-			                    	 
-			                         Ext.Msg.alert('실패', msg);
-			                     }
-			            	});
-			            }
+				    	submit();
 			        }
 				}]
 			}).show();
