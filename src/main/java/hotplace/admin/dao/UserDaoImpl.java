@@ -33,4 +33,8 @@ public class UserDaoImpl implements UserDao {
 		return msSqlSession.insert(namespace + ".insertUserGrade", account);
 	}
 
+	@Override
+	public Account selectUserInfo(String accountId) {
+		return msSqlSession.selectOne(namespace + ".selectUserInfo", accountId);
+	}
 }

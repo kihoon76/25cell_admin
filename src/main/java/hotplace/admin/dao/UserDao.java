@@ -13,4 +13,6 @@ public interface UserDao {
 
 	int insertUserGrade(Account account);
 
+	Account selectUserInfo(String accountId);
+
 }

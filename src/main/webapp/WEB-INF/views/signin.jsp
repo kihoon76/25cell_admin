@@ -16,6 +16,7 @@
 	
 	<script>
 		Ext.onReady(function() {
+			console.log(Ext.getBody().getAttribute('data-ttt'))
 			Ext.getDoc().on('keydown', function(e, t) {
 				if(e.getKey() == e.BACKSPACE) {
 					if(t.hasAttribute('readonly')) {
@@ -40,9 +41,11 @@
 					height: 300,
 					src: '/resources/images/site.png'
 				}, {
-					xtype: 'panel',
+					xtype: 'form',
+					id: 'form',
 					bodyPadding: 30,
 					height: 250,
+					url: '/login',
 					defaults: {
 		                width: 400,
 		                labelWidth: 50
@@ -50,17 +53,48 @@
 		            defaultType: 'textfield',
 					items: [{
 						fieldLabel: '아이디',
+						name: 'id',
 						height: 30
 					},{
 						fieldLabel: '비번',
+						inputType: 'password',
+						name: 'pw',
 						height: 30
 					}]
 				
 				}],
 				buttons: [{
-					text: '로그인'
+					text: '로그인',
+					formBind: true, //only enabled once the form is valid
+				    handler: function() {
+				    	var form = Ext.getCmp('form').getForm();
+			        	if (form.isValid()) {
+			            	form.submit({
+			            		success: function(form, action) {
+			                        window.location.href = '/main';
+			                     },
+			                     failure: function(form, action) {
+			                    	 var result = action.result;
+			                    	 var msg;
+			                    	 
+			                    	 switch(result.errCode) {
+			                    	 case '101' :
+			                    		msg = '아이디/패스워드 정보가 올바르지 않습니다';
+			                    		break;
+			                    	 case '103' :
+			                    		 msg = '권한이 없습니다';
+			                    		 break;
+			                    	default :
+			                    		msg = '사용자 계정 오류';
+			                    		break;
+			                    	 }
+			                    	 
+			                         Ext.Msg.alert('실패', msg);
+			                     }
+			            	});
+			            }
+			        }
 				}]
-				//renderTo: 'body'
 			}).show();
 			
 			Ext.EventManager.onWindowResize(function(w, h) {

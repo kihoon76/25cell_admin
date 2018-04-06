@@ -26,27 +26,36 @@ Ext.define('Hotplace.view.Viewport', {
 					text: '로그아웃',
 					listeners: {
 						click: function() {
-							Ext.Ajax.request({
-								url: 'http://hotplace.ddns.net:10001/logout',
-								method: 'GET',
-								success:function(res) {
-									try {
-										var data = JSON.parse(res.responseText);
-										if(data.success) {
-											window.location.href="http://hotplace.ddns.net:10001";
-										}
-										else {
-											Ext.MessageBox.alert('info', '로그아웃에 실패했습니다.');
-										}
+							
+							Ext.Msg.confirm(
+								'로그아웃',
+								'로그아웃 히시겠습니까?',
+								function(button) {
+									if(button == 'yes') {
+										var url = Ext.getBody().getAttribute('data-url');
+										Ext.Ajax.request({
+											url: url + '/logout',
+											method: 'GET',
+											success:function(res) {
+												try {
+													var data = JSON.parse(res.responseText);
+													if(data.success) {
+														window.location.href = url;
+													}
+													else {
+														Ext.MessageBox.alert('info', '로그아웃에 실패했습니다.');
+													}
+												}
+												catch(e) {
+													throw e;
+												}
+											},
+											failure: function() {
+												Ext.MessageBox.alert('info', '로그아웃에 실패했습니다.');
+											}
+										});
 									}
-									catch(e) {
-										throw e;
-									}
-								},
-								failure: function() {
-									Ext.MessageBox.alert('info', '로그아웃에 실패했습니다.');
-								}
-							});
+								});
 						}
 					}
 			   }]

@@ -41,4 +41,8 @@ public class UserService {
 		
 		return true;
 	}
+
+	public Account getUserInfo(String accountId) {
+		return userDao.selectUserInfo(accountId);
+	}
 }

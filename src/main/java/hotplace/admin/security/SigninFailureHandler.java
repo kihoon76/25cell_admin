@@ -18,8 +18,7 @@ import org.springframework.stereotype.Component;
 import com.google.gson.Gson;
 
 import hotplace.admin.domain.AjaxVO;
-import hotplace.admin.exceptions.NotAuthorizedByAdmin;
-
+import hotplace.admin.exceptions.NotAuthorized;
 
 @Component
 public class SigninFailureHandler extends SimpleUrlAuthenticationFailureHandler{
@@ -28,8 +27,8 @@ public class SigninFailureHandler extends SimpleUrlAuthenticationFailureHandler{
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException exception) throws IOException, ServletException {
 		
-		response.setContentType("text/plain");
-		response.setCharacterEncoding("utf-8");
+		response.setContentType("application/json");
+		response.setContentType("utf-8");
 		
 		AjaxVO<Map> ajax = new AjaxVO<Map>();
 		ajax.setSuccess(false);
@@ -37,19 +36,15 @@ public class SigninFailureHandler extends SimpleUrlAuthenticationFailureHandler{
 		Map<String, String> data = new HashMap<String, String>();
 		//사용자정보 없음
 		if(exception.getClass().isAssignableFrom(UsernameNotFoundException.class)) {
-			//data.put("type", "ID");
 			ajax.setErrCode("101");
 		}
 		else if(exception.getClass().isAssignableFrom(BadCredentialsException.class)) {
-			//data.put("type", "PW");
 			ajax.setErrCode("102");
 		}
-		else if(exception.getClass().isAssignableFrom(NotAuthorizedByAdmin.class)) {
-			//data.put("type", "AUTH");
+		else if(exception.getClass().isAssignableFrom(NotAuthorized.class)) {
 			ajax.setErrCode("103");
 		}
 		else {
-			//data.put("type", "ETC");
 			ajax.setErrCode("104");
 		}
 		

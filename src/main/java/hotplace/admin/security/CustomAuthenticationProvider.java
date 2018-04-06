@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import hotplace.admin.exceptions.NotAuthorized;
 import hotplace.admin.exceptions.NotAuthorizedByAdmin;
 
 
@@ -39,7 +40,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider{
 		
 		try {
 			user = userDetailsService.loadUserByUsername(username);
-			//if(!password.equals(user.getPassword())) throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+			if(!password.equals(user.getPassword())) throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
 
 			logger.info("정상로그인 입니다.");
 				
@@ -50,7 +51,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider{
 		catch(BadCredentialsException e) {
 			throw e; 
 		}
-		catch(NotAuthorizedByAdmin e) {
+		catch(NotAuthorized e) {
 			throw e;
 		}
 		catch(Exception e) {

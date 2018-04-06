@@ -74,4 +74,32 @@
 		insert into [웹].[dbo].[계정_권한](계정_아이디, 권한번호)
 		values(#{accountId}, #{gradeNum})
 	</insert>
+	
+	<select id="selectUserInfo" parameterType="string" resultMap="RM_selectAccount">
+		select 아이디 , 비번 ,
+		       case t2.권한번호  
+		       		when 1 then 'Y'
+		       		else 'N' 
+		       end  as 관리자
+		  from ( select 아이디, 비번
+		  		   from [웹].[dbo].[계정]
+		  		  where 아이디 = #{accountId}
+		       ) t1
+	      left outer join [웹].[dbo].[계정_권한] t2
+	        on t1.아이디 = t2.계정_아이디 and t2.권한번호 = 1
+	</select>
+	
+	<resultMap id="RM_selectAccount" type="Account">
+		<result column="아이디" property="accountId" javaType="string"/>
+		<result column="비번" property="password" javaType="string"/>
+		<result column="관리자" property="admin" javaType="string"/>
+	 	<collection property="authorities" column="아이디" javaType="java.util.ArrayList"
+	 				ofType="Authority" select="selectAdminAuthority" />
+	</resultMap>
+	
+	<select id="selectAdminAuthority" parameterType="string" resultType="Authority">
+		select 권한이름 as authName, 권한번호 as authNum
+		  from [웹].[dbo].[권한]
+		 where 권한번호 = 1
+	</select>
 </mapper>

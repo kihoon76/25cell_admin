@@ -1,5 +1,8 @@
 package hotplace.admin.security;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -10,14 +13,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import hotplace.admin.domain.Account;
+import hotplace.admin.domain.Authority;
+import hotplace.admin.exceptions.NotAuthorized;
+import hotplace.admin.service.UserService;
 
 @Service("userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService{
 
 	private static final Logger logger = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
 	
-	//@Autowired
-	//UserService userService;
+	@Autowired
+	UserService userService;
 	
 	@Autowired
 	private HttpServletRequest request;
@@ -29,17 +35,19 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 		//회원정보 dao에서 데이터 읽어옴
 		Account user = null;
 		try {
-			//user = userService.getUserInfo(username);
+			user = userService.getUserInfo(username);
 		}
 		catch(Exception e) {
 			throw new UsernameNotFoundException("접속자 정보 DB에서  문제가 발생했습니다. ");
 		}
 		
-		//if(user == null) throw new UsernameNotFoundException("접속자 정보(ID)를 찾을수 없습니다 ");
+		if(user == null) throw new UsernameNotFoundException("접속자 정보(ID)를 찾을수 없습니다 ");
+		
+		if("N".equals(user.getAdmin())) {
+			throw new NotAuthorized("권한이 없습니다");
+		}
 		
 		// TODO 디비에서 가져온 정보로 비교로직
-		
-		
 		UserDetailsImpl userDetails = new UserDetailsImpl(user); 
 		
 		
