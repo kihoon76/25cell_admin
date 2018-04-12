@@ -3,6 +3,6 @@ Ext.define('Hotplace.util.Constants', {
    ,debug     : true
    ,context   : Ext.getBody().getAttribute('data-url')
    ,ajaxTimeout : 5000
-   ,gridPageSize : 10
+   ,gridPageSize : 100
    ,dateFormat : 'Y-m-d'
 });

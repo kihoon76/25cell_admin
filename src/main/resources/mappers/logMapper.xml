@@ -13,11 +13,12 @@
 	
 	<resultMap id="RM_selectLogList" type="ExtjsStoreVO" >
 		<result column="글수" property="total" javaType="int"/>
-		<result column="검색타입" property="searchType" javaType="string"/>
-		<result column="검색값" property="searchValue" javaType="string"/>
+		<result column="접속아이피" property="ip" javaType="string"/>
+		<result column="접속아이디" property="id" javaType="string"/>
+		<result column="접속시간" property="regDate" javaType="string"/>
 		<result column="시작" property="start" javaType="int" />
 		<result column="끝" property="limit" javaType="int" />
-		<collection property="datas" column="{start=시작, limit=끝, searchType=검색타입, searchValue=검색값}" 
+		<collection property="datas" column="{start=시작, limit=끝, ip=접속아이피, id=접속아이디, regDate=접속시간}" 
 					javaType="java.util.ArrayList"
 					ofType="AccessLog" 
 					select="selectLog" />
@@ -27,7 +28,18 @@
 		select (
 				select count(*) 
 				  from [웹].[dbo].[접속로그]
-				) 글수, #{searchType} 검색타입, #{searchValue} 검색값, #{start} 시작, #{limit} 끝
+				  <where>
+		  	  		<if test="ip != null and ip != ''">
+		  	  		아이피주소 = #{ip}
+		  	  		</if>
+		  	  		<if test="id != null and id != ''">
+		  	  		and 아이디 = #{id}
+		  	  		</if>
+		  	  		<if test="regDate != null and regDate != ''">
+		  	  		and DATEDIFF(DD, #{regDate}, [접속시간]) = 0 
+		  	  		</if>
+		  	  	</where>
+				) 글수, #{ip} 접속아이피, #{id} 접속아이디, #{regDate} 접속시간, #{start} 시작, #{limit} 끝
 	</select>
 	
 	<select id="selectLog" parameterType="hashmap" resultMap="RM_selectLog">
@@ -35,8 +47,17 @@
 		  from (
 		  	select row_number() over(order by 접속시간 desc) rownum, *
 		  	  from [웹].[dbo].[접속로그]
-		  	  <if test="searchType != null and searchValue != null">
-		  	  </if>
+		  	  <where>
+		  	  	<if test="ip != null and ip != ''">
+		  	  	아이피주소 = #{ip}
+		  	  	</if>
+		  	  	<if test="id != null and id != ''">
+		  	  	and 아이디 = #{id}
+		  	  	</if>
+		  	  	<if test="regDate != null and regDate != ''">
+		  	  	and DATEDIFF(DD, #{regDate}, [접속시간]) = 0 
+		  	  	</if>
+		  	  </where>
 		  ) tb1
 		 where rownum between (#{start} + 1) and (#{start} + #{limit})
 	</select>

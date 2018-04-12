@@ -27,13 +27,15 @@ public class LogController {
 	public ExtjsStoreVO<AccessLog> getLogList(
 			@RequestParam("limit") int limit,
 			@RequestParam("start") int start,
-			@RequestParam(name="searchType", required=false) String searchType,
-			@RequestParam(name="searchValue", required=false) String searchValue) {
+			@RequestParam(name="ip", required=false) String ip,
+			@RequestParam(name="id", required=false) String id,
+			@RequestParam(name="", required=false) String regDate) {
 
 	
 		Map map = new HashMap();
-		map.put("searchType", searchType);
-		map.put("searchValue", searchValue);
+		map.put("ip", ip);
+		map.put("id", id);
+		map.put("regDate", regDate);
 		map.put("start", start);
 		map.put("limit", limit);
 		

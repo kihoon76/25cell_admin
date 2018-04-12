@@ -10,6 +10,11 @@ public class ExtjsStoreVO<T> {
 	private int total;
 	private String searchType;
 	private String searchValue;
+	
+	private String ip;
+	private String id;
+	private String regDate;
+	
 	private int start;
 	private int limit;
 	private List<T> datas;
@@ -49,5 +54,23 @@ public class ExtjsStoreVO<T> {
 	}
 	public void setLimit(int limit) {
 		this.limit = limit;
+	}
+	public String getIp() {
+		return ip;
+	}
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getRegDate() {
+		return regDate;
+	}
+	public void setRegDate(String regDate) {
+		this.regDate = regDate;
 	}
 }
