@@ -73,7 +73,11 @@ Ext.define('Hotplace.view.panel.LogListGridPanel', {
 						store.getProxy().setExtraParam('ip', Ext.String.trim(ip.getValue()));
 						store.getProxy().setExtraParam('id', Ext.String.trim(id.getValue()));
 						store.getProxy().setExtraParam('regDate', (date.getRawValue()) ? date.getRawValue().substring(0,10) : null);
-						store.load();
+						store.loadPage(1, {
+							params: {
+								limit: Ext.getCmp('log-paging-combo').getValue()
+							}
+						});
 					}
 				}
 			}, {
@@ -82,9 +86,6 @@ Ext.define('Hotplace.view.panel.LogListGridPanel', {
 				text: '닫기',
 				listeners: {
 					click: function() {
-						Ext.getCmp('txtLogSearchIp').setValue('');
-						Ext.getCmp('txtLogSearchId').setValue('');
-						Ext.getCmp('dateLogSearch').setValue('');
 						searchWin.hide();
 					}
 				}
