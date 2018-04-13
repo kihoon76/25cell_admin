@@ -45,7 +45,8 @@ Ext.application({
         'Hotplace.controller.AuthorityController',
         'Hotplace.controller.LogController',
         'Hotplace.controller.ConfigureController',
-        'Hotplace.controller.UserController'
+        'Hotplace.controller.UserController',
+        'Hotplace.controller.YaggwanController'
    ]
    ,launch:function(){
 	   

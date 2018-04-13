@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.yaggwanMapper">
+	
+	<resultMap type="Yaggwan" id="RM_Yaggwan">
+		<result column="일련번호"		property="key"			javaType="string"/>
+		<result column="내용"			property="content"		javaType="string"/>
+		<result column="카테고리코드"	property="categoryCode" javaType="string"/>
+		<result column="카테고리명"		property="categoryName" javaType="string"/>
+		<result column="순서"			property="soonseo"		javaType="int" />
+		<result column="필수여부"		property="required"		javaType="string"/>
+		<result column="작성일자"		property="writeDate"	javaType="string"/>
+	</resultMap>
+	
+	<select id="selectYaggwanList" resultMap="RM_Yaggwan">
+	select 일련번호, 내용, 작성일자, 카테고리코드, 카테고리명, 순서, 필수여부
+	  from [웹].[dbo].[약관]
+	  order by 순서
+	</select>
+	
+	<update id="updateYaggwanSoonseo" parameterType="Yaggwan">
+	update [웹].[dbo].[약관]
+	   set  case 
+	   		when 순서 >= #{soonseo} then 순서 = 순서 + 1
+	   		else 순서 = 순서 - 1
+	   		end
+	 where 일련번호 != #{key}
+	</update>
+	
+	<update id="updateYaggwan" parameterType="Yaggwan">
+	update [웹].[dbo].[약관]
+	   set 내용 = #{content},
+	   	      작성일자 = getDate(),
+	   	      순서 = #{soonseo},
+	   	      카테고리명 = #{categoryName},
+	   	     필수여부 = #{required}
+	 where 일련번호 = #{key}
+	</update>
+</mapper>

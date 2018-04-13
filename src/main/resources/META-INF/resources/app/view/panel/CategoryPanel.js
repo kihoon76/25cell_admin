@@ -41,6 +41,8 @@ Ext.define('Hotplace.view.panel.CategoryPanel', {
 						,children : [{
 							text: '로그리스트', leaf : true, cate : 'log', id : 'cate-log-list'
 						}]
+					 }, {
+						 text: '약관관리', leaf : true, cate : 'yaggwan', id : 'cate-yaggwan' 
 					 }]
     	    	 }
     	    })
