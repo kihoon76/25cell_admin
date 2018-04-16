@@ -8,8 +8,12 @@ public interface YaggwanDao {
 
 	List<Yaggwan> selectYaggwanList();
 
-	boolean updateYaggwan(Yaggwan yaggwan);
+	void updateYaggwan(Yaggwan yaggwan);
 
-	boolean updateYaggwanSoonseo(Yaggwan yaggwan);
+	void updateYaggwanSoonseo(Yaggwan yaggwan);
+
+	void deleteYaggwan(Yaggwan yaggwan);
+
+	void insertYaggwan(Yaggwan yaggwan);
 
 }

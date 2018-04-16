@@ -11,7 +11,7 @@ Ext.define('Hotplace.store.YaggwanListStore', {
 	          ,totalProperty : 'total'
 	       }
 	  },
-	  fields : ['key', 'content', 'categoryCode', 'categoryName', 'writeDate', 'required', 'soonseo'],
+	  fields : ['key', 'content', 'categoryName', 'writeDate', 'required', 'soonseo'],
 	  autoLoad : true,
 	  pageSize : Hotplace.util.Constants.gridPageSize
 });

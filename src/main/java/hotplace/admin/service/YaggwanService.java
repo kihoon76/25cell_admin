@@ -40,5 +40,13 @@ public class YaggwanService {
 		return true;
 	}
 
+	public void removeYaggwan(Yaggwan yaggwan) {
+		yaggwanDao.deleteYaggwan(yaggwan);
+	}
+
+	public void registYaggwan(Yaggwan yaggwan) {
+		yaggwanDao.insertYaggwan(yaggwan);
+	}
+
 	
 }

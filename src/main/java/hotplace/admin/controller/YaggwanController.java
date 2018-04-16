@@ -44,19 +44,48 @@ public class YaggwanController {
 	public AjaxVO modifyYaggwan(@RequestBody Yaggwan yaggwan) {
 		AjaxVO vo = new AjaxVO();
 		
-		ObjectMapper m = new ObjectMapper();
 		try {
-			System.err.println(m.writeValueAsString(yaggwan));
 			yaggwanService.modifyYaggwan(yaggwan);
-		} catch (JsonGenerationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			vo.setSuccess(true);
+		} 
+		catch (Exception e) {
+			vo.setSuccess(false);
+			vo.setErrMsg(e.getMessage());
+		}
+		
+		return vo;
+	}
+	
+	@PostMapping("delete")
+	@ResponseBody
+	public AjaxVO removeYaggwan(@RequestBody Yaggwan yaggwan) {
+		AjaxVO vo = new AjaxVO();
+		
+		try {
+			yaggwanService.removeYaggwan(yaggwan);
+			vo.setSuccess(true);
+		} 
+		catch (Exception e) {
+			vo.setSuccess(false);
+			vo.setErrMsg(e.getMessage());
+		}
+		
+		return vo;
+	}
+	
+	
+	@PostMapping("regist")
+	@ResponseBody
+	public AjaxVO registYaggwan(@RequestBody Yaggwan yaggwan) {
+		AjaxVO vo = new AjaxVO();
+		
+		try {
+			yaggwanService.registYaggwan(yaggwan);
+			vo.setSuccess(true);
+		} 
+		catch (Exception e) {
+			vo.setSuccess(false);
+			vo.setErrMsg(e.getMessage());
 		}
 		
 		return vo;

@@ -5,7 +5,6 @@
 	<resultMap type="Yaggwan" id="RM_Yaggwan">
 		<result column="일련번호"		property="key"			javaType="string"/>
 		<result column="내용"			property="content"		javaType="string"/>
-		<result column="카테고리코드"	property="categoryCode" javaType="string"/>
 		<result column="카테고리명"		property="categoryName" javaType="string"/>
 		<result column="순서"			property="soonseo"		javaType="int" />
 		<result column="필수여부"		property="required"		javaType="string"/>
@@ -13,18 +12,19 @@
 	</resultMap>
 	
 	<select id="selectYaggwanList" resultMap="RM_Yaggwan">
-	select 일련번호, 내용, 작성일자, 카테고리코드, 카테고리명, 순서, 필수여부
+	select 일련번호, 내용, 작성일자, 카테고리명, 순서, 필수여부
 	  from [웹].[dbo].[약관]
 	  order by 순서
 	</select>
 	
 	<update id="updateYaggwanSoonseo" parameterType="Yaggwan">
-	update [웹].[dbo].[약관]
-	   set  case 
-	   		when 순서 >= #{soonseo} then 순서 = 순서 + 1
-	   		else 순서 = 순서 - 1
-	   		end
-	 where 일련번호 != #{key}
+	{ 
+		call  [웹].[dbo].[USP_약관순서](
+			#{originSoonseo, mode=IN, jdbcType=SMALLINT, javaType=int},
+			#{soonseo, mode=IN, jdbcType=SMALLINT, javaType=int},
+			#{key, mode=IN, jdbcType=SMALLINT, javaType=string}
+		)
+	} 
 	</update>
 	
 	<update id="updateYaggwan" parameterType="Yaggwan">
@@ -36,4 +36,17 @@
 	   	     필수여부 = #{required}
 	 where 일련번호 = #{key}
 	</update>
+	
+	<delete id="deleteYaggwan" parameterType="Yaggwan">
+	{
+		call [웹].[dbo].[USP_약관순서_삭제](
+			#{key, mode=IN, jdbcType=INTEGER, javaType=string}
+		)
+	}
+	</delete>
+	
+	<insert id="insertYaggwan" parameterType="Yaggwan">
+	insert into [웹].[dbo].[약관] (내용, 작성일자, 카테고리명, 순서, 필수여부)
+	values (#{content}, getDate(), #{categoryName}, (select max(순서) + 1 from [웹].[dbo].[약관]), #{required})
+	</insert>
 </mapper>

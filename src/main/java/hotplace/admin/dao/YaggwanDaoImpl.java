@@ -23,13 +23,23 @@ public class YaggwanDaoImpl implements YaggwanDao {
 	}
 
 	@Override
-	public boolean updateYaggwan(Yaggwan yaggwan) {
-		return 1 == msSqlSession.update(namespace + ".updateYaggwan", yaggwan);
+	public void updateYaggwan(Yaggwan yaggwan) {
+		msSqlSession.update(namespace + ".updateYaggwan", yaggwan);
 	}
 
 	@Override
-	public boolean updateYaggwanSoonseo(Yaggwan yaggwan) {
-		return 1 == msSqlSession.update(namespace + ".updateYaggwanSoonseo", yaggwan);
+	public void updateYaggwanSoonseo(Yaggwan yaggwan) {
+		msSqlSession.update(namespace + ".updateYaggwanSoonseo", yaggwan);
+	}
+
+	@Override
+	public void deleteYaggwan(Yaggwan yaggwan) {
+		msSqlSession.update(namespace + ".deleteYaggwan", yaggwan);
+	}
+
+	@Override
+	public void insertYaggwan(Yaggwan yaggwan) {
+		msSqlSession.update(namespace + ".insertYaggwan", yaggwan);
 	}
 
 }
