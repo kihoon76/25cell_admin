@@ -13,19 +13,66 @@ Ext.define('Hotplace.view.panel.AuthorityFormPanel', {
 			
 			return '';
 		}
-		           
+		   
+		function modifyAuthority() {
+			var data = selectedRecord.data;
+			
+			Ext.Ajax.request({
+				url: Hotplace.util.Constants.context + '/authority/modify',
+				method:'POST',
+				headers: { 'Content-Type': 'application/json' }, 
+				jsonData: {
+					authNum: Ext.getCmp('idAuthNum').getValue(),
+					authName: Ext.getCmp('idAuthName').getValue(),
+					description: Ext.getCmp('idAuthDescription').getValue()
+				},
+				timeout:60000,
+				success: function(response) {
+					
+					var jo = Ext.decode(response.responseText);
+					
+					that.child('gridpanel').getStore().reload();
+					if(jo.success) {
+						if(!jo.errMsg) {
+							Ext.Msg.alert('', '설정이 수정되었습니다.');
+						}
+						else {
+							Ext.Msg.alert('', '설정이 수정되었으나 hotplace25가 touch되지 않았습니다');
+						}
+					}
+					else {
+						Ext.Msg.alert('에러', jo.errMsg);
+					}
+					
+				},
+				failure: function(response) {
+					console.log(response)
+					Ext.Msg.alert('', '오류가 발생했습니다.');
+				}
+			});
+		}
+		
 		Ext.apply(this,{
 			frame: true,
 			bodyPadding: 5,
 			width: '100%',
 			layout: 'column',
-			
 			items: [{
 				columnWidth: 0.60,
 				xtype: 'gridpanel',
 				store: Ext.create('Hotplace.store.AuthorityListStore'),
-	            height: 400,
+	            height: 500,
 	            title:'권한목록',
+	            tbar: [{
+	            	xtype: 'button',
+	            	iconCls: 'icon-add',
+	            	text: '권한등록',
+	            	listeners: {
+	            		click: function() {
+	            			
+	            		}
+	            	}
+	            }],
 	            columns: [{
                     id       :'authNum',
                     text   : '권한번호',
@@ -67,7 +114,7 @@ Ext.define('Hotplace.view.panel.AuthorityFormPanel', {
 		            margin: '0 0 0 10',
 		            xtype: 'fieldset',
 		            title:'권한 상세보기',
-		            height: 400,
+		            height: 500,
 		            defaults: {
 		                width: 240,
 		                labelWidth: 90
@@ -108,46 +155,47 @@ Ext.define('Hotplace.view.panel.AuthorityFormPanel', {
 		                height: 260,
 		                grow: true
 		            },{
-		            	anchor: '100%',
+		            	width: 100,
+		               	height: 100,
+		            	y: 0,
+			           	x: 95,
 		            	xtype: 'button',
-		            	text:'설정변경',
+		            	iconCls: 'icon-modi',
+		            	textAlign: 'left',
+		            	text:'권한설정변경',
 		            	listeners: {
 		            		click: function() {
-		            			var data = selectedRecord.data;
-		            			
-		            			Ext.Ajax.request({
-		            				url: Hotplace.util.Constants.context + '/authority/modify',
-		            				method:'POST',
-		            				headers: { 'Content-Type': 'application/json' }, 
-		            				jsonData: {
-		            					authNum: Ext.getCmp('idAuthNum').getValue(),
-		            					authName: Ext.getCmp('idAuthName').getValue(),
-		            					description: Ext.getCmp('idAuthDescription').getValue()
-		            				},
-		            				timeout:60000,
-		            				success: function(response) {
-		            					
-		            					var jo = Ext.decode(response.responseText);
-		            					
-		            					that.child('gridpanel').getStore().reload();
-		            					if(jo.success) {
-		            						if(!jo.errMsg) {
-		            							Ext.Msg.alert('', '설정이 수정되었습니다.');
-		            						}
-		            						else {
-		            							Ext.Msg.alert('', '설정이 수정되었으나 hotplace25가 touch되지 않았습니다');
-		            						}
-		            					}
-		            					else {
-		            						Ext.Msg.alert('에러', jo.errMsg);
-		            					}
-		            					
-		            				},
-		            				failure: function(response) {
-		            					console.log(response)
-		            					Ext.Msg.alert('', '오류가 발생했습니다.');
-		            				}
-		            			});
+		            			Ext.Msg.confirm(
+									'수정',
+									'권한설정을 변경하시겠습니까?',
+									function(button) {
+										if(button == 'yes') {
+											modifyAuthority();
+										}
+									}
+			           			);
+		            		}
+		            	}
+		            },{
+		            	width: 100,
+		               	height: 100,
+		            	y: 0,
+			           	x: 105,
+			           	iconCls: 'icon-del',
+		            	xtype: 'button',
+		            	text:'권한삭제',
+		            	textAlign: 'left',
+		            	listeners: {
+		            		click: function() {
+		            			Ext.Msg.confirm(
+									'삭제',
+									Ext.getCmp('idAuthName').getValue() + ' 권한을 삭제하시겠습니까?',
+									function(button) {
+										if(button == 'yes') {
+											deleteAuthority();
+										}
+									}
+			           			);
 		            		}
 		            	}
 		            }]

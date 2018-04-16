@@ -354,6 +354,8 @@ Ext.define('Hotplace.view.panel.YaggwanFormPanel', {
 		           	xtype: 'button',
 		           	iconCls: 'icon-modi',
 		           	text:'약관변경',
+		           	y: 0,
+		           	x: 95,
 		           	textAlign: 'left',
 		           	listeners: {
 		           		click: function() {
@@ -374,6 +376,8 @@ Ext.define('Hotplace.view.panel.YaggwanFormPanel', {
 	               	fieldLabel: '',
 		           	xtype: 'button',
 		           	iconCls: 'icon-del',
+		        	y: 0,
+		           	x: 100,
 		           	text:'약관삭제',
 		           	textAlign: 'left',
 		           	listeners: {
