@@ -9,6 +9,20 @@ $(function(){
 			'loaded': function() {
 				
 			},
+			'instanceReady': function(ev) {
+				var blockTags = ['div','h1','h2','h3','h4','h5','h6','p','pre','li','blockquote','ul','ol',
+				                 'table','thead','tbody','tfoot','td','th',];
+
+                for (var i = 0; i < blockTags.length; i++) {
+                	ev.editor.dataProcessor.writer.setRules( blockTags[i], {
+                       indent : false,
+                       breakBeforeOpen : true,
+                       breakAfterOpen : false,
+                       breakBeforeClose : false,
+                       breakAfterClose : true
+                    });
+                }
+			}
 		}
 	});
 	
@@ -26,6 +40,7 @@ $(function(){
 						type: 'alert',
 						msg: '수정되었습니다'
 					});
+					
 				}
 				else {
 					parent.Ext.Msg.alert('오류', data.errMsg);
@@ -36,6 +51,8 @@ $(function(){
 						icon: parent.Ext.MessageBox.ERROR
 					});
 				}
+				
+				
 			}
 		});
 	});
@@ -62,7 +79,12 @@ $(function(){
 									callback: function() {
 										categoryPanel.rmCategoryInTab('notice-grid-' + writeNum);
 										extTab.remove(parent.Ext.getCmp('notice-grid-' + writeNum + '-panel'));
+										
 									}
+								});
+								
+								Hotplace.refreshExtTab('cate-notice-list-panel', function(panel) {
+									parent.Ext.getCmp('noticeListGrid').getStore().load();
 								});
 							}
 							else {
@@ -94,12 +116,17 @@ $(function(){
 				Hotplace.ajax({
 					url: 'notice/if/regist',
 					data: { content: data, title: title },
+					activeMask: false,
 					method: 'POST',
 					success: function(data, textStatus, jqXHR) {
 						console.log(data)
 						if(data.success) {
 							parent.Ext.Msg.alert('결과', data.datas[0] + '번 글로 등록되었습니다', function() {
 								window.location.reload();
+							});
+							
+							Hotplace.refreshExtTab('cate-notice-list-panel', function(panel) {
+								parent.Ext.getCmp('noticeListGrid').getStore().load();
 							});
 						}
 						else {

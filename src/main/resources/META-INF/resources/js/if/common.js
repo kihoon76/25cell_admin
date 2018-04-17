@@ -153,6 +153,30 @@ var Hotplace = (function() {
 					}
 				}
 			});
+		},
+		refreshExtTab: function(id, callback) {
+			//cate-notice-list-panel
+			//parent.Ext.getCmp('cate-notice-list-panel')
+			var item = this.isInTab(id);
+			if(item) {
+				if(callback) {
+					callback(item);
+				}
+			}
+		},
+		isInTab: function(tabId) {
+			var tabPanel = parent.Ext.getCmp('app-contents');
+			var tabExists = null;
+			var items = tabPanel.items.items;
+			var len = items.length;
+		    for(var i=0; i<len; i++) {
+	            if(items[i].id == tabId) {
+	                tabExists = items[i];
+	                break;
+	            }
+	        }
+		    
+		    return tabExists;
 		}
 	}
 })();
