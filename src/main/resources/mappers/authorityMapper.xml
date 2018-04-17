@@ -14,8 +14,8 @@
 		select (select count(*) from [웹].[dbo].[권한]) as total 
 	</select>
 	
-	<select id="selectAuthority" parameterType="int" resultType="Authority">
-		select 권한번호 as authNum, 권한이름 as authName, 설명 as description
+	<select id="selectAuthority"  resultType="Authority">
+		select 권한번호 as authNum, 권한이름 as authName, 권한한글명 as authNameKor, 설명 as description
 		  from [웹].[dbo].[권한]
 	</select>
 	
@@ -31,4 +31,13 @@
 		  from [웹].[dbo].[권한]
 		 where 권한번호 != 3 and 권한번호 != 1
 	</select>
+	
+	<insert id="insertAuthority" parameterType="Authority">
+	insert into [웹].[dbo].[권한](권한이름, 설명, 권한한글명)
+	values (#{authName}, #{description}, #{authNameKor})
+	</insert>
+	
+	<delete id="deleteAuthority" parameterType="Authority">
+	delete from [웹].[dbo].[권한] where 권한번호 = #{authNum}
+	</delete>
 </mapper>

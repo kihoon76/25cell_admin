@@ -29,7 +29,9 @@ Ext.define('Hotplace.view.panel.YaggwanFormPanel', {
 					
 					var grid = Ext.getCmp('yaggwan-grid');
 					selectedRecord = grid.getView().getSelectionModel().getSelection()[0]
-					grid.getSelectionModel().select(0);
+					if(selectedRecord) {
+						grid.getSelectionModel().select(0);
+					}
 				}
 			}
 		});
@@ -207,7 +209,7 @@ Ext.define('Hotplace.view.panel.YaggwanFormPanel', {
 					
 					var jo = Ext.decode(response.responseText);
 					
-					//that.child('gridpanel').getStore().reload();
+					that.child('gridpanel').getStore().reload();
 					if(jo.success) {
 						Ext.Msg.alert('', '약관이 삭제되었습니다.');
 						ds.load();

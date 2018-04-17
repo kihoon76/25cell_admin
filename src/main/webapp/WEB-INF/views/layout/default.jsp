@@ -17,7 +17,7 @@
     
 	<sitemesh:write property="head" />
 </head>
-<body data-url="${fn:substring(url, 0, fn:length(url) - fn:length(uri))}${req.contextPath}">
+<body data-url="${fn:substring(url, 0, fn:length(url) - fn:length(uri))}${req.contextPath}" data-user="<c:out value='${accountId}' />">
 	<sitemesh:write property="body" /> 
 	<script src="/resources/core/ver/4.1.1-rc2/js/ext-all.js"></script>
 	

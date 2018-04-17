@@ -5,7 +5,20 @@ Ext.define('Hotplace.view.panel.AuthorityFormPanel', {
 	initComponent: function() {
 		var that = this;
 		var selectedRecord = null;
-		   
+		 
+		
+		var ds = Ext.create('Hotplace.store.AuthorityListStore', {
+			listeners: {
+				load: function(t, r, successful) {
+					var grid = Ext.getCmp('authority-grid');
+					selectedRecord = grid.getView().getSelectionModel().getSelection()[0]
+					if(selectedRecord) {
+						grid.getSelectionModel().select(0);
+					}
+				}
+			}
+		});
+		
 		function authFormat(val){
 			if(val){
 				return '<span style="color:red;">' + val.substring(0,5) + '</span>' + val.substring(5);
@@ -52,6 +65,148 @@ Ext.define('Hotplace.view.panel.AuthorityFormPanel', {
 			});
 		}
 		
+		function regAuthority() {
+			
+			var authName = Ext.String.trim(Ext.getCmp('txtAuthName').getValue());
+			var authNameKor = Ext.String.trim(Ext.getCmp('txtAuthNameKor').getValue());
+			var description = Ext.String.trim(Ext.getCmp('txtAuthContent').getValue());
+			
+			if(authName == '' || authName == 'ROLE_' || description == '' || authNameKor == '') return;
+			
+			Ext.Ajax.request({
+				url: Hotplace.util.Constants.context + '/authority/regist',
+				method:'POST',
+				headers: { 'Content-Type': 'application/json' }, 
+				jsonData: {
+					authName: authName.toUpperCase(),
+					authNameKor: authNameKor,
+					description: description
+				},
+				timeout:60000,
+				success: function(response) {
+					
+					var jo = Ext.decode(response.responseText);
+
+					if(jo.success) {
+						Ext.Msg.alert('', authName + ' 권한이 등록 되었습니다.');
+						ds.load();
+						
+						Ext.getCmp('txtAuthName').setValue('ROLE_');
+						Ext.getCmp('txtAuthNameKor').setValue('');
+						Ext.getCmp('txtAuthContent').setValue('');
+						authorityWin.hide();
+					}
+					else {
+						Ext.Msg.alert('에러', jo.errMsg);
+					}
+					
+				},
+				failure: function(response) {
+					console.log(response)
+					Ext.Msg.alert('', '오류가 발생했습니다.');
+				}
+			});
+		}
+		
+		function deleteAuthority() {
+			var authName = selectedRecord.data.authName;
+			Ext.Ajax.request({
+				url: Hotplace.util.Constants.context + '/authority/delete',
+				method:'POST',
+				headers: { 'Content-Type': 'application/json' }, 
+				jsonData: {
+					authNum: selectedRecord.data.authNum
+				},
+				timeout:60000,
+				success: function(response) {
+					
+					var jo = Ext.decode(response.responseText);
+					
+					that.child('gridpanel').getStore().reload();
+					if(jo.success) {
+						Ext.Msg.alert('', authName.toUpperCase() + ' 권한이 삭제 되었습니다.');
+						ds.load();
+					}
+					else {
+						Ext.Msg.alert('에러', jo.errMsg);
+					}
+				},
+				failure: function(response) {
+					console.log(response)
+					Ext.Msg.alert('', '오류가 발생했습니다.');
+				}
+			});
+		}
+		
+		var authorityWin = Ext.create('Ext.window.Window',{
+			iconCls: 'icon-window',
+			title: '권한등록',
+			width: 600,
+			height: 450,
+			modal: true,
+			resizable: false,
+			closeAction: 'hide',
+			items: [{
+				xtype: 'form',
+				id: 'authorityRegForm',
+				bodyPadding: 15,
+				defaults: {
+	                anchor: '100%',
+	                height: 22,
+	                labelWidth: 70
+	            },
+	            defaultType: 'textfield',
+	            items: [{
+	            	fieldLabel: '권한이름',
+					id: 'txtAuthName',
+					enableKeyEvents: true,
+					value: 'ROLE_',
+					listeners: {
+	                	keyup: function(txt, e, eOpts) {
+	                		var v = txt.getValue();
+	                		
+	                		if(!v.startsWith('ROLE_')) {
+	                			txt.setValue('ROLE_');
+	                		}
+	                		
+	                		//space key
+	                		if(e.keyCode == 32) {
+	                			txt.setValue(Ext.util.Format.trim(v));
+	                		}
+	                	}
+	                }
+	            }, {
+	            	fieldLabel: '권한한글명',
+					id: 'txtAuthNameKor'
+	            }, {
+	            	fieldLabel: '내용',
+					xtype: 'textareafield',
+					grow: true,
+					height: 300,
+					id: 'txtAuthContent'
+	            }]
+			}],
+			buttons: [{
+				xtype: 'button',
+				iconCls: 'reg',
+				text: '등록',
+				listeners: {
+					click: function() {
+						regAuthority();
+					}
+				}
+			}, {
+				xtype: 'button',
+				iconCls: 'icon-close',
+				text: '닫기',
+				listeners: {
+					click: function() {
+						authorityWin.hide();
+					}
+				}
+			}]
+		});
+		
 		Ext.apply(this,{
 			frame: true,
 			bodyPadding: 5,
@@ -60,7 +215,8 @@ Ext.define('Hotplace.view.panel.AuthorityFormPanel', {
 			items: [{
 				columnWidth: 0.60,
 				xtype: 'gridpanel',
-				store: Ext.create('Hotplace.store.AuthorityListStore'),
+				id: 'authority-grid',
+				store: ds,
 	            height: 500,
 	            title:'권한목록',
 	            tbar: [{
@@ -69,7 +225,7 @@ Ext.define('Hotplace.view.panel.AuthorityFormPanel', {
 	            	text: '권한등록',
 	            	listeners: {
 	            		click: function() {
-	            			
+	            			authorityWin.show();
 	            		}
 	            	}
 	            }],

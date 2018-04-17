@@ -9,6 +9,7 @@ public class Authority implements GrantedAuthority {
 	private String authNum;
 	private String authName;
 	private String description;
+	private String authNameKor;
 	
 	public String getAuthName() {
 		return authName;
@@ -28,9 +29,16 @@ public class Authority implements GrantedAuthority {
 	public void setAuthNum(String authNum) {
 		this.authNum = authNum;
 	}
+	public String getAuthNameKor() {
+		return authNameKor;
+	}
+	public void setAuthNameKor(String authNameKor) {
+		this.authNameKor = authNameKor;
+	}
 	
 	@Override
 	public String getAuthority() {
 		return authName;
 	}
+	
 }

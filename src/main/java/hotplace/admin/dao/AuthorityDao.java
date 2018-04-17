@@ -14,4 +14,8 @@ public interface AuthorityDao {
 
 	public  List<Map<String, String>> selectAuthorityDefineList();
 
+	public void insertAuthority(Authority authority);
+
+	public void deleteAuthority(Authority authority);
+
 }

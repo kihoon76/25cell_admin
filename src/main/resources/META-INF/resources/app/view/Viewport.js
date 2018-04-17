@@ -22,6 +22,8 @@ Ext.define('Hotplace.view.Viewport', {
 			   ,items: [{
 				   html:'<img src="resources/images/logo.png" style="width:54px; height:40px"><span style="position:relative; top:-15px; left:5px; font-size:1.5em;">Hotplace 25</span>'
 			   }, '->',{
+				   html: '<span class="spUser">' + Ext.getBody().getAttribute('data-user') + '</span> 님으로 로그인하셨습니다.'
+			   },{
 					xtype: 'button',
 					text: '로그아웃',
 					iconCls: 'icon-logout',

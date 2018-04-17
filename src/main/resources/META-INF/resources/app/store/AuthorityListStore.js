@@ -10,6 +10,6 @@ Ext.define('Hotplace.store.AuthorityListStore', {
 	          ,root : 'datas'
 	       }
 	  },
-	  fields : ['authNum', 'authName', 'description'],
+	  fields : ['authNum', 'authName', 'authNameKor', 'description'],
 	  autoLoad : true
 });

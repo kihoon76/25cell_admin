@@ -29,8 +29,27 @@ public class AuthorityController {
 	@PostMapping("list")
 	@ResponseBody
 	public ExtjsStoreVO<Authority> getAuthorityList() {
-		
 		return authorityService.getAuthorityList();
+	}
+	
+	@PostMapping("regist")
+	@ResponseBody
+	public AjaxVO<Authority> registAuthority(@RequestBody Authority authority) {
+		
+		AjaxVO<Authority> vo = new AjaxVO<>();
+		
+		try {
+			authorityService.registAuthority(authority);
+			
+			vo.setSuccess(true);
+		}
+		catch(Exception e){
+			vo.setSuccess(false);
+			vo.setErrMsg(e.getMessage());
+		}
+		
+		return vo;
+		
 	}
 	
 	@PostMapping("modify")
@@ -49,6 +68,25 @@ public class AuthorityController {
 			else {
 				vo.setSuccess(false);
 			}
+		}
+		catch(Exception e){
+			vo.setSuccess(false);
+			vo.setErrMsg(e.getMessage());
+		}
+		
+		return vo;
+		
+	}
+	
+	@PostMapping("delete")
+	@ResponseBody
+	public AjaxVO<Authority> removeAuthority(@RequestBody Authority authority) {
+		
+		AjaxVO<Authority> vo = new AjaxVO<>();
+		
+		try {
+			authorityService.removeAuthority(authority);
+			vo.setSuccess(true);
 		}
 		catch(Exception e){
 			vo.setSuccess(false);

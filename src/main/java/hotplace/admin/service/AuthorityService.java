@@ -29,4 +29,12 @@ public class AuthorityService {
 		return authorityDao.selectAuthorityDefineList();
 	}
 
+	public void registAuthority(Authority authority) {
+		authorityDao.insertAuthority(authority);
+	}
+
+	public void removeAuthority(Authority authority) {
+		authorityDao.deleteAuthority(authority);
+	}
+
 }
