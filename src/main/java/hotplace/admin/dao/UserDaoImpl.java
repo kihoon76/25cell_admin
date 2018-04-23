@@ -37,4 +37,14 @@ public class UserDaoImpl implements UserDao {
 	public Account selectUserInfo(String accountId) {
 		return msSqlSession.selectOne(namespace + ".selectUserInfo", accountId);
 	}
+
+	@Override
+	public void updateUserInfo(Account account) {
+		msSqlSession.update(namespace + ".updateUserInfo", account);
+	}
+
+	@Override
+	public void updateUserOut(Account account) {
+		msSqlSession.update(namespace + ".updateUserOut", account);
+	}
 }

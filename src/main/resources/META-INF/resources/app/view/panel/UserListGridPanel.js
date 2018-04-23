@@ -35,6 +35,12 @@ Ext.define('Hotplace.view.panel.UserListGridPanel', {
 				if(searchType == 'grade') {
 					searchValue = Ext.getCmp('user-searchgrade-combo').getValue();
 				}
+				else if(searchType == 'regDate') {
+					searchValue = Ext.getCmp('user-search-regDate').getRawValue();
+				}
+				else if(searchType == 'out') {
+					searchValue = Ext.getCmp('user-search-out').getRawValue();
+				}
 				
 				if(!searchValue) {
 					Ext.Msg.alert('알림', '값을 입력하세요');
@@ -84,8 +90,28 @@ Ext.define('Hotplace.view.panel.UserListGridPanel', {
 			},{
 				text: '회원등급',
 				dataIndex: 'grade',
-				flex: 0
-			}],
+				flex: 0,
+				renderer: function(value) {
+					var v = '';
+					switch(value) {
+					case 'ROLE_SMART': 
+						v = '스마트회원';
+						break;
+					case 'ROLE_ECONOMY':
+						v = '이코노미회원';
+						break;
+					case 'ROLE_PREMIUM':
+						v = '프리미엄회원';
+						break;
+					}
+					
+					return v;
+				}
+			},{
+                text   : '탈퇴여부',
+                width    : 80,
+                dataIndex: 'out'
+            }],
 			tbar: ['->',
 			       '검색항목 : ',
 			       Ext.create('Ext.form.field.ComboBox', {
@@ -99,18 +125,39 @@ Ext.define('Hotplace.view.panel.UserListGridPanel', {
 			    		   change: function(combo, nV, oV) {
 			    			   if(nV == 'all') {
 			    				   Ext.getCmp('user-search-text').setValue('');
+			    				   
+			    				   Ext.getCmp('user-search-text').show();
+				    			   Ext.getCmp('user-searchgrade-combo').hide();  
+				    			   Ext.getCmp('user-search-regDate').hide();
+				    			   Ext.getCmp('user-search-out').hide(); 
+			    				  
 			    				   store.load();      
 			    			   }
 			    			   else if(nV == 'grade') {
 			    				  Ext.getCmp('user-search-text').hide();
+			    				  Ext.getCmp('user-search-regDate').hide();
+			    				  Ext.getCmp('user-search-out').hide();
 			    				  Ext.getCmp('user-searchgrade-combo').show();
 			    			   }
-			    			   
-			    			   //이전값이 grade이면
-			    			   if(oV == 'grade') {
+			    			   else if(nV == 'regDate') {
+			    				   Ext.getCmp('user-search-regDate').show();
+			    				   Ext.getCmp('user-search-text').hide();
+			    				   Ext.getCmp('user-searchgrade-combo').hide();
+			    				   Ext.getCmp('user-search-out').hide();
+			    			   }
+			    			   else if(nV == 'out') {
+			    				   Ext.getCmp('user-search-out').show();
+			    				   Ext.getCmp('user-search-regDate').hide();
+			    				   Ext.getCmp('user-search-text').hide();
+			    				   Ext.getCmp('user-searchgrade-combo').hide();
+			    			   }
+			    			   else {
 			    				   Ext.getCmp('user-search-text').show();
 				    			   Ext.getCmp('user-searchgrade-combo').hide();  
+				    			   Ext.getCmp('user-search-regDate').hide();
+				    			   Ext.getCmp('user-search-out').hide(); 
 			    			   }
+			    			   
 			    		   }
 			    	   }
 			       }), Ext.create('Ext.form.field.ComboBox', {
@@ -128,6 +175,25 @@ Ext.define('Hotplace.view.panel.UserListGridPanel', {
 			    		   }
 			    	   }
 			       }), {
+						xtype: 'datefield',
+		            	id: 'user-search-regDate',
+		            	editable: false,
+				    	format: 'Y-m-d',
+				    	hidden: true,
+				   }, {
+					   xtype: 'combo',
+					   id: 'user-search-out',
+					   queryMode: 'local',
+					   store: Ext.create('Ext.data.Store', {
+						   fields: ['name', 'value'],
+						   data: [{name: 'Y', value: 'Y'}, {name: 'N', value: 'N'}]
+					   }),
+					   emptyText: '탈퇴여부',
+					   displayField: 'name',
+			    	   valueField: 'value',
+			    	   editable: false,
+			    	   hidden: true
+				   }, {
 					   xtype: 'textfield',
 					   id: 'user-search-text',
 					   enableKeyEvents: true,

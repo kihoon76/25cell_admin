@@ -11,6 +11,7 @@
 		<result column="권한이름"		property="grade" javaType="string"/>
 		<result column="권한번호"		property="gradeNum" javaType="string" />
 		<result column="관리자권한"		property="admin" javaType="string" />
+		<result column="탈퇴여부"		property="out"	javaType="string" />
 	</resultMap>
 	
 	
@@ -31,11 +32,35 @@
 		select (
 			select count(*) 
 			  from [웹].[dbo].[계정]
+			   <choose>
+		  	  	<when test="searchType != null and searchType == 'accountId'">
+		  	  		where 아이디 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'userName'">
+		  	  		where 이름 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'phone'">
+		  	  		where 연락처 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'email'">
+		  	  		where 이메일 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'regDate'">
+		  	  		where DATEDIFF(DD, #{regDate}, [가입일자]) = 0
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'grade'">
+		  	  		where 아이디 in (select 계정_아이디 from [웹].[dbo].[계정_권한] where 권한번호 = #{searchValue}) 
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'out'">
+		  	  		where 탈퇴여부 = #{searchValue} 
+		  	  	</when>
+		  	  	<otherwise></otherwise>
+		  	  </choose>
 			) 회원수, #{searchType} 검색타입, #{searchValue} 검색값, #{start} 시작, #{limit} 끝
 	</select>
 	
 	<select id="selectUser" parameterType="hashmap" resultMap="RM_selectUser">
-		select 아이디, 이름, 연락처, 이메일, 가입일자, 권한이름, tb3.권한번호, tb4.권한번호 as 관리자권한
+		select 아이디, 이름, 연락처, 이메일, 가입일자, 탈퇴여부, 권한이름, tb3.권한번호, tb4.권한번호 as 관리자권한
 		  from (
 		  	select row_number() over(order by 가입일자 desc) rownum, *
 		  	  from [웹].[dbo].[계정]
@@ -51,6 +76,15 @@
 		  	  	</when>
 		  	  	<when test="searchType != null and searchType == 'email'">
 		  	  		where 이메일 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'regDate'">
+		  	  		where DATEDIFF(DD, #{regDate}, [가입일자]) = 0
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'grade'">
+		  	  		where 아이디 in (select 계정_아이디 from [웹].[dbo].[계정_권한] where 권한번호 = #{searchValue}) 
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'out'">
+		  	  		where 탈퇴여부 = #{searchValue} 
 		  	  	</when>
 		  	  	<otherwise></otherwise>
 		  	  </choose>
@@ -76,12 +110,12 @@
 	</insert>
 	
 	<select id="selectUserInfo" parameterType="string" resultMap="RM_selectAccount">
-		select 아이디 , 비번 ,
+		select 아이디 , 비번 , 탈퇴여부,
 		       case t2.권한번호  
 		       		when 1 then 'Y'
 		       		else 'N' 
 		       end  as 관리자
-		  from ( select 아이디, 비번
+		  from ( select 아이디, 비번, 탈퇴여부
 		  		   from [웹].[dbo].[계정]
 		  		  where 아이디 = #{accountId}
 		       ) t1
@@ -93,6 +127,7 @@
 		<result column="아이디" property="accountId" javaType="string"/>
 		<result column="비번" property="password" javaType="string"/>
 		<result column="관리자" property="admin" javaType="string"/>
+		<result column="탈퇴여부" property="out" javaType="string" />
 	 	<collection property="authorities" column="아이디" javaType="java.util.ArrayList"
 	 				ofType="Authority" select="selectAdminAuthority" />
 	</resultMap>
@@ -102,4 +137,18 @@
 		  from [웹].[dbo].[권한]
 		 where 권한번호 = 1
 	</select>
+	
+	<update id="updateUserInfo" parameterType="Account">
+		update [웹].[dbo].[계정]
+		   set 이름 = #{userName},
+		   	       연락처 = #{phone},
+		   	       이메일 = #{email}
+		 where 아이디 = #{accountId}  	   
+	</update>
+	
+	<update id="updateUserOut" parameterType="Account">
+		update [웹].[dbo].[계정]
+		   set 탈퇴여부 = 'Y'
+		 where 아이디 = #{accountId}
+	</update>
 </mapper>

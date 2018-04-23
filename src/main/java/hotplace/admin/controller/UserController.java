@@ -71,4 +71,23 @@ public class UserController {
 	
 		return vo;
 	}
+	
+	@PostMapping("auth/out")
+	@ResponseBody
+	public AjaxVO outUser(@RequestBody Account account) {
+		
+		AjaxVO vo = new AjaxVO();
+		
+		try {
+						
+			userService.outUser(account);
+			vo.setSuccess(true);
+		}
+		catch(Exception e) {
+			vo.setSuccess(false);
+			vo.setErrMsg(e.getMessage());
+		}
+	
+		return vo;
+	}
 }

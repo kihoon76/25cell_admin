@@ -39,10 +39,17 @@ public class UserService {
 			userDao.insertUserGrade(account);
 		}
 		
+		userDao.updateUserInfo(account);
+		
 		return true;
 	}
 
 	public Account getUserInfo(String accountId) {
 		return userDao.selectUserInfo(accountId);
+	}
+
+	public void outUser(Account account) {
+		userDao.updateUserOut(account);
+		
 	}
 }

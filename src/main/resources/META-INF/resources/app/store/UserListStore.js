@@ -11,7 +11,7 @@ Ext.define('Hotplace.store.UserListStore', {
 	          ,totalProperty : 'total'
 	       }
 	  },
-	  fields : ['accountId', 'userName', 'phone', 'email', 'regDate', 'grade', 'gradeNum', 'admin'],
+	  fields : ['accountId', 'userName', 'phone', 'email', 'regDate', 'grade', 'gradeNum', 'admin', 'out'],
 	  autoLoad : true,
 	  pageSize : Hotplace.util.Constants.gridPageSize
 });

@@ -15,4 +15,8 @@ public interface UserDao {
 
 	Account selectUserInfo(String accountId);
 
+	void updateUserInfo(Account account);
+
+	void updateUserOut(Account account);
+
 }

@@ -47,6 +47,45 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 			});    
 		}
 		
+		function outUser() {
+			var delUserId = selectedRecord.data.accountId;
+			
+			Ext.Msg.confirm('회원탈퇴', '회원계정 (' + delUserId + ') 탈퇴시키시겠습니까?', function(btn) {
+				
+				if(btn == 'yes') {
+					Ext.Ajax.request({
+						url: Hotplace.util.Constants.context + '/user/auth/out',
+						method:'POST',
+						headers: { 'Content-Type': 'application/json' }, 
+						jsonData: {
+							accountId: delUserId
+						},
+						timeout:60000,
+						success: function(response) {
+							
+							var jo = Ext.decode(response.responseText);
+							
+							Ext.getCmp('user-auth-grid').getStore().reload();
+							if(jo.success) {
+								Ext.Msg.alert('', '회원계정(' + delUserId + ')이 탈퇴 처리되었습니다.');
+							}
+							else {
+								Ext.Msg.alert('에러', jo.errMsg);
+							}
+							
+						},
+						failure: function(response) {
+							Ext.Msg.alert('', '오류가 발생했습니다.');
+						}
+					});
+				}
+				else {
+					
+				}
+			})
+			
+		}
+		
 		Ext.apply(this,{
 			frame: true,
 			bodyPadding: 5,
@@ -63,12 +102,12 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	            columns: [{
                     id       :'accountId',
                     text   	 : '아이디',
-                    width    : 200,
+                    flex    : 1,
                     sortable : true,
                     dataIndex: 'accountId'
                 },{
                     text   : '이름',
-                    flex    : 1,
+                    width    : 200,
                     sortable : true,
                     dataIndex: 'userName'
                 }],
@@ -162,19 +201,39 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	    				itemclick: function(view, record) {
 	    					selectedRecord = record;
 	    					var data = record.data;
-	    					Ext.getCmp('user-auth-userName').setValue(data.userName);
-	    					Ext.getCmp('user-auth-accountId').setValue(data.accountId);
-	    					Ext.getCmp('user-auth-phone').setValue(data.phone);
-	    					Ext.getCmp('user-auth-email').setValue(data.email);
-	    					Ext.getCmp('user-auth-regDate').setValue(data.regDate);
+	    					var userName = Ext.getCmp('user-auth-userName');
+	    					userName.setValue(data.userName);
+	    					
+	    					var accountId = Ext.getCmp('user-auth-accountId');
+	    					accountId.setValue(data.accountId);
+	    					
+	    					var phone = Ext.getCmp('user-auth-phone');
+	    					phone.setValue(data.phone);
+	    					
+	    					var email = Ext.getCmp('user-auth-email');
+	    					email.setValue(data.email);
+	    					
+	    					var regDate = Ext.getCmp('user-auth-regDate'); 
+	    					regDate.setValue(data.regDate);
 	    					
 	    					var chkAdm = Ext.getCmp('user-auth-admin-check');
+	    					var outChk = Ext.getCmp('user-auth-out-check');
+	    					var btnModify = Ext.getCmp('btn-modify-auth');
+	    					var btnDelete = Ext.getCmp('btn-delete-auth');
+	    					
 	    					//관리자여부
 	    					if(data.admin) {
 	    						chkAdm.setValue(true);
 	    					}
 	    					else {
 	    						chkAdm.setValue(false);
+	    					}
+	    					
+	    					if(data.out == 'Y') {
+	    						outChk.setValue(true);
+	    					}
+	    					else {
+	    						outChk.setValue(false);
 	    					}
 	    					
 	    					var combo = Ext.getCmp('user-auth-grade-combo');
@@ -187,8 +246,34 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	    						combo.setValue('-1');
 	    					}
 	    					
-	    					chkAdm.setDisabled(false);
-	    					combo.setDisabled(false);
+	    					
+	    					if(data.out == 'Y') {
+	    						userName.setDisabled(true);
+	    						accountId.setDisabled(true);
+	    						phone.setDisabled(true);
+	    						email.setDisabled(true);
+	    						regDate.setDisabled(true);
+	    						chkAdm.setDisabled(true);
+		    					combo.setDisabled(true);
+		    					btnModify.setDisabled(true);
+		    					btnDelete.setDisabled(true);
+	    					}
+	    					else {
+	    						userName.setDisabled(false);
+	    						accountId.setDisabled(false);
+	    						phone.setDisabled(false);
+	    						email.setDisabled(false);
+	    						regDate.setDisabled(false);
+	    						
+	    						chkAdm.setDisabled(false);
+		    					combo.setDisabled(false);
+		    					userName.setReadOnly(false);
+		    					phone.setReadOnly(false);
+		    					email.setReadOnly(false);
+		    					
+		    					btnModify.setDisabled(false);
+		    					btnDelete.setDisabled(false);
+	    					}
 	    				}
 	    			}
 				}, {
@@ -232,6 +317,11 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		                id: 'user-auth-regDate',
 		                readOnly: true,
 		            },{
+		            	xtype: 'checkbox',
+		            	fieldLabel: '탈퇴여부',
+		            	id: 'user-auth-out-check',
+		            	disabled: true
+		            },{
 		            	xtype: 'combobox',
 		            	id: 'user-auth-grade-combo',
 		            	fieldLabel: '회원등급',
@@ -257,13 +347,28 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		            	id: 'user-auth-admin-check',
 		            	disabled: true
 		            },{
-		            	anchor: '100%',
+		            	width: 100,
+		               	height: 100,
+		            	y: 0,
+			           	x: 95,
 		            	xtype: 'button',
+		            	id: 'btn-modify-auth',
 		            	text:'설정변경',
+		            	disabled: true,
 		            	listeners: {
 		            		click: function() {
 		            			if(!selectedRecord) {
 		            				Ext.Msg.alert('알림', '회원을 선택하세요');
+		            				return;
+		            			}
+		            			
+		            			var accountId = selectedRecord.data.accountId,
+		            				userName = Ext.String.trim(Ext.getCmp('user-auth-userName').getValue()),
+		            				phone = Ext.String.trim(Ext.getCmp('user-auth-phone').getValue()),
+		            				email = Ext.String.trim(Ext.getCmp('user-auth-email').getValue());
+		            			
+		            			if(userName == '' || phone == '' || email == '') {
+		            				Ext.Msg.alert('알림', '회원이름, 연락처, 이메일을 선택하세요');
 		            				return;
 		            			}
 		            			
@@ -273,6 +378,9 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		            				headers: { 'Content-Type': 'application/json' }, 
 		            				jsonData: {
 		            					accountId: selectedRecord.data.accountId,
+		            					userName: userName,
+		            					phone: phone,
+		            					email:email,
 		            					gradeNum: Ext.getCmp('user-auth-grade-combo').getValue(),
 		            					admin: Ext.getCmp('user-auth-admin-check').checked ? 'Y' : 'N'
 		            				},
@@ -300,6 +408,20 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		            					Ext.Msg.alert('', '오류가 발생했습니다.');
 		            				}
 		            			});
+		            		}
+		            	}
+		            }, {
+		            	width: 100,
+		               	height: 100,
+		            	y: 0,
+			           	x: 105,
+		            	xtype: 'button',
+		            	id: 'btn-delete-auth',
+		            	text:'회원탈퇴',
+		            	disabled: true,
+		            	listeners: {
+		            		click: function() {
+		            			outUser();
 		            		}
 		            	}
 		            }]

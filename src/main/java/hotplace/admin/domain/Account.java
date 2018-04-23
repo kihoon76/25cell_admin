@@ -16,6 +16,7 @@ public class Account {
 	private String grade;
 	private String gradeNum;
 	private String admin;
+	private String out;
 	
 	private List<Authority> authorities;
 	
@@ -78,5 +79,11 @@ public class Account {
 	}
 	public void setAdmin(String admin) {
 		this.admin = admin;
+	}
+	public String getOut() {
+		return out;
+	}
+	public void setOut(String out) {
+		this.out = out;
 	}
 }
