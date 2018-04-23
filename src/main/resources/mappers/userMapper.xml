@@ -46,7 +46,7 @@
 		  	  		where 이메일 = #{searchValue}
 		  	  	</when>
 		  	  	<when test="searchType != null and searchType == 'regDate'">
-		  	  		where DATEDIFF(DD, #{regDate}, [가입일자]) = 0
+		  	  		where DATEDIFF(DD, #{searchValue}, [가입일자]) = 0
 		  	  	</when>
 		  	  	<when test="searchType != null and searchType == 'grade'">
 		  	  		where 아이디 in (select 계정_아이디 from [웹].[dbo].[계정_권한] where 권한번호 = #{searchValue}) 
@@ -78,7 +78,7 @@
 		  	  		where 이메일 = #{searchValue}
 		  	  	</when>
 		  	  	<when test="searchType != null and searchType == 'regDate'">
-		  	  		where DATEDIFF(DD, #{regDate}, [가입일자]) = 0
+		  	  		where DATEDIFF(DD, #{searchValue}, [가입일자]) = 0
 		  	  	</when>
 		  	  	<when test="searchType != null and searchType == 'grade'">
 		  	  		where 아이디 in (select 계정_아이디 from [웹].[dbo].[계정_권한] where 권한번호 = #{searchValue}) 
