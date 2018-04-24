@@ -25,4 +25,12 @@
 		) tbl2 on tbl2.권한번호 = tbl1.권한번호
 	</select>
 	
+	<select id="selectUserRegDate" resultType="map" parameterType="int">
+		select CONVERT(varchar(4), 가입년) regYear, CONVERT(varchar(2), 가입월) + '월' regMonth, count(*) cnt
+		  from [웹].[dbo].[계정]
+		 where 가입년 = #{regYear}
+		 group by 가입년, 가입월
+		 order by 가입년, 가입월
+	</select>
+	
 </mapper>

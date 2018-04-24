@@ -7,4 +7,6 @@ public interface StatisticDao {
 
 	List<Map<String, Object>> selectUserKind();
 
+	List<Map<String, Object>> selectUserRegDate(int regYear);
+
 }

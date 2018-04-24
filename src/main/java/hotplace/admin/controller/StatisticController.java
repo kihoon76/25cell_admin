@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import hotplace.admin.domain.AjaxVO;
@@ -36,4 +37,23 @@ public class StatisticController {
 		
 		return vo;
 	}
+	
+	@GetMapping("regDate")
+	@ResponseBody
+	public AjaxVO<Map<String, Object>> getUserRegDate(@RequestParam("regYear") int regYear) {
+		
+		AjaxVO<Map<String, Object>> vo = new AjaxVO<>();
+		vo.setSuccess(false);
+		
+		try {
+			vo.setDatas(statisticService.getUserRegDate(regYear));
+			vo.setSuccess(true);
+		}
+		catch(Exception e) {
+			vo.setErrMsg(e.getMessage());
+		}
+		
+		return vo;
+	}
+
 }

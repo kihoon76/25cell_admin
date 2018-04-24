@@ -1,5 +1,5 @@
 Ext.define('Hotplace.view.panel.UserChartPanel', {
-	extend: 'Ext.panel.Panel',
+	extend: 'Ext.tab.Panel',
 	xtype: 'userchartpanel',
 	initComponent: function() {
 		
@@ -10,7 +10,7 @@ Ext.define('Hotplace.view.panel.UserChartPanel', {
 		
 		var donut = false;
 		
-		var chartStore = Ext.create('Ext.data.Store', {
+		var userGradeChartStore = Ext.create('Ext.data.Store', {
 			fields : ['gradeNum', 'gradeName', 'cnt'],
 			proxy : {
 				type: 'ajax',
@@ -22,15 +22,50 @@ Ext.define('Hotplace.view.panel.UserChartPanel', {
 				}
 			},
 			autoLoad: true
-		})
+		});
 		
-		var chart = Ext.create('Ext.chart.Chart', {
+		var userRegChartStore = Ext.create('Ext.data.Store', {
+			fields : ['regYear', 'regMonth', 'cnt'],
+			proxy : {
+				type: 'ajax',
+				url: 'statistic/regDate?regYear=2018',
+				reader: {
+					type: 'json',
+					successProperty: 'success',
+					root: 'datas'
+				}
+			},
+			autoLoad: true,
+			listeners: {
+				load: function(store, records,success, operation) {
+
+				}
+			}
+		});
+		
+//		var userRegChartStore = Ext.create('Ext.data.JsonStore', {
+//			fields : ['regYear', 'regMonth', 'cnt'],
+//			data:[{'regYear': 2018, 'regMonth': '1월', 'cnt':30},
+//			      {'regYear': 2018, 'regMonth': '2월', 'cnt':30},
+//			{'regYear': 2018, 'regMonth': '3월', 'cnt':30},
+//			{'regYear': 2018, 'regMonth': '4월', 'cnt':30},
+//			{'regYear': 2018, 'regMonth': '5월', 'cnt':30},
+//			{'regYear': 2018, 'regMonth': '6월', 'cnt':30},
+//			{'regYear': 2018, 'regMonth': '7월', 'cnt':30},
+//			{'regYear': 2018, 'regMonth': '8월', 'cnt':30},
+//			{'regYear': 2018, 'regMonth': '9월', 'cnt':30},
+//			{'regYear': 2018, 'regMonth': '10월', 'cnt':30}]
+//		});
+		
+		
+		
+		var userGradechart = Ext.create('Ext.chart.Chart', {
 			xtype: 'chart',
-			id: 'userChart',
+			id: 'userGradeChart',
 			width: 600,
             height: 250,
 			animate: true,
-			store: chartStore,
+			store: userGradeChartStore,
 			shadow: true,
 			legend: {
 				position: 'right'
@@ -48,7 +83,7 @@ Ext.define('Hotplace.view.panel.UserChartPanel', {
 					height: 28,
 					renderer: function(storeItem, item) {
 						var total = 0;
-						chartStore.each(function(rec) {
+						userGradeChartStore.each(function(rec) {
 							total += rec.get('cnt');
 						});
 						
@@ -69,18 +104,111 @@ Ext.define('Hotplace.view.panel.UserChartPanel', {
 			}]
 		});
 		
+	    Ext.chart.theme.White = Ext.extend(Ext.chart.theme.Base, {
+	        constructor: function() {
+	           Ext.chart.theme.White.superclass.constructor.call(this, {
+	               axis: {
+	                   stroke: 'rgb(8,69,148)',
+	                   'stroke-width': 1
+	               },
+	               axisLabel: {
+	                   fill: 'rgb(8,69,148)',
+	                   font: '12px Arial',
+	                   'font-family': '"Arial',
+	                   spacing: 2,
+	                   padding: 5,
+	                   renderer: function(v) { return v; }
+	               },
+	               axisTitle: {
+	                  font: 'bold 18px Arial'
+	               }
+	           });
+	        }
+	    });
+	    
+		var userRegChart = Ext.create('Ext.chart.Chart', {
+            id: 'userRegChart',
+            xtype: 'chart',
+			width: 600,
+            height: 500,
+            animate: true,
+            shadow: true,
+            store: userRegChartStore,
+            axes: [{
+                type: 'Numeric',
+                position: 'bottom',
+                fields: ['cnt'],
+                label: {
+                    renderer: Ext.util.Format.numberRenderer('0,0')
+                },
+                title: '가입인원수(명)',
+                grid: true,
+                minimum: 0
+            }, {
+                type: 'Category',
+                position: 'left',
+                fields: ['regMonth'],
+                title: '가입일자(월)'
+            }],
+            theme: 'White',
+            background: {
+              gradient: {
+                id: 'backgroundGradient',
+                angle: 45,
+                stops: {
+                  0: {
+                    color: '#ffffff'
+                  },
+                  100: {
+                    color: '#eaf1f8'
+                  }
+                }
+              }
+            },
+            series: [{
+                type: 'bar',
+                axis: 'bottom',
+                highlight: true,
+                tips: {
+                  trackMouse: true,
+                  width: 140,
+                  height: 28,
+                  renderer: function(storeItem, item) {
+                    this.setTitle(storeItem.get('regMonth') + ' : ' + storeItem.get('cnt') + ' views');
+                  }
+                },
+                label: {
+                    display: 'insideEnd',
+                    field: 'cnt',
+                    renderer: Ext.util.Format.numberRenderer('0'),
+                    orientation: 'horizontal',
+                    color: '#333',
+                    'text-anchor': 'middle'
+                },
+                xField: 'regMonth',
+                yField: ['cnt']
+            }]
+        });
+		
 		Ext.apply(this, {
-			tbar: [{
-				text: '도넛',
-				enableToggle: true,
-				pressed: false,
-				toggleHandler: function(btn, pressed) {
-					 var chart = Ext.getCmp('userChart');
-		             chart.series.first().donut = pressed ? 35 : false;
-		             chart.refresh();
-				}
-			}],
-			items: chart
+			items: [{
+				title: '회원등급통계',
+				xtype: 'panel',
+				tbar: [{
+					text: '도넛',
+					enableToggle: true,
+					pressed: false,
+					toggleHandler: function(btn, pressed) {
+						 var chart = Ext.getCmp('userGradeChart');
+			             chart.series.first().donut = pressed ? 35 : false;
+			             chart.refresh();
+					}
+				}],
+				items: userGradechart
+			}, {
+				title: '회원가입통계',
+				items: userRegChart
+			}]
 		});
 		
 		this.callParent(arguments);
