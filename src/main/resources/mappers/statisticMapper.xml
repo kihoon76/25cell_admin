@@ -33,4 +33,17 @@
 		 order by 가입년, 가입월
 	</select>
 	
+	<select id="selectAccessPerTime" statementType="CALLABLE" parameterType="map" resultMap="RM_selectAccessPerTime">
+		{call [웹].[dbo].[USP__일일시간별_접속통계](
+			#{year, mode=IN, jdbcType=SMALLINT, javaType=int},
+			#{month, mode=IN, jdbcType=SMALLINT, javaType=int},
+			#{day, mode=IN, jdbcType=SMALLINT, javaType=int}
+		)}
+	</select> 
+	
+	<resultMap id="RM_selectAccessPerTime" type="map">
+		<result column="접속시"	property="hour" />
+		<result column="접속수"	property="cnt" />
+	</resultMap>
+	
 </mapper>

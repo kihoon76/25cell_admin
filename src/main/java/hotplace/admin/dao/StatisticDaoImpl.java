@@ -25,4 +25,9 @@ public class StatisticDaoImpl implements StatisticDao {
 	public List<Map<String, Object>> selectUserRegDate(int regYear) {
 		return msSqlSession.selectList(namespace + ".selectUserRegDate", regYear);
 	}
+
+	@Override
+	public List<Map<String, Object>> selectAccessPerTime(Map<String, Integer> param) {
+		return msSqlSession.selectList(namespace + ".selectAccessPerTime", param);
+	}
 }

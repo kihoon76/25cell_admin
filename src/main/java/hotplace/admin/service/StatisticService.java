@@ -52,5 +52,9 @@ public class StatisticService {
 		
 		return list;		
 	}
+	
+	public List<Map<String, Object>> getAccessPerTime(Map<String, Integer> param) {
+		return statisticDao.selectAccessPerTime(param);
+	}
 
 }

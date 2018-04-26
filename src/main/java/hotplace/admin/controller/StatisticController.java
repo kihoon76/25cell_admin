@@ -1,5 +1,6 @@
 package hotplace.admin.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -47,6 +48,32 @@ public class StatisticController {
 		
 		try {
 			vo.setDatas(statisticService.getUserRegDate(regYear));
+			vo.setSuccess(true);
+		}
+		catch(Exception e) {
+			vo.setErrMsg(e.getMessage());
+		}
+		
+		return vo;
+	}
+	
+	@GetMapping("accessTime")
+	@ResponseBody
+	public AjaxVO<Map<String, Object>> getAccessPerTime(
+			@RequestParam("year") int year,
+			@RequestParam("month") int month,
+			@RequestParam("day") int day) {
+		
+		Map<String, Integer> param = new HashMap<String, Integer>();
+		param.put("year", year);
+		param.put("month", month);
+		param.put("day", day);
+		
+		AjaxVO<Map<String, Object>> vo = new AjaxVO<>();
+		vo.setSuccess(false);
+		
+		try {
+			vo.setDatas(statisticService.getAccessPerTime(param));
 			vo.setSuccess(true);
 		}
 		catch(Exception e) {

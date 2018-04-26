@@ -2,6 +2,20 @@ Ext.define('Hotplace.view.panel.UserChartPanel', {
 	extend: 'Ext.tab.Panel',
 	xtype: 'userchartpanel',
 	initComponent: function() {
+		var currentYear = Ext.getBody().getAttribute('data-year');
+		
+		function makeComboYear() {
+			var s = currentYear - 10;
+			var data = [];
+			for(var i=currentYear; i>=s; i--) {
+				data.push({
+					name: i + '년',
+					value: i
+				});
+			}
+			
+			return data;
+		}
 		
 		Ext.define('chartModel', {
 			extend: 'Ext.data.Model',
@@ -28,7 +42,7 @@ Ext.define('Hotplace.view.panel.UserChartPanel', {
 			fields : ['regYear', 'regMonth', 'cnt'],
 			proxy : {
 				type: 'ajax',
-				url: 'statistic/regDate?regYear=2018',
+				url: 'statistic/regDate?regYear=' + currentYear,
 				reader: {
 					type: 'json',
 					successProperty: 'success',
@@ -37,40 +51,24 @@ Ext.define('Hotplace.view.panel.UserChartPanel', {
 			},
 			autoLoad: true,
 			listeners: {
-				load: function(store, records,success, operation) {
-
-				}
+				
 			}
 		});
-		
-//		var userRegChartStore = Ext.create('Ext.data.JsonStore', {
-//			fields : ['regYear', 'regMonth', 'cnt'],
-//			data:[{'regYear': 2018, 'regMonth': '1월', 'cnt':30},
-//			      {'regYear': 2018, 'regMonth': '2월', 'cnt':30},
-//			{'regYear': 2018, 'regMonth': '3월', 'cnt':30},
-//			{'regYear': 2018, 'regMonth': '4월', 'cnt':30},
-//			{'regYear': 2018, 'regMonth': '5월', 'cnt':30},
-//			{'regYear': 2018, 'regMonth': '6월', 'cnt':30},
-//			{'regYear': 2018, 'regMonth': '7월', 'cnt':30},
-//			{'regYear': 2018, 'regMonth': '8월', 'cnt':30},
-//			{'regYear': 2018, 'regMonth': '9월', 'cnt':30},
-//			{'regYear': 2018, 'regMonth': '10월', 'cnt':30}]
-//		});
-		
 		
 		
 		var userGradechart = Ext.create('Ext.chart.Chart', {
 			xtype: 'chart',
 			id: 'userGradeChart',
-			width: 600,
-            height: 250,
+			width: 500,
+            height: 500,
 			animate: true,
 			store: userGradeChartStore,
 			shadow: true,
+			margin: '100 0 0 100',
 			legend: {
-				position: 'right'
+				position: 'bottom'
 			},
-			insertPadding: 60,
+			insertPadding: 160,
 			theme: 'Base:gradients',
 			series: [{
 				type: 'pie',
@@ -101,6 +99,7 @@ Ext.define('Hotplace.view.panel.UserChartPanel', {
 					contrast: true,
 					font: '13px Arial'
 				}
+	
 			}]
 		});
 		
@@ -131,6 +130,7 @@ Ext.define('Hotplace.view.panel.UserChartPanel', {
             xtype: 'chart',
 			width: 600,
             height: 500,
+            //margin: '100 0 0 100',
             animate: true,
             shadow: true,
             store: userRegChartStore,
@@ -207,6 +207,28 @@ Ext.define('Hotplace.view.panel.UserChartPanel', {
 				items: userGradechart
 			}, {
 				title: '회원가입통계',
+				xtype: 'panel',
+				tbar: [{
+					xtype: 'combo',
+					displayField: 'name',
+					valueField: 'value',
+					store: Ext.create('Ext.data.Store', {
+						fields : ['name', 'value'],
+						data: makeComboYear()
+					}),
+					editable: false,
+					listeners: {
+						afterrender: function(combo, eOpt) {
+							combo.setValue(currentYear);
+						},
+						change: function(combo, nV) {
+							//valueYear = nV;
+							userRegChartStore.load({
+								url: 'statistic/regDate?regYear=' + nV
+							});
+						}
+					}
+				}],
 				items: userRegChart
 			}]
 		});
