@@ -68,8 +68,8 @@ Ext.define('Hotplace.view.panel.LogChartPanel', {
                 yField: ['cnt'],
                 tips: {
                 	trackMouse: true,
-                    width: 580,
-                    height: 170,
+                    width: 300,
+                    height: 30,
                     layout: 'fit',
                     items: {
                         xtype: 'container',
@@ -77,7 +77,8 @@ Ext.define('Hotplace.view.panel.LogChartPanel', {
                         items: [/*pieChart, grid*/]
                     },
                     renderer: function(klass, item) {
-                       
+                    	console.log(klass)
+                    	this.setTitle(klass.data.hour + '시 : 접속수 (' + klass.data.cnt + ')');
                     }
                 }
             }]
