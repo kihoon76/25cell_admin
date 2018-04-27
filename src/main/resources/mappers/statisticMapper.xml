@@ -34,7 +34,7 @@
 	</select>
 	
 	<select id="selectAccessPerTime" statementType="CALLABLE" parameterType="map" resultMap="RM_selectAccessPerTime">
-		{call [웹].[dbo].[USP__일일시간별_접속통계](
+		{call [웹].[dbo].[USP_일일시간별_접속통계](
 			#{year, mode=IN, jdbcType=SMALLINT, javaType=int},
 			#{month, mode=IN, jdbcType=SMALLINT, javaType=int},
 			#{day, mode=IN, jdbcType=SMALLINT, javaType=int}

@@ -18,10 +18,13 @@ public class HotplaceController {
 		String accountId = SecurityContextHolder.getContext().getAuthentication().getName();
 		Calendar now = Calendar.getInstance();
 		int year = now.get(Calendar.YEAR);
-		String yearInString = String.valueOf(year);
+		int month = now.get(Calendar.MONTH);
+		int date = now.get(Calendar.DATE);
 		
 		m.put("accountId", accountId);
-		m.put("currentYear", yearInString);
+		m.put("currentYear", String.valueOf(year));
+		m.put("currentMonth", String.valueOf(month+1));
+		m.put("currentDate", String.valueOf(date));
 		
 		return "main";
 	}

@@ -1,6 +1,6 @@
 Ext.define('Hotplace.controller.LogController', {
 	extend: 'Hotplace.controller.BaseController',
-	views: ['panel.LogListGridPanel'],
+	views: ['panel.LogListGridPanel', 'panel.LogChartPanel'],
 	onLaunch : function() {
 		this.callParent(arguments);
 	},
@@ -13,6 +13,11 @@ Ext.define('Hotplace.controller.LogController', {
 				case 'cate-log-list' :
 					this.addContentTabPanel(recObj.id, recObj.text, {
 						xtype: 'loggrid'
+					});
+					break;
+				case 'cate-log-statistic' :
+					this.addContentTabPanel(recObj.id, recObj.text, {
+						xtype: 'logchartpanel'
 					});
 					break;
 				default :

@@ -17,7 +17,11 @@
     
 	<sitemesh:write property="head" />
 </head>
-<body data-url="${fn:substring(url, 0, fn:length(url) - fn:length(uri))}${req.contextPath}" data-user="<c:out value='${accountId}' />" data-year="<c:out value='${currentYear}' />">
+<body data-url="${fn:substring(url, 0, fn:length(url) - fn:length(uri))}${req.contextPath}" 
+	  data-user="<c:out value='${accountId}' />" 
+	  data-year="<c:out value='${currentYear}' />"
+	  data-month="<c:out value='${currentMonth}' />"
+	  data-date="<c:out value='${currentDate}' />">
 	<sitemesh:write property="body" /> 
 	<script src="/resources/core/ver/4.1.1-rc2/js/ext-all.js"></script>
 	
