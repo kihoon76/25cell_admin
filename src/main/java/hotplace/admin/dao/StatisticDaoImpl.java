@@ -30,4 +30,9 @@ public class StatisticDaoImpl implements StatisticDao {
 	public List<Map<String, Object>> selectAccessPerTime(Map<String, Integer> param) {
 		return msSqlSession.selectList(namespace + ".selectAccessPerTime", param);
 	}
+
+	@Override
+	public List<Map<String, Object>> selectCompareContent(Map<String, Integer> param) {
+		return msSqlSession.selectList(namespace + ".selectCompareContent", param);
+	}
 }

@@ -84,6 +84,89 @@ Ext.define('Hotplace.view.panel.LogChartPanel', {
             }]
         });
 		
+		var contentStore = Ext.create('Ext.data.Store', {
+			fields : ['time', 'heatmap', 'mulgeon', 'sujiboonseog'],
+			proxy : {
+				type: 'ajax',
+				url: 'statistic/content?year=' + currentYear + '&month=' + currentMonth,
+				reader: {
+					type: 'json',
+					successProperty: 'success',
+					root: 'datas'
+				}
+			},
+			autoLoad: true,
+			listeners: {
+				
+			}
+		});
+		
+		
+		var contentChartFieldPrefix = currentYear + '년 ' + currentMonth + '월 ';
+		
+		var contentChart = Ext.create('Ext.chart.Chart', {
+            id: 'contentChart',
+            xtype: 'chart',
+			width: 800,
+            height: 500,
+            //margin: '100 0 0 100',
+            animate: true,
+            shadow: true,
+            store: contentStore,
+            legend: {position: 'right'},
+            axes: [{
+            	type: 'Numeric',
+            	position: 'bottom',
+            	fields: ['heatmap', 'mulgeon', 'sujiboonseog'],
+            	title: false,
+            	grid: true
+            }, {
+            	type: 'Category',
+            	position: 'left',
+            	fields: ['time'],
+            	title: false,
+            	label: {
+            		renderer: function(v) {
+            			console.log(v)
+            			return contentChartFieldPrefix + ((v < 10) ? '0' + v : v) + '일';
+            		}
+            	}
+            }],
+            series: [{
+            	type: 'bar',
+            	axis: 'bottom',
+            	gutter: 80,
+            	xField: 'time',
+            	yField: ['heatmap', 'mulgeon', 'sujiboonseog'],
+            	stacked: true,
+            	tips: {
+            		trackMouse: true,
+                    width: 100,
+                    height: 28,
+                    renderer: function(storeItem, item) {
+                    	console.log(item);
+                    	
+                    	var cate = item.yField;
+                    	switch(cate) {
+                    	case 'heatmap' :
+                    		cate = '히트맵보기';
+                    		break;
+                    	case 'mulgeon' :
+                    		cate = '물건보기';
+                    		break;
+                    	case 'sujiboonseog':
+                    		cate = '수지분석';
+                    		break;
+                    	}
+                    	
+                        this.setTitle(cate + '(' + item.value[1] + ')');
+                    }
+            	},
+
+            	title:['히트맵보기', '물건보기', '수지분석']
+            }]
+        });
+		
 		Ext.apply(this, {
 			items: [{
 				title: '시간별 접속통계',
@@ -107,6 +190,32 @@ Ext.define('Hotplace.view.panel.LogChartPanel', {
 					}
 				}],
 				items: accessTimeChart//userGradechart
+			}, {
+				title: '컨텐츠별 접속통계',
+				xtype: 'panel',
+				tbar: ['접속일: ', {
+					xtype: 'datefield',
+					format: 'Y-m-d',
+					width: 100,
+					editable: false,
+					listeners: {
+						afterrender: function(df, eOpt) {
+							var dt = new Date(currentYear.toString() + '-' + currentMonth.toString() + '-' + currentDate.toString());
+							df.setValue(dt);
+						},
+						select: function(field, value, eOpts) {
+							var selectDate = field.getRawValue();
+							var year = selectDate.substring(0,4);
+							var month = selectDate.substring(5,7);
+							
+							contentChartFieldPrefix = year + '년 ' + month + '월 ';
+							contentStore.load({
+								url: 'statistic/content?year=' + year + '&month=' + month
+							});
+						}
+					}
+				}],
+				items: contentChart
 			}]
 		});
 		

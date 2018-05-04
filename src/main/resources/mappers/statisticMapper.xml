@@ -41,9 +41,22 @@
 		)}
 	</select> 
 	
+	<select id="selectCompareContent"  statementType="CALLABLE"  parameterType="map" resultMap="RM_selectCompareContent">
+		{ call [웹].[dbo].[USP_컨텐츠별_일일접속통계](
+			#{year, mode=IN, jdbcType=SMALLINT, javaType=int},
+			#{month, mode=IN, jdbcType=SMALLINT, javaType=int}
+		)}
+	</select>
+	
 	<resultMap id="RM_selectAccessPerTime" type="map">
 		<result column="접속시"	property="hour" />
 		<result column="접속수"	property="cnt" />
 	</resultMap>
 	
+	<resultMap id="RM_selectCompareContent" type="map">
+		<result column="접속일"	property="time" />
+		<result column="물건보기"	property="mulgeon" />
+		<result column="히트맵보기"	property="heatmap" />
+		<result column="수지분석"	property="sujiboonseog" />
+	</resultMap>
 </mapper>

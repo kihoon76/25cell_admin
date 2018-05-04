@@ -57,4 +57,8 @@ public class StatisticService {
 		return statisticDao.selectAccessPerTime(param);
 	}
 
+	public List<Map<String, Object>> getCompareContent(Map<String, Integer> param) {
+		return statisticDao.selectCompareContent(param);
+	}
+
 }

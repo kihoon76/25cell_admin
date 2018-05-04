@@ -9,6 +9,9 @@
 		<result column="요청리소스"		property="url" javaType="string"/>
 		<result column="파라미터"		property="parameter" javaType="string"/>
 		<result column="접속시간"		property="accessTime" javaType="string"/>
+		<result column="브라우저정보"	property="userAgent" javaType="string"/>
+		<result column="모바일여부"		property="isMobile" javaType="string"/>
+		
 	</resultMap>
 	
 	<resultMap id="RM_selectLogList" type="ExtjsStoreVO" >
@@ -43,7 +46,7 @@
 	</select>
 	
 	<select id="selectLog" parameterType="hashmap" resultMap="RM_selectLog">
-		select 아이피주소, 아이디, 유입경로, 요청리소스, 파라미터, 접속시간
+		select 아이피주소, 아이디, 유입경로, 요청리소스, 파라미터, 접속시간, 브라우저정보, 모바일여부
 		  from (
 		  	select row_number() over(order by 접속시간 desc) rownum, *
 		  	  from [웹].[dbo].[접속로그]

@@ -11,6 +11,8 @@ public class AccessLog {
 	private String url;
 	private String parameter;
 	private String accessTime;
+	private String userAgent;
+	private String isMobile;
 	
 	public String getIp() {
 		return ip;
@@ -47,5 +49,17 @@ public class AccessLog {
 	}
 	public void setAccountId(String accountId) {
 		this.accountId = accountId;
+	}
+	public String getUserAgent() {
+		return userAgent;
+	}
+	public void setUserAgent(String userAgent) {
+		this.userAgent = userAgent;
+	}
+	public String getIsMobile() {
+		return isMobile;
+	}
+	public void setIsMobile(String isMobile) {
+		this.isMobile = isMobile;
 	} 
 }

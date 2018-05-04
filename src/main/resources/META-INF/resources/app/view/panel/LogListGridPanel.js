@@ -118,6 +118,14 @@ Ext.define('Hotplace.view.panel.LogListGridPanel', {
 				text: '접속시간',
 				dataIndex: 'accessTime',
 				flex: 0
+			}, {
+				text: '브라우저정보',
+				dataIndex: 'userAgent',
+				flex: 0
+			}, {
+				text: '모바일여부',
+				dataIndex: 'isMobile',
+				flex: 0
 			}],
 			tbar: [{
 				xtype: 'button',

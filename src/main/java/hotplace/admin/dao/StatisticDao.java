@@ -11,4 +11,6 @@ public interface StatisticDao {
 	
 	List<Map<String, Object>> selectAccessPerTime(Map<String, Integer> param);
 
+	List<Map<String, Object>> selectCompareContent(Map<String, Integer> param);
+
 }

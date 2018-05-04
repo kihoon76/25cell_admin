@@ -83,4 +83,27 @@ public class StatisticController {
 		return vo;
 	}
 
+	@GetMapping("content")
+	@ResponseBody
+	public AjaxVO<Map<String, Object>> getCompareContent(
+			@RequestParam("year") int year,
+			@RequestParam("month") int month) {
+		
+		Map<String, Integer> param = new HashMap<String, Integer>();
+		param.put("year", year);
+		param.put("month", month);
+		
+		AjaxVO<Map<String, Object>> vo = new AjaxVO<>();
+		vo.setSuccess(false);
+		
+		try {
+			vo.setDatas(statisticService.getCompareContent(param));
+			vo.setSuccess(true);
+		}
+		catch(Exception e) {
+			vo.setErrMsg(e.getMessage());
+		}
+		
+		return vo;
+	}
 }

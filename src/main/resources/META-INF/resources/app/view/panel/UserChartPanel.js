@@ -174,7 +174,7 @@ Ext.define('Hotplace.view.panel.UserChartPanel', {
                   width: 140,
                   height: 28,
                   renderer: function(storeItem, item) {
-                    this.setTitle(storeItem.get('regMonth') + ' : ' + storeItem.get('cnt') + ' views');
+                    this.setTitle(storeItem.get('regMonth') + ' : ' + storeItem.get('cnt') + '명 가입');
                   }
                 },
                 label: {

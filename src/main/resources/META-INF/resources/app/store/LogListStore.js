@@ -11,7 +11,7 @@ Ext.define('Hotplace.store.LogListStore', {
 	          ,totalProperty : 'total'
 	       }
 	  },
-	  fields : ['ip', 'accountId', 'referer', 'url', 'parameter', 'accessTime'],
+	  fields : ['ip', 'accountId', 'referer', 'url', 'parameter', 'accessTime', 'userAgent', 'isMobile'],
 	  autoLoad : true,
 	  
 	  pageSize : Hotplace.util.Constants.gridPageSize
