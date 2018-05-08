@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.qnaMapper">
+	
+	<resultMap id="RM_selectQnaList" type="ExtjsStoreVO">
+		<result column="문의사항수" property="total" javaType="int"/>
+		<result column="검색타입" property="searchType" javaType="string"/>
+		<result column="검색값" property="searchValue" javaType="string"/>
+		<result column="시작" property="start" javaType="int" />
+		<result column="끝" property="limit" javaType="int" />
+		<collection property="datas" column="{start=시작, limit=끝, searchType=검색타입, searchValue=검색값}" 
+					javaType="java.util.ArrayList"
+					ofType="QnA" 
+					select="selectQna" />
+	</resultMap>
+	
+	<resultMap id="RM_selectQna" type="QnA">
+		<result column="일련번호" property="seq" javaType="string"/>
+		<result column="연락처" property="phone" javaType="string"/>
+		<result column="요청일자" property="reqTime" javaType="string"/>
+		<result column="처리일자" property="processTime" javaType="string" />
+		<result column="처리자_계정" property="processor" javaType="string" />
+		<result column="문의사항" property="question" javaType="string" />
+		<result column="처리여부" property="processYN" javaType="string" />
+	</resultMap>
+	
+	<select id="selectQnaList" resultMap="RM_selectQnaList" parameterType="map">
+		select (
+			select count(*) 
+			  from [웹].[dbo].[문의사항]
+			   <choose>
+		  	  	<when test="searchType != null and searchType == 'seq'">
+		  	  		where 일련번호 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'phone'">
+		  	  		where 연락처 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'reqTime'">
+		  	  		where DATEDIFF(DD, #{searchValue}, [요청일자]) = 0
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'processTime'">
+		  	  		where DATEDIFF(DD, #{searchValue}, [처리일자]) = 0
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'processor'">
+		  	  		where 처리자_계정 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'processYN'">
+		  	  		where 처리여부 = #{searchValue} 
+		  	  	</when>
+		  	  	<otherwise></otherwise>
+		  	  </choose>
+			) 문의사항수, #{searchType} 검색타입, #{searchValue} 검색값, #{start} 시작, #{limit} 끝
+	</select>
+	
+	<select id="selectQna" parameterType="hashmap" resultMap="RM_selectQna">
+		select 일련번호, 연락처, 요청일자, 처리일자, 처리자_계정, 문의사항, 처리여부
+		  from (
+		  	select row_number() over(order by 요청일자 desc) rownum, *
+		  	  from [웹].[dbo].[문의사항]
+		  	  <choose>
+		  	  	<when test="searchType != null and searchType == 'seq'">
+		  	  		where 일련번호 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'phone'">
+		  	  		where 연락처 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'reqTime'">
+		  	  		where DATEDIFF(DD, #{searchValue}, [요청일자]) = 0
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'processTime'">
+		  	  		where DATEDIFF(DD, #{searchValue}, [처리일자]) = 0
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'processor'">
+		  	  		where 처리자_계정 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'processYN'">
+		  	  		where 처리여부 = #{searchValue} 
+		  	  	</when>
+		  	  	<otherwise></otherwise>
+		  	  </choose>
+		  ) tb1
+	    where rownum between (#{start} + 1) and (#{start} + #{limit})
+	</select> 
+</mapper>

@@ -45,6 +45,8 @@ Ext.define('Hotplace.view.panel.CategoryPanel', {
 						}]
 					 }, {
 						 text: '약관관리', leaf : true, cate : 'yaggwan', id : 'cate-yaggwan' 
+					 }, {
+						 text: '문의사항관리', leaf : true, cate : 'qna', id : 'cate-qna' 
 					 }]
     	    	 }
     	    })
