@@ -81,4 +81,18 @@
 		  ) tb1
 	    where rownum between (#{start} + 1) and (#{start} + #{limit})
 	</select> 
+	
+	<select id="selectOpenedQuestion" parameterType="map" resultType="string">
+		select 처리자_계정
+		  from [웹].[dbo].[문의사항]
+		 where 일련번호 = #
+	</select>
+	
+	<select id="selectQuestion" parameterType="map" resultMap="RM_selectQna">
+		select  일련번호
+               ,처리자_계정
+      		   ,처리여부
+      	  from [웹].[dbo].[문의사항]
+      	 where 일련번호 = #{seq}
+	</select>
 </mapper>

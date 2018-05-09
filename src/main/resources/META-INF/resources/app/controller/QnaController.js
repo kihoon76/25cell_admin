@@ -1,6 +1,6 @@
 Ext.define('Hotplace.controller.QnaController', {
 	extend: 'Hotplace.controller.BaseController',
-	views: ['panel.YaggwanFormPanel'],
+	views: ['panel.QnaFormPanel'],
 	onLaunch : function() {
 		this.callParent(arguments);
 	},
@@ -13,7 +13,7 @@ Ext.define('Hotplace.controller.QnaController', {
 				switch(recObj.id) {
 				case 'cate-qna' :
 					this.addContentTabPanel(recObj.id, recObj.text, {
-						xtype: 'yaggwanpanel'
+						xtype: 'qnapanel'
 					});
 					break;
 				default :

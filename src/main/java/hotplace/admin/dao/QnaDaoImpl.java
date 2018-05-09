@@ -22,4 +22,14 @@ public class QnaDaoImpl implements QnaDao {
 	public ExtjsStoreVO<QnA> selectQnaList(Map map) {
 		return msSqlSession.selectOne(namespace + ".selectQnaList", map);
 	}
+
+	@Override
+	public String selectOpenedQuestion(Map<String, String> m) {
+		return msSqlSession.selectOne(namespace + ".selectOpenedQuestion", m);
+	}
+
+	@Override
+	public QnA selectQuestion(Map<String, String> m) {
+		return msSqlSession.selectOne(namespace + ".selectQuestion", m);
+	}
 }

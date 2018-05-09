@@ -13,9 +13,9 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 		searchValue = '',
 		authUrl = 'authority/define';
 		
-//		var searchComboStore = Ext.create('Ext.data.Store', {
-//			 fields   : ['name', 'value']
-//		});
+		var searchComboStore = Ext.create('Ext.data.Store', {
+			 fields   : ['name', 'value']
+		});
 //		
 //		var gradeComboStore = Ext.create('Ext.data.Store', {
 //			fields : ['name', 'value'],
@@ -101,20 +101,30 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 	            columns: [{
                     id       :'seq',
                     text   	 : '일련번호',
+                    width    : 60,
+                    sortable : true,
+                    dataIndex: 'seq'
+                },{
+                    text   : '연락처',
+                    width    : 120,
+                    sortable : true,
+                    dataIndex: 'phone'
+                },{
+                    text   : '처리여부',
+                    width    : 40,
+                    sortable : true,
+                    dataIndex: 'processYN'
+                },{
+                    text   : '문의사항',
                     flex    : 1,
                     sortable : true,
-                    dataIndex: 'accountId'
-                },{
-                    text   : '이름',
-                    width    : 200,
-                    sortable : true,
-                    dataIndex: 'userName'
+                    dataIndex: 'question'
                 }],
                 tbar: ['->',
     			       '검색항목 : ',
     			       Ext.create('Ext.form.field.ComboBox', {
     			    	   queryMode: 'local',
-    			    	   id:'user-auth-searchtype-combo',
+    			    	   id:'qna-searchtype-combo',
     			    	   displayField: 'name',
     			    	   valueField: 'value',
     			    	   editable: false,
@@ -122,14 +132,14 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
     			    	   listeners: {
     			    		   change: function(combo, nV, oV) {
     			    			   if(nV == 'all') {
-    			    				   Ext.getCmp('user-auth-search-text').setValue('');
+    			    				   Ext.getCmp('qna-search-text').setValue('');
     			    				   store.load();      
     			    			   }
     			    		   }
     			    	   }
     			       }),{
     					   xtype: 'textfield',
-    					   id: 'user-auth-search-text',
+    					   id: 'qna-search-text',
     					   enableKeyEvents: true,
     					   listeners: {
     						   keydown: function(t, e) {
@@ -163,7 +173,7 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 	    					text: '목록수 : '
 	    				}, Ext.create('Ext.form.field.ComboBox', {
 	    					queryMode: 'local',
-	    					id: 'user-auth-paging-combo',
+	    					id: 'qna-paging-combo',
 	    					displayField: 'name',
 	    					valueField: 'value',
 	    					editable: false,
@@ -173,7 +183,7 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 	    					listeners: {
 	    						change: function(cb, nV, oV) {
 	    							store.pageSize = nV;
-	    							Ext.getCmp('user-auth-grid').getStore()
+	    							Ext.getCmp('qna-grid').getStore()
 	    							    .loadPage(1, {
 	    								    params: { limit: nV}
 	    							    });
@@ -183,7 +193,7 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
     				}],
 	    			listeners: {
 	    				afterrender: function(grid, eOpts) {
-	    					var columns = Ext.getCmp('user-auth-grid').columns;
+	    					/*var columns = Ext.getCmp('user-auth-grid').columns;
 	    					var len = columns.length;
 	    					
 	    					searchComboArr.push({name: '전체', value: 'all'});
@@ -195,91 +205,29 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 	    					}
 	    					
 	    					searchComboStore.loadData(searchComboArr);
-	    					Ext.getCmp('user-auth-searchtype-combo').select('all');
+	    					Ext.getCmp('user-auth-searchtype-combo').select('all');*/
 	    				},
 	    				itemclick: function(view, record) {
 	    					selectedRecord = record;
 	    					var data = record.data;
-	    					var userName = Ext.getCmp('user-auth-userName');
-	    					userName.setValue(data.userName);
-	    					
-	    					var accountId = Ext.getCmp('user-auth-accountId');
-	    					accountId.setValue(data.accountId);
-	    					
-	    					var phone = Ext.getCmp('user-auth-phone');
+	    					var phone = Ext.getCmp('qna-phone');
 	    					phone.setValue(data.phone);
 	    					
-	    					var email = Ext.getCmp('user-auth-email');
-	    					email.setValue(data.email);
+	    					var question = Ext.getCmp('qna-question');
+	    					question.setValue(data.question);
 	    					
-	    					var regDate = Ext.getCmp('user-auth-regDate'); 
-	    					regDate.setValue(data.regDate);
+	    					var reqTime = Ext.getCmp('qna-reqTime');
+	    					reqTime.setValue(data.reqTime);
 	    					
-	    					var chkAdm = Ext.getCmp('user-auth-admin-check');
-	    					var outChk = Ext.getCmp('user-auth-out-check');
-	    					var btnModify = Ext.getCmp('btn-modify-auth');
-	    					var btnDelete = Ext.getCmp('btn-delete-auth');
-	    					
-	    					//관리자여부
-	    					if(data.admin) {
-	    						chkAdm.setValue(true);
-	    					}
-	    					else {
-	    						chkAdm.setValue(false);
-	    					}
-	    					
-	    					if(data.out == 'Y') {
-	    						outChk.setValue(true);
-	    					}
-	    					else {
-	    						outChk.setValue(false);
-	    					}
-	    					
-	    					var combo = Ext.getCmp('user-auth-grade-combo');
-	    					combo.getStore().load();
-	    					
-	    					if(data.gradeNum) {
-	    						combo.setValue(data.gradeNum);
-	    					}
-	    					else {
-	    						combo.setValue('-1');
-	    					}
-	    					
-	    					
-	    					if(data.out == 'Y') {
-	    						userName.setDisabled(true);
-	    						accountId.setDisabled(true);
-	    						phone.setDisabled(true);
-	    						email.setDisabled(true);
-	    						regDate.setDisabled(true);
-	    						chkAdm.setDisabled(true);
-		    					combo.setDisabled(true);
-		    					btnModify.setDisabled(true);
-		    					btnDelete.setDisabled(true);
-	    					}
-	    					else {
-	    						userName.setDisabled(false);
-	    						accountId.setDisabled(false);
-	    						phone.setDisabled(false);
-	    						email.setDisabled(false);
-	    						regDate.setDisabled(false);
-	    						
-	    						chkAdm.setDisabled(false);
-		    					combo.setDisabled(false);
-		    					userName.setReadOnly(false);
-		    					phone.setReadOnly(false);
-		    					email.setReadOnly(false);
-		    					
-		    					btnModify.setDisabled(false);
-		    					btnDelete.setDisabled(false);
-	    					}
+	    					var myprocess = Ext.getCmp('qna-process-combo');
+	    					myprocess.setDisabled(false);
 	    				}
 	    			}
 				}, {
 					columnWidth: 0.6,
 		            margin: '0 0 0 10',
 		            xtype: 'fieldset',
-		            title:'회원등급정보',
+		            title:'문의사항정보',
 		            height: 800,
 		            defaults: {
 		                width: 240,
@@ -287,72 +235,87 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 		            },
 		            defaultType: 'textfield',
 		            items: [{
-		                fieldLabel: '회원명',
-		                name: 'userName',
-		                id: 'user-auth-userName',
-		                readOnly: true
-		            },{
-		                fieldLabel: '회원아이디',
-		                anchor: '100%',
-		                name: 'accountId',
-		                id: 'user-auth-accountId',
-		                readOnly: true,
-		            },{
-		                fieldLabel: '회원연락처',
-		                anchor: '100%',
-		                name: 'phone',
-		                id: 'user-auth-phone',
-		                readOnly: true,
-		            },{
-		                fieldLabel: '회원이메일',
-		                anchor: '100%',
-		                name: 'email',
-		                id: 'user-auth-email',
-		                readOnly: true,
-		            },{
-		                fieldLabel: '회원가입일자',
-		                anchor: '100%',
-		                name: 'regDate',
-		                id: 'user-auth-regDate',
-		                readOnly: true,
-		            },{
-		            	xtype: 'checkbox',
-		            	fieldLabel: '탈퇴여부',
-		            	id: 'user-auth-out-check',
-		            	disabled: true
-		            },{
 		            	xtype: 'combobox',
-		            	id: 'user-auth-grade-combo',
-		            	fieldLabel: '회원등급',
+		            	id: 'qna-process-combo',
+		            	fieldLabel: '문의처리',
 		            	editable: false,
 		            	disabled: true,
 		            	store: Ext.create('Ext.data.Store', {
 		        			fields : ['name', 'value'],
-		        			proxy : {
-		        				type: 'ajax',
-		        				url: 'authority/define?no=Y',
-		        				reader: {
-		        					type: 'json',
-		        					successProperty: 'success',
-		        					root: 'datas'
-		        				}
-		        			}
+		        			data: [{name: 'open', value:'open'}, {name: 'close', value:'close'}]
 		        		}),
+		        		queryMode: 'local',
 		        		displayField: 'name',
-		        		valueField: 'value'
+		        		valueField: 'value',
+		        		listeners: {
+		        			change: function(c, nV, oV) {
+		        				
+		        				var seq = selectedRecord.data.seq;
+		        				
+		        				Ext.Ajax.request({
+		        					url: Hotplace.util.Constants.context + '/qna/process?type=' + nV + '&seq=' + seq,
+		        					method:'GET',
+		    						timeout:60000,
+		    						success: function(response) {
+		    							
+		    							var jo = Ext.decode(response.responseText);
+		    							
+		    							Ext.getCmp('user-auth-grid').getStore().reload();
+		    							if(jo.success) {
+		    								Ext.Msg.alert('', '회원계정(' + delUserId + ')이 탈퇴 처리되었습니다.');
+		    							}
+		    							else {
+		    								Ext.Msg.alert('에러', jo.errMsg);
+		    							}
+		    							
+		    						},
+		    						failure: function(response) {
+		    							Ext.Msg.alert('', '오류가 발생했습니다.');
+		    						}
+		        				});
+		        			}
+		        		}
 		            },{
-		            	xtype: 'checkbox',
-		            	fieldLabel: '관리자권한',
-		            	id: 'user-auth-admin-check',
-		            	disabled: true
+		                fieldLabel: '연락처',
+		                anchor: '100%',
+		                name: 'phone',
+		                id: 'qna-phone',
+		                disabled: true,
+		                readOnly: true
+		            },{
+		                fieldLabel: '문의사항',
+		                xtype: 'textarea',
+		                anchor: '100%',
+		                grow: true,
+		                height:500,
+		                name: 'question',
+		                id: 'qna-question',
+		                readOnly: true,
+		                disabled: true
+		            },{
+		                fieldLabel: '처리내용',
+		                xtype: 'textarea',
+		                anchor: '100%',
+		                grow: true,
+		                name: 'processContent',
+		                id: 'qna-processContent',
+		                readOnly: true,
+		                disabled: true
+		            },{
+		                fieldLabel: '요청일자',
+		                anchor: '100%',
+		                name: 'reqTime',
+		                id: 'qna-reqTime',
+		                disabled: true,
+		                readOnly: true
 		            },{
 		            	width: 100,
 		               	height: 100,
 		            	y: 0,
 			           	x: 95,
 		            	xtype: 'button',
-		            	id: 'btn-modify-auth',
-		            	text:'설정변경',
+		            	id: 'btn-qna-process',
+		            	text:'상담처리',
 		            	disabled: true,
 		            	listeners: {
 		            		click: function() {
@@ -407,20 +370,6 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 		            					Ext.Msg.alert('', '오류가 발생했습니다.');
 		            				}
 		            			});
-		            		}
-		            	}
-		            }, {
-		            	width: 100,
-		               	height: 100,
-		            	y: 0,
-			           	x: 105,
-		            	xtype: 'button',
-		            	id: 'btn-delete-auth',
-		            	text:'회원탈퇴',
-		            	disabled: true,
-		            	listeners: {
-		            		click: function() {
-		            			outUser();
 		            		}
 		            	}
 		            }]

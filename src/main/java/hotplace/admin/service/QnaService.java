@@ -20,4 +20,14 @@ public class QnaService {
 		return qnaDao.selectQnaList(map);
 	}
 
+	public String processOpen(Map<String, String> m) {
+		String processor = qnaDao.selectOpenedQuestion(m);
+		
+		return "";
+	}
+
+	public QnA getQuestion(Map<String, String> m) {
+		return qnaDao.selectQuestion(m);
+	}
+
 }

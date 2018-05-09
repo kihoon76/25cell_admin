@@ -46,7 +46,8 @@ Ext.application({
         'Hotplace.controller.LogController',
         'Hotplace.controller.ConfigureController',
         'Hotplace.controller.UserController',
-        'Hotplace.controller.YaggwanController'
+        'Hotplace.controller.YaggwanController',
+        'Hotplace.controller.QnaController'
    ]
    ,launch:function(){
 	   

@@ -9,4 +9,8 @@ public interface QnaDao {
 
 	ExtjsStoreVO<QnA> selectQnaList(Map map);
 
+	String selectOpenedQuestion(Map<String, String> m);
+
+	QnA selectQuestion(Map<String, String> m);
+
 }
