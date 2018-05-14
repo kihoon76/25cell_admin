@@ -36,7 +36,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider{
 		String password = (String) authentication.getCredentials();
 		
 		logger.info("사용자가 입력한 로그인정보입니다. {}", username + "/" + password);
-		password = passwordEncoder.encode(password);
+		//password = passwordEncoder.encode(password);
 		UserDetailsImpl user;
 		
 		try {

@@ -32,6 +32,9 @@
 	                    	case '103' :
 	                    		msg = '권한이 없습니다';
 	                    		break;
+	                    	case '202' :
+	                    		msg = '이미 로그인된 계정입니다.';
+	                    		break;
 	                    	default :
 	                    		msg = '아이디/패스워드 정보가 올바르지 않습니다';
 	                    		break;
