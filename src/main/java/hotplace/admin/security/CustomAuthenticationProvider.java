@@ -42,7 +42,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider{
 		try {
 			user = userDetailsService.loadUserByUsername(username);
 			if("Y".equals(user.getAccount().getOut())) throw new BadCredentialsException("아이디가 존재하지 않습니다.");
-			if(!password.equals(user.getPassword())) throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+			if(!passwordEncoder.matches(password, user.getPassword())) throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
 
 			logger.info("정상로그인 입니다.");
 				

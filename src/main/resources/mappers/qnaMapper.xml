@@ -82,10 +82,11 @@
 	    where rownum between (#{start} + 1) and (#{start} + #{limit})
 	</select> 
 	
-	<select id="selectOpenedQuestion" parameterType="map" resultType="string">
-		select 처리자_계정
-		  from [웹].[dbo].[문의사항]
-		 where 일련번호 = #
+	<select id="selectOpenedQuestion"  statementType="CALLABLE" parameterType="map" resultType="string">
+		{ call  [웹].[dbo].[USP_상담자설정](
+			#{seq, mode=IN, jdbcType=VARCHAR, javaType=string},
+			#{currUser, mode=IN, jdbcType=VARCHAR, javaType=string}
+		)} 
 	</select>
 	
 	<select id="selectQuestion" parameterType="map" resultMap="RM_selectQna">
@@ -95,4 +96,11 @@
       	  from [웹].[dbo].[문의사항]
       	 where 일련번호 = #{seq}
 	</select>
+	
+	<update id="updateProcessor" parameterType="map">
+		update [웹].[dbo].[문의사항]
+		   set 처리자_계정 = null
+		 where 일련번호 = #{seq}
+		   and 처리자_계정 = #{currUser}
+	</update>
 </mapper>

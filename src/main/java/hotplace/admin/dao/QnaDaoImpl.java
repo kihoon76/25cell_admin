@@ -32,4 +32,10 @@ public class QnaDaoImpl implements QnaDao {
 	public QnA selectQuestion(Map<String, String> m) {
 		return msSqlSession.selectOne(namespace + ".selectQuestion", m);
 	}
+
+	@Override
+	public void updateProcessor(Map<String, String> m) {
+		msSqlSession.update(namespace + ".updateProcessor", m);
+		
+	}
 }

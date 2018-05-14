@@ -21,13 +21,15 @@ public class QnaService {
 	}
 
 	public String processOpen(Map<String, String> m) {
-		String processor = qnaDao.selectOpenedQuestion(m);
-		
-		return "";
+		return qnaDao.selectOpenedQuestion(m);
 	}
 
 	public QnA getQuestion(Map<String, String> m) {
 		return qnaDao.selectQuestion(m);
 	}
 
+	public void processClose(Map<String, String> m) {
+		qnaDao.updateProcessor(m);
+		
+	}
 }

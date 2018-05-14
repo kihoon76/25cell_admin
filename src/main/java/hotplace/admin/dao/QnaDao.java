@@ -13,4 +13,6 @@ public interface QnaDao {
 
 	QnA selectQuestion(Map<String, String> m);
 
+	void updateProcessor(Map<String, String> m);
+
 }

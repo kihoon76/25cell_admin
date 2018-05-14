@@ -48,6 +48,7 @@ public class QnaController {
 	public AjaxVO processOpen(@RequestParam("type") String process, @RequestParam("seq") String seq) {
 		
 		String currUser = SecurityContextHolder.getContext().getAuthentication().getName();
+		System.err.println("=====================currUser:   "+currUser);
 		AjaxVO vo = new AjaxVO();
 		Map<String, String> m = new HashMap<String, String>();
 		m.put("seq", seq);
@@ -64,24 +65,49 @@ public class QnaController {
 				throw new Exception("처리완료되었습니다 .");
 			}
 				
-			if(qna.getProcessor() != null) {
+			if(qna.getProcessor() != null && !currUser.equals(qna.getProcessor())) {
 				vo.setErrCode("601");
 				throw new Exception("ID (" + qna.getProcessor() + ")에 할당된 처리건입니다.");
 			}
 			
-			if("open".equals(process) || "close".equals(process)) {
-				m.put("process", process);
+			if("close".equals(process) && qna.getProcessor() == null) {
+				vo.setErrCode("603");
+				throw new Exception("open후에 close가능합니다.");
+			}
+			
+			if("open".equals(process)) {
+				
+				//m.put("process", process);
 				m.put("currUser", currUser);
 				
 				try {
 					String accountId = qnaService.processOpen(m);
 					
+					System.err.println("====================="+accountId);
+					//한번더 체크한다
+					if(!currUser.equals(accountId)) {
+						vo.setErrCode("601");
+						throw new Exception("ID (" + accountId + ")에 할당된 처리건입니다.");
+					}
+					
+					vo.setSuccess(true);
 				}
 				catch(Exception e) {
 					vo.setSuccess(false);
 					vo.setErrMsg(e.getMessage());
 				}
 				
+			}
+			else if("close".equals(process)) {
+				m.put("currUser", currUser);
+				try{
+					qnaService.processClose(m);
+					vo.setSuccess(true);
+				}
+				catch(Exception e) {
+					vo.setSuccess(false);
+					vo.setErrMsg(e.getMessage());
+				}
 			}
 			else {
 				vo.setSuccess(false);

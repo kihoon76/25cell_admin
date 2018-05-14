@@ -13,6 +13,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
@@ -43,6 +44,10 @@ public class SigninFailureHandler extends SimpleUrlAuthenticationFailureHandler{
 		}
 		else if(exception.getClass().isAssignableFrom(NotAuthorized.class)) {
 			ajax.setErrCode("103");
+		}
+		//중복로그인
+		else if(exception.getClass().isAssignableFrom(SessionAuthenticationException.class)) {
+			ajax.setErrCode("202");
 		}
 		else {
 			ajax.setErrCode("104");

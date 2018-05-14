@@ -86,6 +86,59 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 			
 		}
 		
+		function close(isClearValue, itemClickedState) {
+			var phone = Ext.getCmp('qna-phone');
+			phone.setDisabled(true);
+			
+			var question = Ext.getCmp('qna-question');
+			question.setDisabled(true);
+			
+			var reqTime = Ext.getCmp('qna-reqTime');
+			reqTime.setDisabled(true);
+			
+			var myprocess = Ext.getCmp('qna-process-combo');
+			myprocess.clearValue();
+			if(itemClickedState) {
+				myprocess.setDisabled(false);
+			}
+			else {
+				myprocess.setDisabled(true);
+			}
+			
+			var processContent = Ext.getCmp('qna-processContent');
+			processContent.setValue('');
+			processContent.setDisabled(true);
+			
+			var processBtn = Ext.getCmp('btn-qna-process');
+			processBtn.setDisabled(true);
+			
+			if(isClearValue) {
+				phone.setValue('');
+				question.setValue('');
+				reqTime.setValue('');
+			}
+		}
+		
+		function open() {
+			var phone = Ext.getCmp('qna-phone');
+			phone.setDisabled(false);
+			
+			var question = Ext.getCmp('qna-question');
+			question.setDisabled(false);
+			
+			var reqTime = Ext.getCmp('qna-reqTime');
+			reqTime.setDisabled(false);
+			
+			var myprocess = Ext.getCmp('qna-process-combo');
+			myprocess.setDisabled(false);
+			
+			var processContent = Ext.getCmp('qna-processContent');
+			processContent.setDisabled(false);
+			
+			var processBtn = Ext.getCmp('btn-qna-process');
+			processBtn.setDisabled(false);
+		}
+		
 		Ext.apply(this,{
 			frame: true,
 			bodyPadding: 5,
@@ -96,7 +149,7 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 				xtype: 'gridpanel',
 				id: 'qna-grid',
 				store: store,
-	            height: 800,
+	            height: 900,
 	            title:'문의사항목록',
 	            columns: [{
                     id       :'seq',
@@ -208,19 +261,42 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 	    					Ext.getCmp('user-auth-searchtype-combo').select('all');*/
 	    				},
 	    				itemclick: function(view, record) {
-	    					selectedRecord = record;
-	    					var data = record.data;
 	    					var phone = Ext.getCmp('qna-phone');
-	    					phone.setValue(data.phone);
-	    					
 	    					var question = Ext.getCmp('qna-question');
-	    					question.setValue(data.question);
-	    					
 	    					var reqTime = Ext.getCmp('qna-reqTime');
-	    					reqTime.setValue(data.reqTime);
-	    					
 	    					var myprocess = Ext.getCmp('qna-process-combo');
-	    					myprocess.setDisabled(false);
+	    					var processTime = Ext.getCmp('qna-processTime');
+	    					var processor = Ext.getCmp('qna-processor');
+	    					
+	    					if(record.data.processYN == 'Y') {
+	    						Ext.Msg.alert('알림', '이미 처리된 상담입니다.', function() {
+	    							selectedRecord = null;
+	    							close(true);
+	    							var data = record.data;
+			    					
+			    					phone.setValue(data.phone);
+			    					question.setValue(data.question);
+			    					reqTime.setValue(data.reqTime);
+			    					
+	    							if(data.processTime != undefined) {
+	    								processTime.setValue(data.processTime);
+	    							}
+	    							
+	    							if(data.processor != undefined) {
+	    								processor.setValue(data.processor);
+	    							}
+	    						});
+	    					}
+	    					else {
+	    						selectedRecord = record;
+		    					var data = record.data;
+		    					
+		    					phone.setValue(data.phone);
+		    					question.setValue(data.question);
+		    					reqTime.setValue(data.reqTime);
+		    					myprocess.clearValue();
+		    					myprocess.setDisabled(false);
+	    					}
 	    				}
 	    			}
 				}, {
@@ -228,7 +304,7 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 		            margin: '0 0 0 10',
 		            xtype: 'fieldset',
 		            title:'문의사항정보',
-		            height: 800,
+		            height: 900,
 		            defaults: {
 		                width: 240,
 		                labelWidth: 90
@@ -251,6 +327,10 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 		        			change: function(c, nV, oV) {
 		        				
 		        				var seq = selectedRecord.data.seq;
+		        				if(nV == null) return;
+		        				
+		        				var myMask = new Ext.LoadMask(Ext.getBody(), {msg:"loading.."});
+		        				myMask.show();
 		        				
 		        				Ext.Ajax.request({
 		        					url: Hotplace.util.Constants.context + '/qna/process?type=' + nV + '&seq=' + seq,
@@ -259,17 +339,44 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 		    						success: function(response) {
 		    							
 		    							var jo = Ext.decode(response.responseText);
+		    							var errCode = jo.errCode;
+		    							var fn;
 		    							
-		    							Ext.getCmp('user-auth-grid').getStore().reload();
+		    							myMask.hide();
 		    							if(jo.success) {
-		    								Ext.Msg.alert('', '회원계정(' + delUserId + ')이 탈퇴 처리되었습니다.');
+		    								if(nV == 'open') {
+		    									Ext.Msg.alert('', '일련번호(' + seq + '번) 상담건이 할당되었습니다.', function() {
+		    										open();
+		    									});
+		    								}
+		    								else {
+		    									Ext.Msg.alert('', '일련번호(' + seq + '번) 상담건이 할당해제 되었습니다.', function() {
+		    										close(false, true);
+		    									});
+		    								}
+		    								
 		    							}
 		    							else {
-		    								Ext.Msg.alert('에러', jo.errMsg);
+		    								//이미처리 완료됨
+		    								if(errCode == '600' || errCode == '601') {
+		    									fn = function() {
+		    										close();
+		    										store.load();
+		    									}
+		    								}
+		    								else if(errCode == '603') {
+		    									fn = function() {
+		    										var myprocess = Ext.getCmp('qna-process-combo');
+		    										myprocess.clearValue();
+		    									}
+		    								}
+		    								
+		    								Ext.Msg.alert('에러', jo.errMsg, fn);
 		    							}
 		    							
 		    						},
 		    						failure: function(response) {
+		    							myMask.hide();
 		    							Ext.Msg.alert('', '오류가 발생했습니다.');
 		    						}
 		        				});
@@ -299,13 +406,26 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 		                grow: true,
 		                name: 'processContent',
 		                id: 'qna-processContent',
-		                readOnly: true,
 		                disabled: true
 		            },{
 		                fieldLabel: '요청일자',
 		                anchor: '100%',
 		                name: 'reqTime',
 		                id: 'qna-reqTime',
+		                disabled: true,
+		                readOnly: true
+		            },{
+		                fieldLabel: '처리일자',
+		                anchor: '100%',
+		                name: 'processTime',
+		                id: 'qna-processTime',
+		                disabled: true,
+		                readOnly: true
+		            },{
+		                fieldLabel: '처리자',
+		                anchor: '100%',
+		                name: 'processor',
+		                id: 'qna-processor',
 		                disabled: true,
 		                readOnly: true
 		            },{
