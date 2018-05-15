@@ -92,4 +92,27 @@ Ext.define('Hotplace.util.CommonFn', {
 	,isPlainObjEmpty : function(obj) {
 		return !obj || Object.keys(obj).length == 0;
 	}
+	,ajax: function(param) {
+		var config = {};
+		if(!param) throw new Error('파라미터 객체없음');
+		if(!param.url) throw new Error('url not found');
+		
+		var context = Hotplace.util.Constants.context;
+		var myMask = null;
+		
+		config.url = context + param.url;
+		config.method = (param.method || 'GET').toUpperCase();
+		config.timeout = param.timeout || 60000;
+		
+		
+		config.success = function(response) {
+			var jo = Ext.decode(response.responseText);
+			myMask.hide();
+		}
+		
+		if(param.loadmask) {
+			
+		}
+		Ext.Ajax.request(config);
+	}
 });

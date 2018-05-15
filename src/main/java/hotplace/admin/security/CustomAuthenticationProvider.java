@@ -17,8 +17,6 @@ import org.springframework.stereotype.Component;
 import hotplace.admin.exceptions.NotAuthorized;
 import hotplace.admin.exceptions.NotAuthorizedByAdmin;
 
-
-
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider{
 
@@ -36,7 +34,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider{
 		String password = (String) authentication.getCredentials();
 		
 		logger.info("사용자가 입력한 로그인정보입니다. {}", username + "/" + password);
-		//password = passwordEncoder.encode(password);
 		UserDetailsImpl user;
 		
 		try {
