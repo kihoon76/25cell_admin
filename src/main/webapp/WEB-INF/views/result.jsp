@@ -6,8 +6,20 @@
 <%
 	//if("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
 		AjaxVO vo = new AjaxVO();
-		vo.setSuccess(true);
+		String errCode = (String) request.getAttribute("errCode");
+		
+		if("".equals(errCode)) {
+			vo.setSuccess(true);
+		}
+		else {
+			vo.setSuccess(false);
+			vo.setErrCode(errCode);
+		}
+		
 		//vo.setErrCode("500");
+		
+		response.setContentType("application/json;charset=UTF-8");
+		
 		PrintWriter o = response.getWriter();
 		o.print(new Gson().toJson(vo));
 		o.flush();

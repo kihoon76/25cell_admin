@@ -92,6 +92,40 @@ Ext.define('Hotplace.util.CommonFn', {
 	,isPlainObjEmpty : function(obj) {
 		return !obj || Object.keys(obj).length == 0;
 	}
+	,redirectStoreAjax: function(response) {
+		var context = Hotplace.util.Constants.context;
+		var rText = null
+		
+		if(response && (rText = response.responseText)) {
+			 
+			if(!Ext.String.trim(rText).startsWith('{')) {
+				//html로 간주
+				Ext.Msg.alert('', '세션만료 또는 중복로그인으로 인해 다시 로그인해주세요', function() {
+					window.location.href = context + '/signin';
+				});
+				
+				return;
+			}
+			
+			var jo = Ext.decode(response.responseText);
+			 
+			if(!jo.success && jo.errCode) {
+				var errCode = jo.errCode;
+				
+				if(errCode == '202') {
+					Ext.Msg.alert('', '중복로그인이  발생했습니다.', function() {
+						window.location.href = context + '/signin';
+					});
+					return;
+				} 
+			}
+		}
+		else {
+			Ext.Msg.alert('', '중복로그인이  발생했습니다.', function() {
+				window.location.href = context + '/signin';
+			});
+		}
+	}
 	,ajax: function(param) {
 		var config = {};
 		if(!param) throw new Error('파라미터 객체없음');
@@ -104,15 +138,55 @@ Ext.define('Hotplace.util.CommonFn', {
 		config.method = (param.method || 'GET').toUpperCase();
 		config.timeout = param.timeout || 60000;
 		
+		if(param.params) config.params = param.params;
+		if(param.headers) config.headers = param.headers;
+		if(param.jsonData) config.jsonData = param.jsonData;
 		
 		config.success = function(response) {
-			var jo = Ext.decode(response.responseText);
-			myMask.hide();
+			try {
+				var jo = Ext.decode(response.responseText);
+				var errCode = jo.errCode;
+				
+				//중복로그인 세션 체크
+				if(!jo.success) {
+					if(errCode == '202') {
+						Ext.Msg.alert('', '중복로그인이  발생했습니다.', function() {
+							window.location.href = context + '/signin';
+						});
+						return;
+					}
+				}
+				
+				if(param.success) {
+					param.success(jo);
+				}
+				
+			}
+			catch(e) {
+				if(!Ext.String.trim(response.responseText).startsWith('{')) {
+					//html로 간주
+					Ext.Msg.alert('', '세션만료 되었습니다.', function() {
+						window.location.href = context + '/signin';
+					});
+				}
+			}
+			finally {
+				if(myMask) myMask.hide();
+			}
+		}
+		
+		config.failure = function(response) {
+			if(myMask) myMask.hide();
+			Ext.Msg.alert('', '오류가 발생했습니다.');
+			
+			if(param.failure) param.failure(response);
 		}
 		
 		if(param.loadmask) {
-			
+			myMask = new Ext.LoadMask(param.loadmask.el || Ext.getBody(), {msg: param.loadmask.msg || 'loading..'});
+			myMask.show();
 		}
+		
 		Ext.Ajax.request(config);
 	}
 });

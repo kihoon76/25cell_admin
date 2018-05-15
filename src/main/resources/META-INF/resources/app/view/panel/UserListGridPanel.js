@@ -1,6 +1,6 @@
 Ext.define('Hotplace.view.panel.UserListGridPanel', {
 	extend: 'Ext.grid.Panel',
-	requires : ['Hotplace.util.Constants'],
+	requires : ['Hotplace.util.Constants', 'Hotplace.util.CommonFn'],
 	xtype: 'usergrid',
 	id: 'userListGrid',
 	initComponent: function() {
@@ -21,6 +21,11 @@ Ext.define('Hotplace.view.panel.UserListGridPanel', {
 					type: 'json',
 					successProperty: 'success',
 					root: 'datas'
+				},
+				listeners: {
+					exception: function(proxy, response, operation, eOpts) {
+						Hotplace.util.CommonFn.redirectStoreAjax(response);
+		    	   	}
 				}
 			}
 		});

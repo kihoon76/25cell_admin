@@ -1,13 +1,14 @@
 Ext.define('Hotplace.view.panel.QnaFormPanel', {
 	extend: 'Ext.form.Panel',
 	xtype: 'qnapanel',
-	requires : ['Hotplace.util.Constants', 'Ext.ux.form.ItemSelector'],
+	requires : ['Hotplace.util.Constants', 'Hotplace.util.CommonFn', 'Ext.ux.form.ItemSelector'],
 	id: 'qnaform',
 	initComponent: function() {
 		var selectedRecord = null;
 		   
 		var store = Ext.create('Hotplace.store.QnaListStore'),
 		constants = Hotplace.util.Constants,
+		commonFn = Hotplace.util.CommonFn,
 		searchComboArr = [], 
 		searchType = '', 
 		searchValue = '',
@@ -16,19 +17,6 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 		var searchComboStore = Ext.create('Ext.data.Store', {
 			 fields   : ['name', 'value']
 		});
-//		
-//		var gradeComboStore = Ext.create('Ext.data.Store', {
-//			fields : ['name', 'value'],
-//			proxy : {
-//				type: 'ajax',
-//				url: 'authority/define',
-//				reader: {
-//					type: 'json',
-//					successProperty: 'success',
-//					root: 'datas'
-//				}
-//			}
-//		});
 		
 		function search() {
 			searchType = Ext.getCmp('user-auth-searchtype-combo').getValue();
@@ -329,10 +317,50 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 		        				var seq = selectedRecord.data.seq;
 		        				if(nV == null) return;
 		        				
-		        				var myMask = new Ext.LoadMask(Ext.getBody(), {msg:"loading.."});
-		        				myMask.show();
+		        				//var myMask = new Ext.LoadMask(Ext.getBody(), {msg:"loading.."});
+		        				//myMask.show();
 		        				
-		        				Ext.Ajax.request({
+		        				commonFn.ajax({
+		        					url: '/qna/process?type=' + nV + '&seq=' + seq,
+		        					loadmask: {},
+		        					success: function(jo) {
+		        						var errCode = jo.errCode;
+		    							var fn;
+		    							
+		    							if(jo.success) {
+		    								if(nV == 'open') {
+		    									Ext.Msg.alert('', '일련번호(' + seq + '번) 상담건이 할당되었습니다.', function() {
+		    										open();
+		    									});
+		    								}
+		    								else {
+		    									Ext.Msg.alert('', '일련번호(' + seq + '번) 상담건이 할당해제 되었습니다.', function() {
+		    										close(false, true);
+		    									});
+		    								}
+		    								
+		    							}
+		    							else {
+		    								//이미처리 완료됨
+		    								if(errCode == '600' || errCode == '601') {
+		    									fn = function() {
+		    										close();
+		    										store.load();
+		    									}
+		    								}
+		    								else if(errCode == '603') {
+		    									fn = function() {
+		    										var myprocess = Ext.getCmp('qna-process-combo');
+		    										myprocess.clearValue();
+		    									}
+		    								}
+		    								
+		    								Ext.Msg.alert('에러', jo.errMsg, fn);
+		    							}
+		        					}
+		        				});
+		        				
+		        				/*Ext.Ajax.request({
 		        					url: Hotplace.util.Constants.context + '/qna/process?type=' + nV + '&seq=' + seq,
 		        					method:'GET',
 		    						timeout:60000,
@@ -379,7 +407,7 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 		    							myMask.hide();
 		    							Ext.Msg.alert('', '오류가 발생했습니다.');
 		    						}
-		        				});
+		        				});*/
 		        			}
 		        		}
 		            },{

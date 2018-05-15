@@ -1,11 +1,12 @@
 Ext.define('Hotplace.view.panel.ConfigureFormPanel', {
 	extend: 'Ext.form.Panel',
 	xtype: 'configurepanel',
-	requires : ['Hotplace.util.Constants'],
+	requires : ['Hotplace.util.Constants' ,'Hotplace.util.CommonFn'],
 	id: 'configureform',
 	initComponent: function() {
 		var that = this;
 		var selectedRecord = null;
+		var commFn = Hotplace.util.CommonFn;
 		
 		Ext.apply(this,{
 			frame: true,
@@ -117,7 +118,35 @@ Ext.define('Hotplace.view.panel.ConfigureFormPanel', {
 		            		click: function() {
 		            			var data = selectedRecord.data;
 		            			
-		            			Ext.Ajax.request({
+		            			commFn.ajax({
+		            				url: '/configure/modify',
+		            				method:'POST',
+		            				params: {
+		            					confNum: Ext.getCmp('idConfNum').getValue(),
+		            					confContent: Ext.getCmp('idConfContent').getValue(),
+		            					confValue: Ext.getCmp('idConfValue').getValue(),
+		            					confBigo: Ext.getCmp('idConfBigo').getValue()
+		            				},
+		            				timeout:60000,
+		            				success: function(jo) {
+		            					
+		            					that.child('gridpanel').getStore().reload();
+		            					if(jo.success) {
+		            						if(!jo.errMsg) {
+		            							Ext.Msg.alert('', '설정이 수정되었습니다.');
+		            						}
+		            						else {
+		            							Ext.Msg.alert('', '설정이 수정되었으나 hotplace25가 touch되지 않았습니다');
+		            						}
+		            					}
+		            					else {
+		            						Ext.Msg.alert('에러', jo.errMsg);
+		            					}
+		            				}
+		            			});
+		            			
+		            			
+		            			/*Ext.Ajax.request({
 		            				url: Hotplace.util.Constants.context + '/configure/modify',
 		            				method:'POST',
 		            				params: {
@@ -149,7 +178,7 @@ Ext.define('Hotplace.view.panel.ConfigureFormPanel', {
 		            					console.log(response)
 		            					Ext.Msg.alert('', '오류가 발생했습니다.');
 		            				}
-		            			});
+		            			});*/
 		            			
 		            			
 		            			

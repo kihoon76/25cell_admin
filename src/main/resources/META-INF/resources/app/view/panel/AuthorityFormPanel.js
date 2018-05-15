@@ -5,15 +5,17 @@ Ext.define('Hotplace.view.panel.AuthorityFormPanel', {
 	initComponent: function() {
 		var that = this;
 		var selectedRecord = null;
-		 
+		var commFn = Hotplace.util.CommonFn;
 		
 		var ds = Ext.create('Hotplace.store.AuthorityListStore', {
 			listeners: {
 				load: function(t, r, successful) {
-					var grid = Ext.getCmp('authority-grid');
-					selectedRecord = grid.getView().getSelectionModel().getSelection()[0]
-					if(selectedRecord) {
-						grid.getSelectionModel().select(0);
+					if(successful) {
+						var grid = Ext.getCmp('authority-grid');
+						selectedRecord = grid.getView().getSelectionModel().getSelection()[0]
+						if(selectedRecord) {
+							grid.getSelectionModel().select(0);
+						}
 					}
 				}
 			}
@@ -30,7 +32,31 @@ Ext.define('Hotplace.view.panel.AuthorityFormPanel', {
 		function modifyAuthority() {
 			var data = selectedRecord.data;
 			
-			Ext.Ajax.request({
+			commFn.ajax({
+				url: '/authority/modify',
+				method:'POST',
+				headers: { 'Content-Type': 'application/json' }, 
+				jsonData: {
+					authNum: Ext.getCmp('idAuthNum').getValue(),
+					authName: Ext.getCmp('idAuthName').getValue(),
+					description: Ext.getCmp('idAuthDescription').getValue()
+				},
+				timeout:60000,
+				success: function(jo) {
+					
+					that.child('gridpanel').getStore().reload();
+					if(jo.success) {
+						if(!jo.errMsg) {
+							Ext.Msg.alert('', '권한설정이 수정되었습니다.');
+						}
+					}
+					else {
+						Ext.Msg.alert('에러', jo.errMsg);
+					}
+					
+				}
+			});
+			/*Ext.Ajax.request({
 				url: Hotplace.util.Constants.context + '/authority/modify',
 				method:'POST',
 				headers: { 'Content-Type': 'application/json' }, 
@@ -62,7 +88,7 @@ Ext.define('Hotplace.view.panel.AuthorityFormPanel', {
 					console.log(response)
 					Ext.Msg.alert('', '오류가 발생했습니다.');
 				}
-			});
+			});*/
 		}
 		
 		function regAuthority() {
@@ -73,7 +99,36 @@ Ext.define('Hotplace.view.panel.AuthorityFormPanel', {
 			
 			if(authName == '' || authName == 'ROLE_' || description == '' || authNameKor == '') return;
 			
-			Ext.Ajax.request({
+			commFn.ajax({
+				url: '/authority/regist',
+				method:'POST',
+				headers: { 'Content-Type': 'application/json' }, 
+				jsonData: {
+					authName: authName.toUpperCase(),
+					authNameKor: authNameKor,
+					description: description
+				},
+				timeout:60000,
+				success: function(jo) {
+					
+					if(jo.success) {
+						Ext.Msg.alert('', authName + ' 권한이 등록 되었습니다.');
+						ds.load();
+						
+						Ext.getCmp('txtAuthName').setValue('ROLE_');
+						Ext.getCmp('txtAuthNameKor').setValue('');
+						Ext.getCmp('txtAuthContent').setValue('');
+						authorityWin.hide();
+					}
+					else {
+						Ext.Msg.alert('에러', jo.errMsg);
+					}
+					
+				}
+			});
+			
+			
+			/*Ext.Ajax.request({
 				url: Hotplace.util.Constants.context + '/authority/regist',
 				method:'POST',
 				headers: { 'Content-Type': 'application/json' }, 
@@ -105,11 +160,11 @@ Ext.define('Hotplace.view.panel.AuthorityFormPanel', {
 					console.log(response)
 					Ext.Msg.alert('', '오류가 발생했습니다.');
 				}
-			});
+			});*/
 		}
 		
 		function deleteAuthority() {
-			var authName = selectedRecord.data.authName;
+			/*var authName = selectedRecord.data.authName;
 			Ext.Ajax.request({
 				url: Hotplace.util.Constants.context + '/authority/delete',
 				method:'POST',
@@ -135,7 +190,7 @@ Ext.define('Hotplace.view.panel.AuthorityFormPanel', {
 					console.log(response)
 					Ext.Msg.alert('', '오류가 발생했습니다.');
 				}
-			});
+			});*/
 		}
 		
 		var authorityWin = Ext.create('Ext.window.Window',{

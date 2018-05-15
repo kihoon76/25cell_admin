@@ -13,7 +13,7 @@
 		<!-- <sec:intercept-url pattern="/main" access="permitAll" /> -->
 		<sec:intercept-url pattern="/signin/**" access="permitAll"/>
 		<sec:intercept-url pattern="/login" access="permitAll"/>
-		<sec:intercept-url pattern="/result" access="permitAll"/>
+		<sec:intercept-url pattern="/result/**" access="permitAll"/>
 		<sec:intercept-url pattern="/logout" access="permitAll"/>
 		<sec:intercept-url pattern="/**" access="hasRole('ROLE_ADMIN')"/>
 		<sec:form-login login-page="/signin"
@@ -36,7 +36,7 @@
 		<sec:csrf disabled="true"/>
 		
 		<sec:session-management>
-			<sec:concurrency-control max-sessions="1" error-if-maximum-exceeded="false" expired-url="/logout"/>
+			<sec:concurrency-control max-sessions="1" error-if-maximum-exceeded="false" expired-url="/result/202"/>
 		</sec:session-management>
 	</sec:http> 
 	
