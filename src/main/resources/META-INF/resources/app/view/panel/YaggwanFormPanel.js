@@ -6,35 +6,46 @@ Ext.define('Hotplace.view.panel.YaggwanFormPanel', {
 		var that = this;
 		var selectedRecord = null;
 		var soonseoComboArr = [];
+		var commFn = Hotplace.util.CommonFn;
 		
 		var soonseoComboStore = Ext.create('Ext.data.Store', {
 			 fields   : ['name', 'value']
 		});
 		
-		var ds = Ext.create('Hotplace.store.YaggwanListStore', {
-			listeners: {
-				load: function(t, r, successful) {
-					var len = t.getTotalCount();
-					
-					soonseoComboArr = [];
-					for(var i=1; i<=len; i++) {
-						soonseoComboArr.push({
-							name: i,
-							value:i
-						});
-					}
-					
-					soonseoComboStore.loadData(soonseoComboArr);
-					
-					
-					var grid = Ext.getCmp('yaggwan-grid');
-					selectedRecord = grid.getView().getSelectionModel().getSelection()[0]
-					if(selectedRecord) {
-						grid.getSelectionModel().select(0);
+		try {
+			var ds = Ext.create('Hotplace.store.YaggwanListStore', {
+				listeners: {
+					load: function(t, r, successful) {
+						if(successful) {
+							var len = t.getTotalCount();
+							
+							soonseoComboArr = [];
+							for(var i=1; i<=len; i++) {
+								soonseoComboArr.push({
+									name: i,
+									value:i
+								});
+							}
+							
+							soonseoComboStore.loadData(soonseoComboArr);
+							
+							
+							var grid = Ext.getCmp('yaggwan-grid');
+							selectedRecord = grid.getView().getSelectionModel().getSelection()[0]
+							if(selectedRecord) {
+								grid.getSelectionModel().select(0);
+							}
+						}
 					}
 				}
-			}
-		});
+			});
+		}
+		catch(e) {
+			console.log(e);
+			//세션만료 및 중복로그인시  js파일을 가져오지 못해서 오류발생함
+			commFn.loadJsError();
+		}
+		
 		
 		var yaggwanWin = Ext.create('Ext.window.Window',{
 			iconCls: 'icon-window',
@@ -113,9 +124,10 @@ Ext.define('Hotplace.view.panel.YaggwanFormPanel', {
 			
 			if(categoryName == '' || content == '') return;
 			
-			Ext.Ajax.request({
-				url: Hotplace.util.Constants.context + '/yaggwan/regist',
+			commFn.ajax({
+				url: '/yaggwan/regist',
 				method:'POST',
+				loadmask: {},
 				headers: { 'Content-Type': 'application/json' }, 
 				jsonData: {
 					categoryName: categoryName,
@@ -123,11 +135,8 @@ Ext.define('Hotplace.view.panel.YaggwanFormPanel', {
 					required: required
 				},
 				timeout:60000,
-				success: function(response) {
+				success: function(jo) {
 					
-					var jo = Ext.decode(response.responseText);
-					
-					//that.child('gridpanel').getStore().reload();
 					if(jo.success) {
 						Ext.Msg.alert('', '등록되었습니다.');
 						ds.load();
@@ -142,11 +151,6 @@ Ext.define('Hotplace.view.panel.YaggwanFormPanel', {
 					else {
 						Ext.Msg.alert('에러', jo.errMsg);
 					}
-					
-				},
-				failure: function(response) {
-					console.log(response)
-					Ext.Msg.alert('', '오류가 발생했습니다.');
 				}
 			});
 		}
@@ -158,9 +162,10 @@ Ext.define('Hotplace.view.panel.YaggwanFormPanel', {
 			var key = data.key;
 			var originSoonseo = data.soonseo;
 			
-			Ext.Ajax.request({
-				url: Hotplace.util.Constants.context + '/yaggwan/modify',
+			commFn.ajax({
+				url: '/yaggwan/modify',
 				method:'POST',
+				loadmask: {},
 				headers: { 'Content-Type': 'application/json' }, 
 				jsonData: {
 					key: key,
@@ -171,11 +176,8 @@ Ext.define('Hotplace.view.panel.YaggwanFormPanel', {
 					originSoonseo: originSoonseo
 				},
 				timeout:60000,
-				success: function(response) {
+				success: function(jo) {
 					
-					var jo = Ext.decode(response.responseText);
-					
-					//that.child('gridpanel').getStore().reload();
 					if(jo.success) {
 						Ext.Msg.alert('', '설정이 수정되었습니다.');
 						ds.load();
@@ -185,10 +187,6 @@ Ext.define('Hotplace.view.panel.YaggwanFormPanel', {
 					}
 					
 				},
-				failure: function(response) {
-					console.log(response)
-					Ext.Msg.alert('', '오류가 발생했습니다.');
-				}
 			});
 		}
 		
@@ -197,17 +195,16 @@ Ext.define('Hotplace.view.panel.YaggwanFormPanel', {
 			var data = selectedRecord.data;
 			var key = data.key;
 			
-			Ext.Ajax.request({
-				url: Hotplace.util.Constants.context + '/yaggwan/delete',
+			commFn.ajax({
+				url: '/yaggwan/delete',
 				method:'POST',
+				loadmask: {},
 				headers: { 'Content-Type': 'application/json' }, 
 				jsonData: {
 					key: key
 				},
 				timeout:60000,
-				success: function(response) {
-					
-					var jo = Ext.decode(response.responseText);
+				success: function(jo) {
 					
 					that.child('gridpanel').getStore().reload();
 					if(jo.success) {
@@ -217,11 +214,6 @@ Ext.define('Hotplace.view.panel.YaggwanFormPanel', {
 					else {
 						Ext.Msg.alert('에러', jo.errMsg);
 					}
-					
-				},
-				failure: function(response) {
-					console.log(response)
-					Ext.Msg.alert('', '오류가 발생했습니다.');
 				}
 			});
 		}

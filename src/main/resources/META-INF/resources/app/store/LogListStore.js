@@ -1,6 +1,6 @@
 Ext.define('Hotplace.store.LogListStore', {
 	 extend : 'Ext.data.Store',
-	 requires : ['Hotplace.util.Constants'],
+	 requires : ['Hotplace.util.Constants', 'Hotplace.util.CommonFn'],
 	 proxy : {
 	        type : 'ajax'
 	       ,url : Hotplace.util.Constants.context + '/log/list'
@@ -9,7 +9,13 @@ Ext.define('Hotplace.store.LogListStore', {
 	           type : 'json'
 	          ,root : 'datas'
 	          ,totalProperty : 'total'
+	       },
+	       listeners: {
+	    	   exception: function(proxy, response, operation, eOpts) {
+	    		   Hotplace.util.CommonFn.redirectStoreAjax(response);
+	    	   }
 	       }
+
 	  },
 	  fields : ['ip', 'accountId', 'referer', 'url', 'parameter', 'accessTime', 'userAgent', 'isMobile'],
 	  autoLoad : true,

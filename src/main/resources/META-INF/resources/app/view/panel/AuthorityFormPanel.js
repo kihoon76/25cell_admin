@@ -7,19 +7,28 @@ Ext.define('Hotplace.view.panel.AuthorityFormPanel', {
 		var selectedRecord = null;
 		var commFn = Hotplace.util.CommonFn;
 		
-		var ds = Ext.create('Hotplace.store.AuthorityListStore', {
-			listeners: {
-				load: function(t, r, successful) {
-					if(successful) {
-						var grid = Ext.getCmp('authority-grid');
-						selectedRecord = grid.getView().getSelectionModel().getSelection()[0]
-						if(selectedRecord) {
-							grid.getSelectionModel().select(0);
+		try {
+			var ds = Ext.create('Hotplace.store.AuthorityListStore', {
+				listeners: {
+					load: function(t, r, successful) {
+						if(successful) {
+							var grid = Ext.getCmp('authority-grid');
+							selectedRecord = grid.getView().getSelectionModel().getSelection()[0]
+							if(selectedRecord) {
+								grid.getSelectionModel().select(0);
+							}
 						}
 					}
 				}
-			}
-		});
+			});
+		}
+		catch(e) {
+			console.log(e);
+			//세션만료 및 중복로그인시  js파일을 가져오지 못해서 오류발생함
+			commFn.loadJsError();
+		}
+		
+
 		
 		function authFormat(val){
 			if(val){

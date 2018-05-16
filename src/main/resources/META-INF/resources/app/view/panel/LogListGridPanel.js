@@ -1,16 +1,23 @@
 Ext.define('Hotplace.view.panel.LogListGridPanel', {
 	extend: 'Ext.grid.Panel',
-	requires : ['Hotplace.util.Constants'],
+	requires : ['Hotplace.util.Constants' ,'Hotplace.util.CommonFn'],
 	xtype: 'loggrid',
 	id: 'logListGrid',
 	initComponent: function() {
-		var store = Ext.create('Hotplace.store.LogListStore'),
-			constants = Hotplace.util.Constants,
-			//controller = _hotplaceApp.getController('NoticeController'),
+		var	constants = Hotplace.util.Constants,
+			commFn = Hotplace.util.CommonFn,
 			categoryPanel = Ext.getCmp('app-category'),
 			contentPanel = Ext.getCmp('app-contents'),
 			that = this;
 		
+		try {
+			var store = Ext.create('Hotplace.store.LogListStore');
+		}
+		catch(e) {
+			console.log(e);
+			//세션만료 및 중복로그인시  js파일을 가져오지 못해서 오류발생함
+			commFn.loadJsError();
+		}
 		//store.baseParams = {ip:'', id: '', regDate: null}
 		
 		var searchComboStore = Ext.create('Ext.data.Store', {

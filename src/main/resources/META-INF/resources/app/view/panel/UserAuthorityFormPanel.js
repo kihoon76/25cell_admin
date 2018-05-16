@@ -6,13 +6,23 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	initComponent: function() {
 		var selectedRecord = null;
 		   
-		var store = Ext.create('Hotplace.store.UserListStore'),
-		constants = Hotplace.util.Constants,
+		var constants = Hotplace.util.Constants,
 		commFn = Hotplace.util.CommonFn,
 		searchComboArr = [], 
 		searchType = '', 
 		searchValue = '',
 		authUrl = 'authority/define';
+		
+		try {
+			var store = Ext.create('Hotplace.store.UserListStore');
+		}
+		catch(e) {
+			console.log(e);
+			//세션만료 및 중복로그인시  js파일을 가져오지 못해서 오류발생함
+			commFn.loadJsError();
+			return;
+		}
+		
 		
 		var searchComboStore = Ext.create('Ext.data.Store', {
 			 fields   : ['name', 'value']

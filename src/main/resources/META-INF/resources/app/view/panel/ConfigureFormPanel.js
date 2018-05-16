@@ -8,6 +8,15 @@ Ext.define('Hotplace.view.panel.ConfigureFormPanel', {
 		var selectedRecord = null;
 		var commFn = Hotplace.util.CommonFn;
 		
+		try {
+			var store = Ext.create('Hotplace.store.ConfigureListStore');
+		}
+		catch(e) {
+			console.log(e);
+			//세션만료 및 중복로그인시  js파일을 가져오지 못해서 오류발생함
+			commFn.loadJsError();
+		}
+		
 		Ext.apply(this,{
 			frame: true,
 			bodyPadding: 5,
@@ -17,7 +26,7 @@ Ext.define('Hotplace.view.panel.ConfigureFormPanel', {
 			items: [{
 				columnWidth: 0.60,
 				xtype: 'gridpanel',
-				store: Ext.create('Hotplace.store.ConfigureListStore'),
+				store: store,
 	            height: 400,
 	            title:'설정목록',
 	            columns: [{

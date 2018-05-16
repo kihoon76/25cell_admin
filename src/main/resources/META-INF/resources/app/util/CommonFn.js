@@ -92,6 +92,12 @@ Ext.define('Hotplace.util.CommonFn', {
 	,isPlainObjEmpty : function(obj) {
 		return !obj || Object.keys(obj).length == 0;
 	}
+	,loadJsError: function() {
+		var context = Hotplace.util.Constants.context;
+		Ext.Msg.alert('', '세션만료 또는 중복로그인으로 인해 다시 로그인해주세요', function() {
+			window.location.href = context + '/signin';
+		});
+	}
 	,redirectStoreAjax: function(response) {
 		var context = Hotplace.util.Constants.context;
 		var rText = null
