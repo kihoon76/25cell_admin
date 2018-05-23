@@ -105,13 +105,22 @@ public class AuthorityController {
 		
 		try {
 			vo.setSuccess(true);
-			List<Map<String, String>> list = authorityService.getDefine();
+			Map<String, Boolean> m = new HashMap<String, Boolean>();
+			
 			if(no != null) {
-				Map<String, String> m = new HashMap<>();
-				m.put("name", "없음");
-				m.put("value", "-1");
-				list.add(0, m);
+				m.put("isEach", true);
 			}
+			else {
+				m.put("isEach", false);
+			}
+			
+			List<Map<String, String>> list = authorityService.getDefine(m);
+//			if(no != null) {
+//				Map<String, String> m = new HashMap<>();
+//				m.put("name", "없음");
+//				m.put("value", "-1");
+//				list.add(0, m);
+//			}
 			
 			vo.setDatas(list);
 		}

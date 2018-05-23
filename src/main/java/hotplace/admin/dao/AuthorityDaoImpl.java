@@ -30,8 +30,8 @@ public class AuthorityDaoImpl implements AuthorityDao {
 	}
 
 	@Override
-	public List<Map<String, String>> selectAuthorityDefineList() {
-		return msSqlSession.selectList(namespace + ".selectAuthorityDefineList");
+	public List<Map<String, String>> selectAuthorityDefineList(Map<String, Boolean> m) {
+		return msSqlSession.selectList(namespace + ".selectAuthorityDefineList", m);
 	}
 
 	@Override

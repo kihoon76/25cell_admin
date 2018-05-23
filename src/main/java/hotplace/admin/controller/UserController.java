@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,8 +49,8 @@ public class UserController {
 		AjaxVO vo = new AjaxVO();
 		
 		try {
-			if("-1".equals(account.getGradeNum())) {
-				account.setGradeNum(null);
+			if("-1".equals(account.getGrade())) {
+				account.setGrade(null);
 			}
 			
 			boolean result = userService.modifyUserAuth(account);

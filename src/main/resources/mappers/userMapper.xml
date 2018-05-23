@@ -60,7 +60,129 @@
 	</select>
 	
 	<select id="selectUser" parameterType="hashmap" resultMap="RM_selectUser">
-		select 아이디, 이름, 연락처, 이메일, 가입일자, 탈퇴여부, 권한이름, tb3.권한번호, tb4.권한번호 as 관리자권한
+		with A as (
+			select 아이디, 이름, 연락처, 이메일, 가입일자, 탈퇴여부, 권한이름, tb4.권한번호 as 관리자권한 
+			  from ( 
+			  		select row_number() over(order by 가입일자 desc) rownum, * from [웹].[dbo].[계정]
+			  		<choose>
+				  	  	<when test="searchType != null and searchType == 'accountId'">
+				  	  		where 아이디 = #{searchValue}
+				  	  	</when>
+				  	  	<when test="searchType != null and searchType == 'userName'">
+				  	  		where 이름 = #{searchValue}
+				  	  	</when>
+				  	  	<when test="searchType != null and searchType == 'phone'">
+				  	  		where 연락처 = #{searchValue}
+				  	  	</when>
+				  	  	<when test="searchType != null and searchType == 'email'">
+				  	  		where 이메일 = #{searchValue}
+				  	  	</when>
+				  	  	<when test="searchType != null and searchType == 'regDate'">
+				  	  		where DATEDIFF(DD, #{searchValue}, [가입일자]) = 0
+				  	  	</when>
+				  	  	<when test="searchType != null and searchType == 'grade'">
+				  	  		where 아이디 in (select 계정_아이디 from [웹].[dbo].[계정_권한] where 권한번호 = #{searchValue}) 
+				  	  	</when>
+				  	  	<when test="searchType != null and searchType == 'out'">
+				  	  		where 탈퇴여부 = #{searchValue} 
+				  	  	</when>
+				  	  	<otherwise></otherwise>
+				  	</choose> 
+			  ) tb1
+		     left outer join ( 
+		     	select 계정_아이디, 권한번호 
+		     	  from [웹].[dbo].[계정_권한] 
+		     	 where 권한번호 not in (
+		     	 	select 권한번호 
+		     	 	  from [웹].[dbo].[권한] 
+		     	 	 where 권한이름 = 'ROLE_JOINED' or 권한이름 = 'ROLE_ADMIN')
+		     ) tb2 on tb1.아이디 = tb2.계정_아이디 
+		     left outer join [웹].[dbo].[권한] tb3 on tb3.권한번호 = tb2.권한번호 
+		     left outer join [웹].[dbo].[계정_권한] tb4 on tb1.아이디 = tb4.계정_아이디 
+		      and tb4.권한번호 = (
+		      	select 권한번호 from [웹].[dbo].[권한] where 권한이름 = 'ROLE_ADMIN'
+		     ) 
+		    where rownum between (#{start} + 1) and (#{start} + #{limit})
+		    <if test="searchType != null and searchType == 'grade'">
+		 	  and tb3.권한번호 = #{searchValue}
+		 	</if>)
+			select distinct TBL1.아이디, 
+			       STUFF((select ',' + 권한이름 from A TBL2 where TBL2.아이디=TBL1.아이디 for xml path('')),1,1,'') as 권한이름,
+			       TBL1.이름, TBL1.연락처, TBL1.이메일, TBL1.가입일자, TBL1.탈퇴여부, TBL1.관리자권한 
+			  from A TBL1 
+	</select>
+	
+	<delete id="deleteUserGrade" parameterType="Account">
+		delete from [웹].[dbo].[계정_권한] 
+		 where 계정_아이디 = #{accountId} 
+		   and 권한번호 not in (
+		   	select 권한번호 
+		   	  from [웹].[dbo].[권한] 
+		   	 where 권한이름 = 'ROLE_JOINED'
+		   ) 
+	</delete>
+	
+	<insert id="insertUserGrade" parameterType="Account">
+		insert into [웹].[dbo].[계정_권한](계정_아이디, 권한번호)
+		select #{accountId} 계정, 권한번호
+		  from [웹].[dbo].[권한]
+		 where 권한이름 in 
+		 	<foreach collection="gradeArr"   item="item" open="(" close=")" separator=",">
+		 	#{item, jdbcType=VARCHAR}
+		 	</foreach>        
+	</insert>
+	
+	<insert id="insertUserGradeAdmin" parameterType="Account">
+		insert into [웹].[dbo].[계정_권한](계정_아이디, 권한번호)
+		select #{accountId}, 권한번호
+		  from [웹].[dbo].[권한]
+		 where 권한이름 = 'ROLE_ADMIN' 
+	</insert>
+	
+	<select id="selectUserInfo" parameterType="string" resultMap="RM_selectAccount">
+		select 아이디 , 비번 , 탈퇴여부,
+		       case when t2.권한번호 is null then 'N'  
+		       		else 'Y' 
+		       end  as 관리자
+		  from ( select 아이디, 비번, 탈퇴여부
+		  		   from [웹].[dbo].[계정]
+		  		  where 아이디 = #{accountId}
+		       ) t1
+	      left outer join [웹].[dbo].[계정_권한] t2
+	        on t1.아이디 = t2.계정_아이디 and t2.권한번호 = (select 권한번호 from [웹].[dbo].[권한] where 권한이름 = 'ROLE_ADMIN')
+	</select>
+	
+	<resultMap id="RM_selectAccount" type="Account">
+		<result column="아이디" property="accountId" javaType="string"/>
+		<result column="비번" property="password" javaType="string"/>
+		<result column="관리자" property="admin" javaType="string"/>
+		<result column="탈퇴여부" property="out" javaType="string" />
+	 	<collection property="authorities" column="아이디" javaType="java.util.ArrayList"
+	 				ofType="Authority" select="selectAdminAuthority" />
+	</resultMap>
+	
+	<select id="selectAdminAuthority" parameterType="string" resultType="Authority">
+		select 권한이름 as authName, 권한번호 as authNum
+		  from [웹].[dbo].[권한]
+		 where 권한이름 = 'ROLE_ADMIN'
+	</select>
+	
+	<update id="updateUserInfo" parameterType="Account">
+		update [웹].[dbo].[계정]
+		   set 이름 = #{userName},
+		   	       연락처 = #{phone},
+		   	       이메일 = #{email}
+		 where 아이디 = #{accountId}  	   
+	</update>
+	
+	<update id="updateUserOut" parameterType="Account">
+		update [웹].[dbo].[계정]
+		   set 탈퇴여부 = 'Y'
+		 where 아이디 = #{accountId}
+	</update>
+</mapper>
+<!-- 
+	select 아이디, 이름, 연락처, 이메일, 가입일자, 탈퇴여부, 권한이름, tb3.권한번호, tb4.권한번호 as 관리자권한
 		  from (
 		  	select row_number() over(order by 가입일자 desc) rownum, *
 		  	  from [웹].[dbo].[계정]
@@ -90,65 +212,17 @@
 		  	  </choose>
 
 		  ) tb1
-		  left outer join ( select 계정_아이디, 권한번호 from [웹].[dbo].[계정_권한] where 권한번호 != 3 and 권한번호 != 1) tb2 on tb1.아이디 = tb2.계정_아이디
+		  left outer join ( 
+		  	select 계정_아이디, 권한번호 
+		  	  from [웹].[dbo].[계정_권한] 
+		  	 where 권한번호 not in (select 권한번호 from [웹].[dbo].[권한] where 권한이름 = 'ROLE_JOINED' or 권한이름 = 'ROLE_ADMIN')
+		  ) tb2 on tb1.아이디 = tb2.계정_아이디
 		  left outer join [웹].[dbo].[권한] tb3 on tb3.권한번호 = tb2.권한번호
-		  left outer join [웹].[dbo].[계정_권한] tb4 on tb1.아이디 = tb4.계정_아이디 and tb4.권한번호 = 1
+		  left outer join [웹].[dbo].[계정_권한] tb4 on tb1.아이디 = tb4.계정_아이디 and tb4.권한번호 = (select 권한번호 from [웹].[dbo].[권한] where 권한이름 = 'ROLE_ADMIN')
 		 where rownum between (#{start} + 1) and (#{start} + #{limit})
 		 <if test="searchType != null and searchType == 'grade'">
 		 and tb3.권한번호 = #{searchValue}
 		 </if>
 		   
-	</select>
-	
-	<delete id="deleteUserGrade" parameterType="Account">
-		delete from [웹].[dbo].[계정_권한] where 계정_아이디 = #{accountId} and 권한번호 != 3 
-	</delete>
-	
-	<insert id="insertUserGrade" parameterType="Account">
-		insert into [웹].[dbo].[계정_권한](계정_아이디, 권한번호)
-		values(#{accountId}, #{gradeNum})
-	</insert>
-	
-	<select id="selectUserInfo" parameterType="string" resultMap="RM_selectAccount">
-		select 아이디 , 비번 , 탈퇴여부,
-		       case t2.권한번호  
-		       		when 1 then 'Y'
-		       		else 'N' 
-		       end  as 관리자
-		  from ( select 아이디, 비번, 탈퇴여부
-		  		   from [웹].[dbo].[계정]
-		  		  where 아이디 = #{accountId}
-		       ) t1
-	      left outer join [웹].[dbo].[계정_권한] t2
-	        on t1.아이디 = t2.계정_아이디 and t2.권한번호 = 1
-	</select>
-	
-	<resultMap id="RM_selectAccount" type="Account">
-		<result column="아이디" property="accountId" javaType="string"/>
-		<result column="비번" property="password" javaType="string"/>
-		<result column="관리자" property="admin" javaType="string"/>
-		<result column="탈퇴여부" property="out" javaType="string" />
-	 	<collection property="authorities" column="아이디" javaType="java.util.ArrayList"
-	 				ofType="Authority" select="selectAdminAuthority" />
-	</resultMap>
-	
-	<select id="selectAdminAuthority" parameterType="string" resultType="Authority">
-		select 권한이름 as authName, 권한번호 as authNum
-		  from [웹].[dbo].[권한]
-		 where 권한번호 = 1
-	</select>
-	
-	<update id="updateUserInfo" parameterType="Account">
-		update [웹].[dbo].[계정]
-		   set 이름 = #{userName},
-		   	       연락처 = #{phone},
-		   	       이메일 = #{email}
-		 where 아이디 = #{accountId}  	   
-	</update>
-	
-	<update id="updateUserOut" parameterType="Account">
-		update [웹].[dbo].[계정]
-		   set 탈퇴여부 = 'Y'
-		 where 아이디 = #{accountId}
-	</update>
-</mapper>
+
+ -->

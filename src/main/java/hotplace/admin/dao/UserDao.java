@@ -19,4 +19,6 @@ public interface UserDao {
 
 	void updateUserOut(Account account);
 
+	void insertUserGradeAdmin(Account account);
+
 }

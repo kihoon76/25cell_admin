@@ -30,13 +30,12 @@ public class UserService {
 	public boolean modifyUserAuth(Account account) throws Exception {
 		userDao.deleteUserGrade(account);
 		
-		if(account.getGradeNum() != null) {
+		if(account.getGrade() != null) {
 			userDao.insertUserGrade(account);
 		}
 		
 		if("Y".equals(account.getAdmin())) {
-			account.setGradeNum("1");
-			userDao.insertUserGrade(account);
+			userDao.insertUserGradeAdmin(account);
 		}
 		
 		userDao.updateUserInfo(account);

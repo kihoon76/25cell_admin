@@ -26,10 +26,25 @@
 		 where 권한번호 = #{authNum}
 	</update>
 	
-	<select id="selectAuthorityDefineList" resultType="map">
-		select 권한한글명 as name, convert(varchar(10), 권한번호) as value
+	<select id="selectAuthorityDefineList" parameterType="map" resultType="map">
+		select 권한한글명 as name, 
+		<choose>
+		 	<when test="isEach">
+		 		권한이름 as value
+		 	</when>
+		 	<otherwise>
+		 		convert(varchar(10), 권한번호) as value
+		 	</otherwise>
+		 </choose>
 		  from [웹].[dbo].[권한]
-		 where 권한번호 != 3 and 권한번호 != 1
+		 <choose>
+		 	<when test="isEach">
+		 		where 권한번호 not in (select 권한번호 from [웹].[dbo].[권한] where 권한이름 ='ROLE_ADMIN' or 권한이름='ROLE_JOINED' or 권한이름='ROLE_ALL')
+		 	</when>
+		 	<otherwise>
+		 		where 권한번호 not in (select 권한번호 from [웹].[dbo].[권한] where 권한이름 ='ROLE_ADMIN' or 권한이름='ROLE_JOINED')
+		 	</otherwise>
+		 </choose>
 	</select>
 	
 	<insert id="insertAuthority" parameterType="Authority">

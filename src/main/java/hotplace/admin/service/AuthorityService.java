@@ -25,8 +25,8 @@ public class AuthorityService {
 		return 1 == authorityDao.updateDefine(authority);
 	}
 
-	public List<Map<String, String>> getDefine() {
-		return authorityDao.selectAuthorityDefineList();
+	public List<Map<String, String>> getDefine(Map<String, Boolean> m) {
+		return authorityDao.selectAuthorityDefineList(m);
 	}
 
 	public void registAuthority(Authority authority) {

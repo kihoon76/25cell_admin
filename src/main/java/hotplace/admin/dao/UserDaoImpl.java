@@ -30,6 +30,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public int insertUserGrade(Account account) {
+		System.err.println(account.getGradeArr().get(0));
 		return msSqlSession.insert(namespace + ".insertUserGrade", account);
 	}
 
@@ -46,5 +47,10 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public void updateUserOut(Account account) {
 		msSqlSession.update(namespace + ".updateUserOut", account);
+	}
+
+	@Override
+	public void insertUserGradeAdmin(Account account) {
+		msSqlSession.insert(namespace + ".insertUserGradeAdmin", account);
 	}
 }

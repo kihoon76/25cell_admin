@@ -12,7 +12,7 @@ public interface AuthorityDao {
 
 	public int updateDefine(Authority authority);
 
-	public  List<Map<String, String>> selectAuthorityDefineList();
+	public  List<Map<String, String>> selectAuthorityDefineList(Map<String, Boolean> m);
 
 	public void insertAuthority(Authority authority);
 

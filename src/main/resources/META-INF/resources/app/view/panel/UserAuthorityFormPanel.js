@@ -20,7 +20,6 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 			console.log(e);
 			//세션만료 및 중복로그인시  js파일을 가져오지 못해서 오류발생함
 			commFn.loadJsError();
-			return;
 		}
 		
 		
@@ -46,6 +45,7 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 			}
 		});
 		
+		
 		function search() {
 			searchType = Ext.getCmp('user-auth-searchtype-combo').getValue();
 			searchValue = Ext.getCmp('user-auth-search-text').getValue() ;
@@ -70,16 +70,14 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 				
 				if(btn == 'yes') {
 					commFn.ajax({
-						url: Hotplace.util.Constants.context + '/user/auth/out',
+						url: '/user/auth/out',
 						method:'POST',
 						headers: { 'Content-Type': 'application/json' }, 
 						jsonData: {
 							accountId: delUserId
 						},
 						timeout:60000,
-						success: function(response) {
-							
-							var jo = Ext.decode(response.responseText);
+						success: function(jo) {
 							
 							Ext.getCmp('user-auth-grid').getStore().reload();
 							if(jo.success) {
@@ -260,7 +258,17 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	    					var outChk = Ext.getCmp('user-auth-out-check');
 	    					var btnModify = Ext.getCmp('btn-modify-auth');
 	    					var btnDelete = Ext.getCmp('btn-delete-auth');
+	    					var eachFldst = Ext.getCmp('user-each-service-fldst');
+	    					var chkGrp = Ext.getCmp('user-each-service-fldst-chkgrp');
 	    					
+	    					//체크박스 초기화
+	    					var eachChkLen = (chkGrp.items.items)? chkGrp.items.items.length: 0;
+							var eachItems = chkGrp.items.items;
+	    					
+							for(var i=0; i<eachChkLen; i++) {
+								eachItems[i].setValue(false);
+							}
+							
 	    					//관리자여부
 	    					if(data.admin) {
 	    						chkAdm.setValue(true);
@@ -277,13 +285,27 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	    					}
 	    					
 	    					var combo = Ext.getCmp('user-auth-grade-combo');
-	    					combo.getStore().load();
 	    					
-	    					if(data.gradeNum) {
-	    						combo.setValue(data.gradeNum);
+	    					if(data.grade) {
+	    						if(data.grade == 'ROLE_ALL') {
+	    							combo.setValue(data.grade);
+	    							eachFldst.setDisabled(true);
+	    						}
+	    						else {
+	    							combo.setValue('ROLE_EACH');
+	    							eachFldst.setDisabled(false);
+	    							var grades = data.grade.split(',');
+	    							
+	    							for(var c=0; c<eachChkLen; c++) {
+	    								if(Ext.Array.contains(grades, eachItems[c]._value)) {
+	    									eachItems[c].setValue(true);
+	    								}
+	    							}
+	    						}
 	    					}
 	    					else {
 	    						combo.setValue('-1');
+	    						eachFldst.setDisabled(true);
 	    					}
 	    					
 	    					
@@ -314,6 +336,7 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		    					btnModify.setDisabled(false);
 		    					btnDelete.setDisabled(false);
 	    					}
+	    					
 	    				}
 	    			}
 				}, {
@@ -367,21 +390,79 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		            	fieldLabel: '회원등급',
 		            	editable: false,
 		            	disabled: true,
-		            	store: Ext.create('Ext.data.Store', {
-		        			fields : ['name', 'value'],
-		        			proxy : {
-		        				type: 'ajax',
-		        				url: 'authority/define?no=Y',
-		        				reader: {
-		        					type: 'json',
-		        					successProperty: 'success',
-		        					root: 'datas'
+//		            	store: Ext.create('Ext.data.Store', {
+//		        			fields : ['name', 'value'],
+//		        			proxy : {
+//		        				type: 'ajax',
+//		        				url: 'authority/define?no=Y',
+//		        				reader: {
+//		        					type: 'json',
+//		        					successProperty: 'success',
+//		        					root: 'datas'
+//		        				}
+//		        			}
+//		        		}),
+		            	store:  Ext.create('Ext.data.Store', {
+		            		fields:['name', 'value'],
+		            		data: [
+		            		  {name: '없음', value: '-1'},
+		            		  {name: '전체이용회원', value: 'ROLE_ALL'},
+		            		  {name: '개별이용회원', value: 'ROLE_EACH'}
+		            		]
+		            	}),
+		        		displayField: 'name',
+		        		valueField: 'value',
+		        		listeners: {
+		        			change: function(combo, nV) {
+		        				var eachFldst = Ext.getCmp('user-each-service-fldst');
+		        				if(nV == 'ROLE_EACH') {
+		        					eachFldst.setDisabled(false);
+		        				}
+		        				else {
+		        					eachFldst.setDisabled(true);
 		        				}
 		        			}
-		        		}),
-		        		displayField: 'name',
-		        		valueField: 'value'
+		        		}
 		            },{
+		            	xtype: 'fieldset',
+		            	title: '개별이용',
+		            	id: 'user-each-service-fldst',
+		            	collapsible: false,
+		            	anchor: '100%',
+		            	items: [{
+		            		xtype: 'checkboxgroup',
+		            		id: 'user-each-service-fldst-chkgrp'
+		            		
+		            	}],
+		            	disabled: true,
+		            	listeners: {
+		            		afterrender: function(fldst, eOpts) {
+		            			commFn.ajax({
+		            				url: '/authority/define?no=Y',
+		            				method:'GET',
+		            				timeout:60000,
+		            				success: function(jo) {
+		            					if(jo.success) {
+		            						var items = [];
+		            						var data = jo.datas;
+		            						var len = data.length;
+		            						
+		            						for(var i=0; i<len; i++) {
+		            							items.push({
+		        		            				xtype: 'checkbox',
+		        		            				boxLabel: data[i].name,
+		        		            				_value: data[i].value,
+		        		            				id: data[i].value
+		        		            			});
+		            						}
+		            						
+		            						Ext.getCmp('user-each-service-fldst-chkgrp').add(items);
+		            					}
+		            				}
+		            			});
+		            		}
+		            	}
+		            }, {
 		            	xtype: 'checkbox',
 		            	fieldLabel: '관리자권한',
 		            	id: 'user-auth-admin-check',
@@ -405,14 +486,63 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		            			var accountId = selectedRecord.data.accountId,
 		            				userName = Ext.String.trim(Ext.getCmp('user-auth-userName').getValue()),
 		            				phone = Ext.String.trim(Ext.getCmp('user-auth-phone').getValue()),
-		            				email = Ext.String.trim(Ext.getCmp('user-auth-email').getValue());
+		            				email = Ext.String.trim(Ext.getCmp('user-auth-email').getValue()),
+		            				userGrade = Ext.getCmp('user-auth-grade-combo'),
+		            				chkGrp = Ext.getCmp('user-each-service-fldst-chkgrp'),
+		            				gradeArr = null;
 		            			
 		            			if(userName == '' || phone == '' || email == '') {
 		            				Ext.Msg.alert('알림', '회원이름, 연락처, 이메일을 선택하세요');
 		            				return;
 		            			}
 		            			
-		            			Ext.Ajax.request({
+		            			//개별이용회원일 경우
+		            			if(userGrade.getValue() == 'ROLE_EACH') {
+		            				gradeArr = Ext.Object.getKeys(chkGrp.getValue());
+		            				
+		            				if(gradeArr.length == 0) {
+		            					Ext.Msg.alert('알림', '개별이용 서비스를 선택하세요');
+			            				return;
+		            				}
+		            				
+		            				var len = gradeArr.length;
+		            				for(var i=0; i<len; i++) {
+		            					gradeArr[i] = gradeArr[i].replace('-inputEl', '');
+		            				}
+		            				
+		            				//gradeArr = gradeArr.join(',');
+		            			}
+		            			else {
+		            				gradeArr = [userGrade.getValue()];
+		            			}
+		            		
+		            			
+		            			commFn.ajax({
+		    						url: '/user/auth/modify',
+		    						method:'POST',
+		    						headers: { 'Content-Type': 'application/json' }, 
+		    						jsonData: {
+		            					accountId: selectedRecord.data.accountId,
+		            					userName: userName,
+		            					phone: phone,
+		            					email:email,
+		            					grade: gradeArr.join(','),
+		            					gradeArr: gradeArr,
+		            					admin: Ext.getCmp('user-auth-admin-check').checked ? 'Y' : 'N'
+		            				},
+		    						timeout:60000,
+		    						success: function(jo) {
+		    							Ext.getCmp('user-auth-grid').getStore().reload();
+		    							if(jo.success) {
+		    								Ext.Msg.alert('', '설정이 수정되었습니다.');
+		            					}
+		            					else {
+		            						Ext.Msg.alert('에러', jo.errMsg);
+		            					}
+		    						},
+		    					});
+		            			
+		            			/*Ext.Ajax.request({
 		            				url: Hotplace.util.Constants.context + '/user/auth/modify',
 		            				method:'POST',
 		            				headers: { 'Content-Type': 'application/json' }, 
@@ -447,7 +577,7 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		            					console.log(response)
 		            					Ext.Msg.alert('', '오류가 발생했습니다.');
 		            				}
-		            			});
+		            			});*/
 		            		}
 		            	}
 		            }, {
