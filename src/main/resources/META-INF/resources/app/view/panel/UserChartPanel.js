@@ -59,14 +59,14 @@ Ext.define('Hotplace.view.panel.UserChartPanel', {
 		var userGradechart = Ext.create('Ext.chart.Chart', {
 			xtype: 'chart',
 			id: 'userGradeChart',
-			width: 500,
+			width: 800,
             height: 500,
 			animate: true,
 			store: userGradeChartStore,
 			shadow: true,
 			margin: '100 0 0 100',
 			legend: {
-				position: 'bottom'
+				position: 'right'
 			},
 			insertPadding: 160,
 			theme: 'Base:gradients',
@@ -77,7 +77,7 @@ Ext.define('Hotplace.view.panel.UserChartPanel', {
 				donut: donut,
 				tips: {
 					trackMouse: true,
-					width: 140,
+					width: 200,
 					height: 28,
 					renderer: function(storeItem, item) {
 						var total = 0;
