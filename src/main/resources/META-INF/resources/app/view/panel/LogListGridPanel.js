@@ -276,7 +276,13 @@ Ext.define('Hotplace.view.panel.LogListGridPanel', {
 						value: datas.ip
 		            }, {
 		            	fieldLabel: '아이디',
-		            	value: datas.accountId
+		            	value: datas.accountId,
+		            	focusOnToFront: false,
+		            	listeners: {
+		            		focus: function(text) {
+		            			console.log('focus');
+		            		}
+		            	}
 		            }, {
 		            	fieldLabel: '유입경로',
 		            	value: datas.referer
