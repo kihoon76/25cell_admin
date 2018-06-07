@@ -15,4 +15,6 @@ public interface QnaDao {
 
 	void updateProcessor(Map<String, String> m);
 
+	void updateProcess(Map<String, String> param);
+
 }

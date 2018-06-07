@@ -22,6 +22,8 @@
 		<result column="처리자_계정" property="processor" javaType="string" />
 		<result column="문의사항" property="question" javaType="string" />
 		<result column="처리여부" property="processYN" javaType="string" />
+		<result column="처리내용" property="processContent" javaType="string" />
+		
 	</resultMap>
 	
 	<select id="selectQnaList" resultMap="RM_selectQnaList" parameterType="map">
@@ -53,7 +55,7 @@
 	</select>
 	
 	<select id="selectQna" parameterType="hashmap" resultMap="RM_selectQna">
-		select 일련번호, 연락처, 요청일자, 처리일자, 처리자_계정, 문의사항, 처리여부
+		select 일련번호, 연락처, 요청일자, 처리일자, 처리자_계정, 문의사항, 처리여부, 처리내용
 		  from (
 		  	select row_number() over(order by 요청일자 desc) rownum, *
 		  	  from [웹].[dbo].[문의사항]
@@ -102,5 +104,17 @@
 		   set 처리자_계정 = null
 		 where 일련번호 = #{seq}
 		   and 처리자_계정 = #{currUser}
+	</update>
+	
+	<update id="updateProcess" parameterType="map">
+		<selectKey keyProperty="processTime" resultType="string" order="AFTER">
+			select 처리일자 from [웹].[dbo].[문의사항] where 일련번호 = #{seq}
+		</selectKey>
+		update [웹].[dbo].[문의사항]
+		   set 처리내용 = #{processContent},
+		   	      처리일자 = getDate(),
+		   	      처리자_계정 = #{accountId},
+		   	      처리여부 = 'Y'
+		 where 일련번호 = #{seq}
 	</update>
 </mapper>

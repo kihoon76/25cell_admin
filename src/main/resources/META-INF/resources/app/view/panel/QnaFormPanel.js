@@ -56,44 +56,6 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 			});    
 		}
 		
-		function outUser() {
-			var delUserId = selectedRecord.data.accountId;
-			
-			Ext.Msg.confirm('회원탈퇴', '회원계정 (' + delUserId + ') 탈퇴시키시겠습니까?', function(btn) {
-				
-				if(btn == 'yes') {
-					Ext.Ajax.request({
-						url: Hotplace.util.Constants.context + '/user/auth/out',
-						method:'POST',
-						headers: { 'Content-Type': 'application/json' }, 
-						jsonData: {
-							accountId: delUserId
-						},
-						timeout:60000,
-						success: function(response) {
-							
-							var jo = Ext.decode(response.responseText);
-							
-							Ext.getCmp('user-auth-grid').getStore().reload();
-							if(jo.success) {
-								Ext.Msg.alert('', '회원계정(' + delUserId + ')이 탈퇴 처리되었습니다.');
-							}
-							else {
-								Ext.Msg.alert('에러', jo.errMsg);
-							}
-							
-						},
-						failure: function(response) {
-							Ext.Msg.alert('', '오류가 발생했습니다.');
-						}
-					});
-				}
-				else {
-					
-				}
-			})
-			
-		}
 		
 		function close(isClearValue, itemClickedState) {
 			var phone = Ext.getCmp('qna-phone');
@@ -295,6 +257,7 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 	    					var myprocess = Ext.getCmp('qna-process-combo');
 	    					var processTime = Ext.getCmp('qna-processTime');
 	    					var processor = Ext.getCmp('qna-processor');
+	    					var processContent = Ext.getCmp('qna-processContent');
 	    					
 	    					if(record.data.processYN == 'Y') {
 	    						Ext.Msg.alert('알림', '이미 처리된 상담입니다.', function() {
@@ -313,6 +276,8 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 	    							if(data.processor != undefined) {
 	    								processor.setValue(data.processor);
 	    							}
+	    							
+	    							processContent.setValue(data.processContent);
 	    						});
 	    					}
 	    					else {
@@ -324,6 +289,9 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 		    					reqTime.setValue(data.reqTime);
 		    					myprocess.clearValue();
 		    					myprocess.setDisabled(false);
+		    					processTime.setValue('');
+		    					processor.setValue('');
+		    					processContent.setValue('');
 	    					}
 	    				}
 	    			}
@@ -399,55 +367,6 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 		    							}
 		        					}
 		        				});
-		        				
-		        				/*Ext.Ajax.request({
-		        					url: Hotplace.util.Constants.context + '/qna/process?type=' + nV + '&seq=' + seq,
-		        					method:'GET',
-		    						timeout:60000,
-		    						success: function(response) {
-		    							
-		    							var jo = Ext.decode(response.responseText);
-		    							var errCode = jo.errCode;
-		    							var fn;
-		    							
-		    							myMask.hide();
-		    							if(jo.success) {
-		    								if(nV == 'open') {
-		    									Ext.Msg.alert('', '일련번호(' + seq + '번) 상담건이 할당되었습니다.', function() {
-		    										open();
-		    									});
-		    								}
-		    								else {
-		    									Ext.Msg.alert('', '일련번호(' + seq + '번) 상담건이 할당해제 되었습니다.', function() {
-		    										close(false, true);
-		    									});
-		    								}
-		    								
-		    							}
-		    							else {
-		    								//이미처리 완료됨
-		    								if(errCode == '600' || errCode == '601') {
-		    									fn = function() {
-		    										close();
-		    										store.load();
-		    									}
-		    								}
-		    								else if(errCode == '603') {
-		    									fn = function() {
-		    										var myprocess = Ext.getCmp('qna-process-combo');
-		    										myprocess.clearValue();
-		    									}
-		    								}
-		    								
-		    								Ext.Msg.alert('에러', jo.errMsg, fn);
-		    							}
-		    							
-		    						},
-		    						failure: function(response) {
-		    							myMask.hide();
-		    							Ext.Msg.alert('', '오류가 발생했습니다.');
-		    						}
-		        				});*/
 		        			}
 		        		}
 		            },{
@@ -512,51 +431,38 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 		            				return;
 		            			}
 		            			
-		            			var accountId = selectedRecord.data.accountId,
-		            				userName = Ext.String.trim(Ext.getCmp('user-auth-userName').getValue()),
-		            				phone = Ext.String.trim(Ext.getCmp('user-auth-phone').getValue()),
-		            				email = Ext.String.trim(Ext.getCmp('user-auth-email').getValue());
+		            			console.log(selectedRecord)
 		            			
-		            			if(userName == '' || phone == '' || email == '') {
-		            				Ext.Msg.alert('알림', '회원이름, 연락처, 이메일을 선택하세요');
+		            			var processContentEl = Ext.getCmp('qna-processContent'),
+		            				processContent = Ext.String.trim(processContentEl.getValue());
+		            			
+		            			if(processContent == '') {
+		            				Ext.Msg.alert('알림', '처리내용을 입력해 주세요');
 		            				return;
 		            			}
 		            			
-		            			Ext.Ajax.request({
-		            				url: Hotplace.util.Constants.context + '/user/auth/modify',
-		            				method:'POST',
-		            				headers: { 'Content-Type': 'application/json' }, 
+		            			commonFn.ajax({
+		        					url: '/qna/process/resolve',
+		        					loadmask: {},
+		        					method: 'POST',
+		        					headers: { 'Content-Type': 'application/json' }, 
 		            				jsonData: {
-		            					accountId: selectedRecord.data.accountId,
-		            					userName: userName,
-		            					phone: phone,
-		            					email:email,
-		            					gradeNum: Ext.getCmp('user-auth-grade-combo').getValue(),
-		            					admin: Ext.getCmp('user-auth-admin-check').checked ? 'Y' : 'N'
+		            					seq: selectedRecord.data.seq,
+		            					processContent: processContent
 		            				},
-		            				timeout:60000,
-		            				success: function(response) {
-		            					
-		            					var jo = Ext.decode(response.responseText);
-		            					
-		            					Ext.getCmp('user-auth-grid').getStore().reload();
-		            					if(jo.success) {
-		            						if(!jo.errMsg) {
-		            							Ext.Msg.alert('', '설정이 수정되었습니다.');
-		            						}
-		            						else {
-		            							Ext.Msg.alert('', '설정이 수정되었으나 hotplace25가 touch되지 않았습니다');
-		            						}
-		            					}
-		            					else {
-		            						Ext.Msg.alert('에러', jo.errMsg);
-		            					}
-		            					
-		            				},
-		            				failure: function(response) {
-		            					console.log(response)
-		            					Ext.Msg.alert('', '오류가 발생했습니다.');
-		            				}
+		        					success: function(jo) {
+		        						var errCode = jo.errCode;
+		    							
+		    							if(jo.success) {
+		    								Ext.Msg.alert('', '일련번호(' + selectedRecord.data.seq + '번) 상담건이 처리되었습니다.', function() {
+		    									close();
+		    									store.load();
+	    									});
+		    							}
+		    							else {
+		    								Ext.Msg.alert('오류', jo.errMsg);
+		    							}
+		        					}
 		            			});
 		            		}
 		            	}

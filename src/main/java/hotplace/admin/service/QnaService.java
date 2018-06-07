@@ -32,4 +32,8 @@ public class QnaService {
 		qnaDao.updateProcessor(m);
 		
 	}
+
+	public void resolveProcess(Map<String, String> param) {
+		 qnaDao.updateProcess(param);
+	}
 }

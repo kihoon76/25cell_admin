@@ -38,4 +38,9 @@ public class QnaDaoImpl implements QnaDao {
 		msSqlSession.update(namespace + ".updateProcessor", m);
 		
 	}
+
+	@Override
+	public void updateProcess(Map<String, String> param) {
+		msSqlSession.update(namespace + ".updateProcess", param);
+	}
 }

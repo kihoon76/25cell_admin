@@ -1,14 +1,19 @@
 package hotplace.admin.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -48,7 +53,6 @@ public class QnaController {
 	public AjaxVO processOpen(@RequestParam("type") String process, @RequestParam("seq") String seq) {
 		
 		String currUser = SecurityContextHolder.getContext().getAuthentication().getName();
-		System.err.println("=====================currUser:   "+currUser);
 		AjaxVO vo = new AjaxVO();
 		Map<String, String> m = new HashMap<String, String>();
 		m.put("seq", seq);
@@ -83,7 +87,6 @@ public class QnaController {
 				try {
 					String accountId = qnaService.processOpen(m);
 					
-					System.err.println("====================="+accountId);
 					//한번더 체크한다
 					if(!currUser.equals(accountId)) {
 						vo.setErrCode("601");
@@ -121,4 +124,43 @@ public class QnaController {
 		
 		return vo;
 	}	
+	
+	@PostMapping("process/resolve")
+	@ResponseBody
+	public AjaxVO<Map<String, String>> processResolve(@RequestBody Map<String, String> param) {
+		String currUser = SecurityContextHolder.getContext().getAuthentication().getName();
+		
+		AjaxVO<Map<String, String>> vo = new AjaxVO<Map<String, String>>();
+		
+		param.put("accountId", currUser);
+		param.put("processTime", "");;
+		
+		try{
+			qnaService.resolveProcess(param); 
+			vo.setSuccess(true);
+			vo.addObject(param);
+		}
+		catch(Exception e) {
+			vo.setSuccess(false);
+			vo.setErrMsg(e.getMessage());
+		}
+		
+		return vo;
+		
+		
+//		ObjectMapper om = new ObjectMapper();
+//		try {
+//			System.err.println(om.writeValueAsString(param));
+//		} catch (JsonGenerationException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (JsonMappingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+	}
 }
