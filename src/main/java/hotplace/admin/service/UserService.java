@@ -37,6 +37,9 @@ public class UserService {
 		if("Y".equals(account.getAdmin())) {
 			userDao.insertUserGradeAdmin(account);
 		}
+		else if("Y".equals(account.getQaAdmin())) {
+			userDao.insertUserGradeQaAdmin(account);
+		}
 		
 		userDao.updateUserInfo(account);
 		

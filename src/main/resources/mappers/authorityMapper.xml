@@ -39,10 +39,10 @@
 		  from [웹].[dbo].[권한]
 		 <choose>
 		 	<when test="isEach">
-		 		where 권한번호 not in (select 권한번호 from [웹].[dbo].[권한] where 권한이름 ='ROLE_ADMIN' or 권한이름='ROLE_JOINED' or 권한이름='ROLE_ALL')
+		 		where 권한번호 not in (select 권한번호 from [웹].[dbo].[권한] where 권한이름 ='ROLE_ADMIN' or 권한이름='ROLE_QA_ADMIN' or 권한이름='ROLE_JOINED' or 권한이름='ROLE_ALL')
 		 	</when>
 		 	<otherwise>
-		 		where 권한번호 not in (select 권한번호 from [웹].[dbo].[권한] where 권한이름 ='ROLE_ADMIN' or 권한이름='ROLE_JOINED')
+		 		where 권한번호 not in (select 권한번호 from [웹].[dbo].[권한] where 권한이름 ='ROLE_ADMIN' or 권한이름='ROLE_QA_ADMIN' or 권한이름='ROLE_JOINED')
 		 	</otherwise>
 		 </choose>
 	</select>

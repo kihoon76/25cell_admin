@@ -15,7 +15,12 @@
 		<sec:intercept-url pattern="/login" access="permitAll"/>
 		<sec:intercept-url pattern="/result/**" access="permitAll"/>
 		<sec:intercept-url pattern="/logout" access="permitAll"/>
+		
+		<sec:intercept-url pattern="/qna/**" access="hasAnyRole('ROLE_QA_ADMIN', 'ROLE_ADMIN')"/>
+		<sec:intercept-url pattern="/notice/**" access="hasAnyRole('ROLE_QA_ADMIN', 'ROLE_ADMIN')"/>
+		<sec:intercept-url pattern="/main" access="hasAnyRole('ROLE_QA_ADMIN', 'ROLE_ADMIN')" />
 		<sec:intercept-url pattern="/**" access="hasRole('ROLE_ADMIN')"/>
+		
 		<sec:form-login login-page="/signin"
 						username-parameter="id"
 						password-parameter="pw"

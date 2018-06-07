@@ -16,6 +16,7 @@ public class Account {
 	private String grade;
 	private String gradeNum;
 	private String admin;
+	private String qaAdmin;
 	private String out;
 	private List<String> gradeArr;
 	
@@ -92,5 +93,11 @@ public class Account {
 	}
 	public void setGradeArr(List<String> gradeArr) {
 		this.gradeArr = gradeArr;
+	}
+	public String getQaAdmin() {
+		return qaAdmin;
+	}
+	public void setQaAdmin(String qaAdmin) {
+		this.qaAdmin = qaAdmin;
 	}
 }

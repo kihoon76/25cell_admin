@@ -21,4 +21,6 @@ public interface UserDao {
 
 	void insertUserGradeAdmin(Account account);
 
+	void insertUserGradeQaAdmin(Account account);
+
 }

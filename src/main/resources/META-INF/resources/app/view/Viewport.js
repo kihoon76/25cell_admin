@@ -1,6 +1,6 @@
 Ext.define('Hotplace.view.Viewport', {
     extend : 'Ext.container.Viewport'
-   ,uses   : ['Hotplace.view.panel.CategoryPanel']
+   ,uses   : [/*'Hotplace.view.panel.CategoryPanel'*/Ext.getBody().getAttribute('data-cate-panel')]
    ,initComponent: function(){
         Ext.apply(this, {
             id     : 'app-viewport'

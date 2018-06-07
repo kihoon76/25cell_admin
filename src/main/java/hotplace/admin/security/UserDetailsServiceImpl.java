@@ -44,7 +44,9 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 		if(user == null) throw new UsernameNotFoundException("접속자 정보(ID)를 찾을수 없습니다 ");
 		
 		if("N".equals(user.getAdmin())) {
-			throw new NotAuthorized("권한이 없습니다");
+			if("N".equals(user.getQaAdmin())) {
+				throw new NotAuthorized("권한이 없습니다");
+			}
 		}
 		
 		// TODO 디비에서 가져온 정보로 비교로직

@@ -254,7 +254,9 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	    					var regDate = Ext.getCmp('user-auth-regDate'); 
 	    					regDate.setValue(data.regDate);
 	    					
+	    					var chkAdmGrp = Ext.getCmp('user-auth-admin-check-radio');
 	    					var chkAdm = Ext.getCmp('user-auth-admin-check');
+	    					var chkQaAdm = Ext.getCmp('user-auth-qaadmin-check');
 	    					var outChk = Ext.getCmp('user-auth-out-check');
 	    					var btnModify = Ext.getCmp('btn-modify-auth');
 	    					var btnDelete = Ext.getCmp('btn-delete-auth');
@@ -275,6 +277,14 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	    					}
 	    					else {
 	    						chkAdm.setValue(false);
+	    					}
+	    					
+	    					//qa관리자여부
+	    					if(data.qaAdmin) {
+	    						chkQaAdm.setValue(true);
+	    					}
+	    					else {
+	    						chkQaAdm.setValue(false);
 	    					}
 	    					
 	    					if(data.out == 'Y') {
@@ -315,7 +325,7 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	    						phone.setDisabled(true);
 	    						email.setDisabled(true);
 	    						regDate.setDisabled(true);
-	    						chkAdm.setDisabled(true);
+	    						chkAdmGrp.setDisabled(true);
 		    					combo.setDisabled(true);
 		    					btnModify.setDisabled(true);
 		    					btnDelete.setDisabled(true);
@@ -327,7 +337,7 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	    						email.setDisabled(false);
 	    						regDate.setDisabled(false);
 	    						
-	    						chkAdm.setDisabled(false);
+	    						chkAdmGrp.setDisabled(false);
 		    					combo.setDisabled(false);
 		    					userName.setReadOnly(false);
 		    					phone.setReadOnly(false);
@@ -462,11 +472,46 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		            			});
 		            		}
 		            	}
-		            }, {
+		            }, /*{
 		            	xtype: 'checkbox',
 		            	fieldLabel: '관리자권한',
 		            	id: 'user-auth-admin-check',
 		            	disabled: true
+		            },*/{
+		            	xtype: 'checkboxgroup',
+		            	fieldLabel: '관리자권한',
+		            	disabled: true,
+		            	id: 'user-auth-admin-check-radio',
+		            	width: 370,
+	            		items: [{
+	            			xtype: 'checkbox',
+	            			boxLabel: '관리자',
+	            			id: 'user-auth-admin-check',
+	            			listeners: {
+	            				change: function(t) {
+	            					if(t === true) {
+	            						Ext.getCmp('user-auth-admin-check').setValue(false);
+	            					}
+	            					else if(t.getValue()){
+	            						Ext.getCmp('user-auth-qaadmin-check').fireEvent('change', true)
+	            					}
+	            				}
+	            			}
+	            		}, {
+	            			xtype: 'checkbox',
+	            			boxLabel: '문의사항처리 관리자',
+	            			id: 'user-auth-qaadmin-check',
+	            			listeners: {
+	            				change: function(t, nV, oV) {
+	            					if(t === true) {
+	            						Ext.getCmp('user-auth-qaadmin-check').setValue(false);
+	            					}
+	            					else if(t.getValue()){
+	            						Ext.getCmp('user-auth-admin-check').fireEvent('change', true)
+	            					}
+	            				}
+	            			}
+	            		}]
 		            },{
 		            	width: 100,
 		               	height: 100,
@@ -528,7 +573,8 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		            					email:email,
 		            					grade: gradeArr.join(','),
 		            					gradeArr: gradeArr,
-		            					admin: Ext.getCmp('user-auth-admin-check').checked ? 'Y' : 'N'
+		            					admin: (Ext.getCmp('user-auth-admin-check').checked ? 'Y' : 'N'),
+		            					qaAdmin: (Ext.getCmp('user-auth-qaadmin-check').checked ? 'Y' : 'N')
 		            				},
 		    						timeout:60000,
 		    						success: function(jo) {

@@ -6,8 +6,16 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 	initComponent: function() {
 		var selectedRecord = null;
 		   
-		var store = Ext.create('Hotplace.store.QnaListStore'),
-		constants = Hotplace.util.Constants,
+		try {
+			var store = Ext.create('Hotplace.store.QnaListStore');
+		}
+		catch(e) {
+			console.log(e);
+			//세션만료 및 중복로그인시  js파일을 가져오지 못해서 오류발생함
+			commFn.loadJsError();
+		}
+		
+		var constants = Hotplace.util.Constants,
 		commonFn = Hotplace.util.CommonFn,
 		searchComboArr = [], 
 		searchType = '', 
@@ -15,14 +23,27 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 		authUrl = 'authority/define';
 		
 		var searchComboStore = Ext.create('Ext.data.Store', {
-			 fields   : ['name', 'value']
+			 fields   : ['name', 'value'],
+			 data: [{name: '전체', value: 'all'}, {name: '연락처', value:'phone'},{name: '처리여부', value:'processYN'}]
+		});
+		
+		var searchComboStoreProcessYN = Ext.create('Ext.data.Store', {
+			 fields   : ['name', 'value'],
+			 data: [{name: 'Y', value:'Y'},{name: 'N', value:'N'}]
 		});
 		
 		function search() {
-			searchType = Ext.getCmp('user-auth-searchtype-combo').getValue();
-			searchValue = Ext.getCmp('user-auth-search-text').getValue() ;
+			searchType = Ext.getCmp('qna-searchtype-combo').getValue();
+			
+			if(searchType == 'phone') {
+				searchValue = Ext.getCmp('qna-search-text').getValue();
+			}
+			else if(searchType == 'processYN') {
+				searchValue = Ext.getCmp('qna-search-combo').getValue() ;
+			}
+			
 			  
-			if(!searchValue) {
+			if(searchType != 'all' && !searchValue) {
 				Ext.Msg.alert('알림', '값을 입력하세요');
 				return;
 			}
@@ -163,7 +184,8 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
                 }],
                 tbar: ['->',
     			       '검색항목 : ',
-    			       Ext.create('Ext.form.field.ComboBox', {
+    			      {
+                		   xtype: 'combo',
     			    	   queryMode: 'local',
     			    	   id:'qna-searchtype-combo',
     			    	   displayField: 'name',
@@ -172,13 +194,22 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
     			    	   store:searchComboStore,
     			    	   listeners: {
     			    		   change: function(combo, nV, oV) {
-    			    			   if(nV == 'all') {
-    			    				   Ext.getCmp('qna-search-text').setValue('');
-    			    				   store.load();      
+    			    			   if(nV == 'phone') {
+    			    				   Ext.getCmp('qna-search-text').show();
+    			    				   Ext.getCmp('qna-search-combo').hide();
+    			    			   }
+    			    			   else if(nV == 'processYN') {
+    			    				   Ext.getCmp('qna-search-text').hide();
+    			    				   Ext.getCmp('qna-search-combo').show(); 
+    			    			   }
+    			    			   else if(nV == 'all') {
+    			    				   Ext.getCmp('qna-search-text').show();
+    			    				   Ext.getCmp('qna-search-combo').hide(); 
+    			    				   search();
     			    			   }
     			    		   }
     			    	   }
-    			       }),{
+    			       },{
     					   xtype: 'textfield',
     					   id: 'qna-search-text',
     					   enableKeyEvents: true,
@@ -190,6 +221,15 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
     							   }
     						   }
     					   }
+    				   }, {
+    					  xtype: 'combobox',
+    					  id: 'qna-search-combo',
+    					  displayField: 'name',
+    					  valueField: 'value',
+    					  queryMode: 'local',
+    					  editable:false,
+    					  store:searchComboStoreProcessYN,
+    					  hidden: true
     				   }, {
     					   xtype: 'button',
     					   iconCls: 'icon-search',

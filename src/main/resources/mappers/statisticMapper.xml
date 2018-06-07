@@ -18,12 +18,12 @@
 				from (
 					select isnull(권한번호, 0) 권한번호
 					  from [웹].[dbo].[계정] t1
-					  left outer join [웹].[dbo].[계정_권한] t2 on t1.아이디 = t2.계정_아이디 and t2.권한번호  not in (select 권한번호 from [웹].[dbo].[권한] where 권한이름 = 'ROLE_ADMIN' or 권한이름 = 'ROLE_JOINED')
+					  left outer join [웹].[dbo].[계정_권한] t2 on t1.아이디 = t2.계정_아이디 and t2.권한번호  not in (select 권한번호 from [웹].[dbo].[권한] where 권한이름 = 'ROLE_ADMIN' or 권한이름 = 'ROLE_QA_ADMIN' or 권한이름 = 'ROLE_JOINED')
 				) tb1
 				group by 권한번호
 		) tbl1
 		full outer join (
-			 select 권한번호, 권한이름 from [웹].[dbo].[권한] where 권한이름 not in ('ROLE_ADMIN', 'ROLE_JOINED')
+			 select 권한번호, 권한이름 from [웹].[dbo].[권한] where 권한이름 not in ('ROLE_ADMIN', 'ROLE_QA_ADMIN', 'ROLE_JOINED')
 		) tbl2 on tbl2.권한번호 = tbl1.권한번호
 	</select>
 	

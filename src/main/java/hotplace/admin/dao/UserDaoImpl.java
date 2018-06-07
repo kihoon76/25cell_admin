@@ -53,4 +53,10 @@ public class UserDaoImpl implements UserDao {
 	public void insertUserGradeAdmin(Account account) {
 		msSqlSession.insert(namespace + ".insertUserGradeAdmin", account);
 	}
+
+	@Override
+	public void insertUserGradeQaAdmin(Account account) {
+		msSqlSession.insert(namespace + ".insertUserGradeQaAdmin", account);
+		
+	}
 }
