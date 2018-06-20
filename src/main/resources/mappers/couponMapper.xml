@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.couponMapper">
+	
+	<resultMap id="RM_selectCouponList" type="ExtjsStoreVO">
+		<result column="쿠폰수" property="total" javaType="int"/>
+		<result column="검색타입" property="searchType" javaType="string"/>
+		<result column="검색값" property="searchValue" javaType="string"/>
+		<result column="시작" property="start" javaType="int" />
+		<result column="끝" property="limit" javaType="int" />
+		<collection property="datas" column="{start=시작, limit=끝, searchType=검색타입, searchValue=검색값}" 
+					javaType="java.util.ArrayList"
+					ofType="Coupon" 
+					select="selectCoupon" />
+	</resultMap>
+	
+	<resultMap id="RM_selectCoupon" type="Coupon">
+		<result column="쿠폰번호"		property="couponNum" javaType="string"/>
+		<result column="발행대상"		property="couponTarget" javaType="string"/>
+		<result column="쿠폰제휴업체명"	property="couponTargetName" javaType="string" />
+		<result column="사용여부"		property="used" javaType="string"/>
+		<result column="발행일자"		property="publishDate" javaType="string"/>
+		<result column="할인값"		property="discountValue" javaType="string"/>
+		<result column="할인단위"		property="discountUnit" javaType="string" />
+	</resultMap>
+	
+	<select id="selectCouponList" resultMap="RM_selectCouponList" parameterType="map">
+		select (
+			select count(*) 
+			  from [웹].[dbo].[발행쿠폰]
+			   <choose>
+		  	  	<when test="searchType != null and searchType == 'couponNum'">
+		  	  		where 쿠폰번호 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'couponTarget'">
+		  	  		where 발행대상 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'used'">
+		  	  		where 사용여부 = #{searchValue}
+		  	  	</when>
+		  	  	<otherwise></otherwise>
+		  	  </choose>
+			) 쿠폰수, #{searchType} 검색타입, #{searchValue} 검색값, #{start} 시작, #{limit} 끝
+	</select>
+	
+	<select id="selectCoupon" parameterType="map" resultMap="RM_selectCoupon">
+		select 쿠폰번호, 발행대상, 업체명 as 쿠폰제휴업체명, 사용여부, 발행일자, 할인값, 
+			   case when 할인단위 = '1' then '%'
+			   		else '원'
+			   end 할인단위
+		  from ( 
+		  		select row_number() over(order by 발행일자 desc) rownum, * from [웹].[dbo].[발행쿠폰]
+		  		<choose>
+			  	  	<when test="searchType != null and searchType == 'couponNum'">
+			  	  		where 쿠폰번호 = #{searchValue}
+			  	  	</when>
+			  	  	<when test="searchType != null and searchType == 'couponTarget'">
+			  	  		where 발행대상 = #{searchValue}
+			  	  	</when>
+			  	  	<when test="searchType != null and searchType == 'used'">
+			  	  		where 사용여부 = #{searchValue}
+			  	  	</when>
+			  	  	<otherwise></otherwise>
+			  	</choose> 
+		  ) tb1
+		  inner join [웹].[dbo].[쿠폰제휴업체] tb2 on tb1.발행대상 = tb2.업체번호
+		where rownum between (#{start} + 1) and (#{start} + #{limit})
+	</select>
+	
+	<insert id="insertJehu" parameterType="string">
+		insert into [웹].[dbo].[쿠폰제휴업체](업체명) values (#{jehuName})
+	</insert>
+	
+	<select id="selectJehuListForCombo" resultType="map">
+		select 업체명 as name, 업체번호 as value
+		  from [웹].[dbo].[쿠폰제휴업체]
+	</select>
+	
+	<insert id="insertCoupon" statementType="CALLABLE" parameterType="map">
+	{ call [웹].[dbo].[USP_쿠폰발행](
+		#{count, mode=IN, jdbcType=SMALLINT, javaType=int},
+		#{jehuNum, mode=IN, jdbcType=SMALLINT, javaType=int},
+		#{discountUnit, mode=IN, jdbcType=CHAR, javaType=string},
+		#{discountValue, mode=IN, jdbcType=INTEGER, javaType=int}
+	)}
+	</insert>
+</mapper>

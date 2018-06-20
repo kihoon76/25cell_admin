@@ -65,39 +65,6 @@ Ext.define('Hotplace.view.panel.AuthorityFormPanel', {
 					
 				}
 			});
-			/*Ext.Ajax.request({
-				url: Hotplace.util.Constants.context + '/authority/modify',
-				method:'POST',
-				headers: { 'Content-Type': 'application/json' }, 
-				jsonData: {
-					authNum: Ext.getCmp('idAuthNum').getValue(),
-					authName: Ext.getCmp('idAuthName').getValue(),
-					description: Ext.getCmp('idAuthDescription').getValue()
-				},
-				timeout:60000,
-				success: function(response) {
-					
-					var jo = Ext.decode(response.responseText);
-					
-					that.child('gridpanel').getStore().reload();
-					if(jo.success) {
-						if(!jo.errMsg) {
-							Ext.Msg.alert('', '설정이 수정되었습니다.');
-						}
-						else {
-							Ext.Msg.alert('', '설정이 수정되었으나 hotplace25가 touch되지 않았습니다');
-						}
-					}
-					else {
-						Ext.Msg.alert('에러', jo.errMsg);
-					}
-					
-				},
-				failure: function(response) {
-					console.log(response)
-					Ext.Msg.alert('', '오류가 발생했습니다.');
-				}
-			});*/
 		}
 		
 		function regAuthority() {

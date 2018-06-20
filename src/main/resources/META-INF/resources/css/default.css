@@ -73,6 +73,12 @@
 #dateLogSearch-inputEl.x-form-text {height: 22px;}
 #yaggwan-soonseo-combo-inputEl.x-form-text {height: 22px;}
 
+/*쿠폰발행 제휴업체*/
+#jehu-combo-inputEl.x-form-text {height: 22px;}
+#coupon-count-text-inputEl.x-form-text {height: 22px;}
+#coupon-discount-text-inputEl.x-form-text {height: 22px;}
+#coupon-discount-combo-inputEl.x-form-text {height: 22px;}
+
 #qna-process-combo-inputEl.x-form-text {height: 22px;}
 
 

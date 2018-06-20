@@ -54,7 +54,7 @@ public class AuthorityController {
 	
 	@PostMapping("modify")
 	@ResponseBody
-	public AjaxVO<Authority> modifyAuthorityDefine(	@RequestBody Authority authority) {
+	public AjaxVO<Authority> modifyAuthorityDefine(@RequestBody Authority authority) {
 		
 		AjaxVO<Authority> vo = new AjaxVO<>();
 		
