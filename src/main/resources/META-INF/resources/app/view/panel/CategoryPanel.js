@@ -49,6 +49,13 @@ Ext.define('Hotplace.view.panel.CategoryPanel', {
 						 text: '문의사항관리', leaf : true, cate : 'qna', id : 'cate-qna' 
 					 }, {
 						 text: '쿠폰관리', leaf : true, cate : 'coupon', id : 'cate-coupon' 
+					 }, {
+						 text: '결제관리', expand: true, iconCls : 'tree-expand'
+						,children : [{
+							text: '결제처리', leaf : true, cate : 'log', id : 'cate-payment'
+						},{
+							text: '환불처리', leaf : true, cate : 'log', id : 'cate-refund'
+						}]
 					 }]
     	    	 }
     	    })

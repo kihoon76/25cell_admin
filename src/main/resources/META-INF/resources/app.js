@@ -48,7 +48,8 @@ Ext.application({
         'Hotplace.controller.UserController',
         'Hotplace.controller.YaggwanController',
         'Hotplace.controller.QnaController',
-        'Hotplace.controller.CouponController'
+        'Hotplace.controller.CouponController',
+        'Hotplace.controller.PaymentController'
    ]
    ,launch:function(){
 	   
