@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.paymentMapper">
+	
+	<resultMap id="RM_selectPaymentList" type="ExtjsStoreVO">
+		<result column="결제수" property="total" javaType="int"/>
+		<result column="검색타입" property="searchType" javaType="string"/>
+		<result column="검색값" property="searchValue" javaType="string"/>
+		<result column="시작" property="start" javaType="int" />
+		<result column="끝" property="limit" javaType="int" />
+		<collection property="datas" column="{start=시작, limit=끝, searchType=검색타입, searchValue=검색값}" 
+					javaType="java.util.ArrayList"
+					ofType="Payment" 
+					select="selectPayment" />
+	</resultMap>
+	
+	<resultMap id="RM_selectPayment" type="Payment">
+		<result column="일련번호"		property="key" javaType="string"/>
+		<result column="사용자계정"		property="accountId" javaType="string"/>
+		<result column="결제금액"		property="sum" javaType="int" />
+		<result column="쿠폰사용여부"	property="useCoupon" javaType="string"/>
+		<result column="쿠폰번호"		property="couponNum" javaType="string"/>
+		<result column="결제신청일자"	property="applyDate" javaType="string"/>
+		<result column="결제확인일자"	property="paymentConfirmDate" javaType="string"/>
+		<result column="결제일자"		property="paymentDate" javaType="string"/>
+		<result column="결제완료여부"	property="status" javaType="string"/>
+		<result column="서비스타입"		property="serviceType" javaType="string"/>
+		<result column="서비스서브타입"	property="serviceSubTypes" javaType="string"/>
+		<result column="결제내용"		property="applyComment" javaType="string" />
+		<result column="입금자명"		property="depositor" javaType="string" />
+		<result column="환불내역번호"	property="refundId" javaType="string" />
+	</resultMap>
+	
+	<select id="selectPaymentList" resultMap="RM_selectPaymentList" parameterType="map">
+		select (
+			select count(*) 
+			  from [웹].[dbo].[결제내역]
+			   <choose>
+		  	  	<when test="searchType != null and searchType == 'accountId'">
+		  	  		where 사용자계정 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'depositor'">
+		  	  		where 입금자명 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'couponNum'">
+		  	  		where 쿠폰번호 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'paymentDate'">
+		  	  		where 결제일자 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'paymentConfirmDate'">
+		  	  		where 결제확인일자 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'applyDate'">
+		  	  		where 결제신청일자 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'status'">
+		  	  		where 결제완료여부 = #{searchValue}
+		  	  	</when>
+		  	  	<otherwise></otherwise>
+		  	  </choose>
+			) 결제수, #{searchType} 검색타입, #{searchValue} 검색값, #{start} 시작, #{limit} 끝
+	</select>
+	
+	<select id="selectPayment" parameterType="map" resultMap="RM_selectPayment">
+		select 일련번호, 결제일자, 결제확인일자, 결제신청일자, 결제금액, 쿠폰사용여부, tb1.쿠폰번호, 결제완료여부, 입금자명, 환불내역번호, 서비스타입, 서비스서브타입, 사용자계정,
+			   case when 서비스타입 = 'ALL' then 
+					case when 서비스서브타입 = 'YEAR' then '전체서비스(연간결제)' 
+					 	 else '전체서비스(월간결제)'
+					end
+			        else
+					'개별서비스(' + replace(replace(replace(replace(서비스서브타입, 'ROLE_TOOJA', '투자유망검색'), 'ROLE_GYEONGGONG', '경공매검색'), 'ROLE_MULGEON', '물건보기검색'), 'ROLE_HEATMAP', '히트맵보기') + ')'
+			    end 결제내용
+		  from ( 
+		  		select row_number() over(order by 결제신청일자 desc) rownum, * 
+		  		  from [웹].[dbo].[결제내역]
+		  		<choose>
+		  	  	<when test="searchType != null and searchType == 'accountId'">
+		  	  	 where 사용자계정 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'depositor'">
+		  	  	 where 입금자명 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'couponNum'">
+		  	  	 where 쿠폰번호 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'paymentDate'">
+		  	  	 where 결제일자 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'paymentConfirmDate'">
+		  	  	 where 결제확인일자 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'applyDate'">
+		  	  	 where 결제신청일자 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'status'">
+		  	  	 where 결제완료여부 = #{searchValue}
+		  	  	</when>
+		  	  	<otherwise></otherwise>
+		  	  </choose>
+		  ) tb1
+		  left outer join [웹].[dbo].[발행쿠폰] tb2 on tb1.쿠폰번호 = tb2.쿠폰번호
+		where rownum between (#{start} + 1) and (#{start} + #{limit})
+	</select>
+</mapper>

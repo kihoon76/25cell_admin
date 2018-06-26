@@ -1,6 +1,6 @@
 Ext.define('Hotplace.controller.PaymentController', {
 	extend : 'Hotplace.controller.BaseController',
-	views: ['panel.PaymentFormPanel'],
+	views: ['panel.PaymentListGridPanel'],
 	onLaunch : function() {
 		this.callParent(arguments);
 	},
@@ -12,7 +12,7 @@ Ext.define('Hotplace.controller.PaymentController', {
 				switch(recObj.id) {
 				case 'cate-payment' :
 					this.addContentTabPanel(recObj.id, recObj.text, {
-						xtype: 'paymentpanel'
+						xtype: 'paymentgrid'
 					});
 					break;
 				case 'cate-refund' :

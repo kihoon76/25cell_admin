@@ -20,6 +20,7 @@ public class Payment {
 	private int sum;							//결제금액
 	private String status;						//결제완료여부('N', 'Y')
 	private String depositor;					//입금자명
+	private String refundId;					//환불내역번호
 	
 	public String getAccountId() {
 		return accountId;
@@ -110,5 +111,11 @@ public class Payment {
 	}
 	public void setPaymentConfirmDate(String paymentConfirmDate) {
 		this.paymentConfirmDate = paymentConfirmDate;
+	}
+	public String getRefundId() {
+		return refundId;
+	}
+	public void setRefundId(String refundId) {
+		this.refundId = refundId;
 	}
 }
