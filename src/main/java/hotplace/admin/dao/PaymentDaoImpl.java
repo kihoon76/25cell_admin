@@ -22,4 +22,9 @@ public class PaymentDaoImpl implements PaymentDao {
 	public ExtjsStoreVO<Payment> selectPaymentList(Map map) {
 		return msSqlSession.selectOne(namespace + ".selectPaymentList", map);
 	}
+
+	@Override
+	public void updatePayment(Map<String, String> param) {
+		msSqlSession.update(namespace + ".updatePayment", param);
+	}
 }

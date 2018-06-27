@@ -10,6 +10,7 @@
 		<result column="가입일자"		property="regDate" javaType="string"/>
 		<result column="권한이름"		property="grade" javaType="string"/>
 		<result column="권한번호"		property="gradeNum" javaType="string" />
+		<result column="권한만기일"		property="gradeExpire" javaType="string"/>
 		<result column="관리자권한"		property="admin" javaType="string" />
 		<result column="qa관리자권한"	property="qaAdmin" javaType="string"/>
 		<result column="탈퇴여부"		property="out"	javaType="string" />
@@ -62,7 +63,7 @@
 	
 	<select id="selectUser" parameterType="hashmap" resultMap="RM_selectUser">
 		with A as (
-			select 아이디, 이름, 연락처, 이메일, 가입일자, 탈퇴여부, 권한이름, tb4.권한번호 as 관리자권한, tb5.권한번호 as qa관리자권한 
+			select 아이디, 이름, 연락처, 이메일, 가입일자, 탈퇴여부, 권한이름, tb4.권한번호 as 관리자권한, tb5.권한번호 as qa관리자권한, CONVERT(char(10), tb2.만기일, 23) 만기일
 			  from ( 
 			  		select row_number() over(order by 가입일자 desc) rownum, * from [웹].[dbo].[계정]
 			  		<choose>
@@ -91,7 +92,7 @@
 				  	</choose> 
 			  ) tb1
 		     left outer join ( 
-		     	select 계정_아이디, 권한번호 
+		     	select 계정_아이디, 권한번호, 만기일
 		     	  from [웹].[dbo].[계정_권한] 
 		     	 where 권한번호 not in (
 		     	 	select 권한번호 
@@ -113,6 +114,7 @@
 		 	</if>)
 			select distinct TBL1.아이디, 
 			       STUFF((select ',' + 권한이름 from A TBL2 where TBL2.아이디=TBL1.아이디 for xml path('')),1,1,'') as 권한이름,
+			       STUFF((select ',' + 권한이름 + ':' + 만기일 from A TBL2 where TBL2.아이디=TBL1.아이디 for xml path('')),1,1,'') as 권한만기일,
 			       TBL1.이름, TBL1.연락처, TBL1.이메일, TBL1.가입일자, TBL1.탈퇴여부, TBL1.관리자권한, TBL1.qa관리자권한 
 			  from A TBL1 
 	</select>
@@ -128,25 +130,31 @@
 	</delete>
 	
 	<insert id="insertUserGrade" parameterType="Account">
-		insert into [웹].[dbo].[계정_권한](계정_아이디, 권한번호)
-		select #{accountId} 계정, 권한번호
-		  from [웹].[dbo].[권한]
-		 where 권한이름 in 
+		insert into [웹].[dbo].[계정_권한](계정_아이디, 권한번호, 만기일)
+		select #{accountId} 계정, 권한번호, T2.만기일
+		  from [웹].[dbo].[권한] T1
+		 inner join (
+		 	select SUBSTRING(Name, 0, CHARINDEX(':', Name)) 권한이름,
+		 		   SUBSTRING(Name, (CHARINDEX(':', Name) + 1), 1000) 만기일
+		 	  from [웹].[dbo].[splitstring](#{gradeExpire})
+		 ) T2
+		    on T1.권한이름 = T2.권한이름
+		 where T1.권한이름 in 
 		 	<foreach collection="gradeArr"   item="item" open="(" close=")" separator=",">
 		 	#{item, jdbcType=VARCHAR}
 		 	</foreach>        
 	</insert>
 	
 	<insert id="insertUserGradeAdmin" parameterType="Account">
-		insert into [웹].[dbo].[계정_권한](계정_아이디, 권한번호)
-		select #{accountId}, 권한번호
+		insert into [웹].[dbo].[계정_권한](계정_아이디, 권한번호, 만기일)
+		select #{accountId}, 권한번호, dateadd(year, 500, getDate()) 
 		  from [웹].[dbo].[권한]
 		 where 권한이름 = 'ROLE_ADMIN' 
 	</insert>
 	
 	<insert id="insertUserGradeQaAdmin" parameterType="Account">
-		insert into [웹].[dbo].[계정_권한](계정_아이디, 권한번호)
-		select #{accountId}, 권한번호
+		insert into [웹].[dbo].[계정_권한](계정_아이디, 권한번호, 만기일)
+		select #{accountId}, 권한번호, dateadd(year, 500, getDate()) 
 		  from [웹].[dbo].[권한]
 		 where 권한이름 = 'ROLE_QA_ADMIN' 
 	</insert>

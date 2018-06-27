@@ -102,4 +102,12 @@
 		  left outer join [웹].[dbo].[발행쿠폰] tb2 on tb1.쿠폰번호 = tb2.쿠폰번호
 		where rownum between (#{start} + 1) and (#{start} + #{limit})
 	</select>
+	
+	<update id="updatePayment" statementType="CALLABLE" parameterType="map">
+	{ call  [웹].[dbo].[USP_결제확인](
+		#{key, mode=IN, jdbcType=VARCHAR, javaType=string},
+		#{paymentDate, mode=IN, jdbcType=VARCHAR, javaType=string},
+		#{accountId, mode=IN, jdbcType=VARCHAR, javaType=string}
+	)} 
+	</update>
 </mapper>

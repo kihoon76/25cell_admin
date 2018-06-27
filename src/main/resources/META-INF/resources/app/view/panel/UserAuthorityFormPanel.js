@@ -11,6 +11,7 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		searchComboArr = [], 
 		searchType = '', 
 		searchValue = '',
+		eachGradeData = null,
 		authUrl = 'authority/define';
 		
 		try {
@@ -261,7 +262,9 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	    					var btnModify = Ext.getCmp('btn-modify-auth');
 	    					var btnDelete = Ext.getCmp('btn-delete-auth');
 	    					var eachFldst = Ext.getCmp('user-each-service-fldst');
+	    					var allFldst = Ext.getCmp('user-all-service-fldst');
 	    					var chkGrp = Ext.getCmp('user-each-service-fldst-chkgrp');
+	    					var dateAllUser = Ext.getCmp('user-all-expire');
 	    					
 	    					//체크박스 초기화
 	    					var eachChkLen = (chkGrp.items.items)? chkGrp.items.items.length: 0;
@@ -270,6 +273,18 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 							for(var i=0; i<eachChkLen; i++) {
 								eachItems[i].setValue(false);
 							}
+							
+							//만기일 초기화
+							//전체서비스
+							dateAllUser.setRawValue('');
+							//개별이용서비스
+							if(eachGradeData != null) {
+								var len = eachGradeData.length;
+								for(var e=0; e<len; e++) {
+									Ext.getCmp('each-' + eachGradeData[e].value).setRawValue('');
+								}
+							}
+							
 							
 	    					//관리자여부
 	    					if(data.admin) {
@@ -300,15 +315,25 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	    						if(data.grade == 'ROLE_ALL') {
 	    							combo.setValue(data.grade);
 	    							eachFldst.setDisabled(true);
+	    							allFldst.setDisabled(false);
+	    							
+	    							dateAllUser.setRawValue((data.gradeExpire.split(':'))[1]);
 	    						}
 	    						else {
 	    							combo.setValue('ROLE_EACH');
 	    							eachFldst.setDisabled(false);
+	    							allFldst.setDisabled(true);
+	    							
+	    							
 	    							var grades = data.grade.split(',');
+	    							var gradesExpires = data.gradeExpire.split(',');
 	    							
 	    							for(var c=0; c<eachChkLen; c++) {
+	    								
 	    								if(Ext.Array.contains(grades, eachItems[c]._value)) {
+	    									var expire = gradesExpires[c].split(':');
 	    									eachItems[c].setValue(true);
+	    									Ext.getCmp('each-' + expire[0]).setRawValue(expire[1]);
 	    								}
 	    							}
 	    						}
@@ -316,6 +341,7 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	    					else {
 	    						combo.setValue('-1');
 	    						eachFldst.setDisabled(true);
+	    						allFldst.setDisabled(true);
 	    					}
 	    					
 	    					
@@ -425,14 +451,37 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		        		listeners: {
 		        			change: function(combo, nV) {
 		        				var eachFldst = Ext.getCmp('user-each-service-fldst');
+		        				var allFldst = Ext.getCmp('user-all-service-fldst');
+		        				
 		        				if(nV == 'ROLE_EACH') {
 		        					eachFldst.setDisabled(false);
+		        					allFldst.setDisabled(true);
+		        				}
+		        				else if(nV == 'ROLE_ALL'){
+		        					eachFldst.setDisabled(true);
+		        					allFldst.setDisabled(false);
 		        				}
 		        				else {
 		        					eachFldst.setDisabled(true);
+		        					allFldst.setDisabled(true);
 		        				}
 		        			}
 		        		}
+		            },{
+		            	xtype: 'fieldset',
+		            	title: '전체이용',
+		            	id: 'user-all-service-fldst',
+		            	collapsible: false,
+		            	anchor: '100%',
+		            	items: [{
+		            		xtype: 'datefield',
+		            		id: 'user-all-expire',
+		            		fieldLabel: '전체이용 회원 만기일',
+		            		labelWidth: 150,
+		            		format: 'Y-m-d',
+		            		editable: false
+		            	}],
+		            	disabled: true
 		            },{
 		            	xtype: 'fieldset',
 		            	title: '개별이용',
@@ -454,8 +503,12 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		            				success: function(jo) {
 		            					if(jo.success) {
 		            						var items = [];
+		            						var dateItems = [];
+		            						
 		            						var data = jo.datas;
 		            						var len = data.length;
+		            						
+		            						eachGradeData = data;
 		            						
 		            						for(var i=0; i<len; i++) {
 		            							items.push({
@@ -464,9 +517,20 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		        		            				_value: data[i].value,
 		        		            				id: data[i].value
 		        		            			});
+		            							
+		            							dateItems.push({
+		            								xtype: 'datefield',
+		            								format: 'Y-m-d',
+		            								fieldLabel: data[i].name + ' 만기일',
+		            								labelWidth: 200,
+		            								margin: '10 0 0 0',
+		            								editable: false,
+		            								id: 'each-' + data[i].value
+		            							});
 		            						}
 		            						
 		            						Ext.getCmp('user-each-service-fldst-chkgrp').add(items);
+		            						Ext.getCmp('user-each-service-fldst').add(dateItems);
 		            					}
 		            				}
 		            			});
@@ -534,7 +598,9 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		            				email = Ext.String.trim(Ext.getCmp('user-auth-email').getValue()),
 		            				userGrade = Ext.getCmp('user-auth-grade-combo'),
 		            				chkGrp = Ext.getCmp('user-each-service-fldst-chkgrp'),
-		            				gradeArr = null;
+		            				gradeArr = null,
+		            				expire = null,
+		            				gradeExpire = null;
 		            			
 		            			if(userName == '' || phone == '' || email == '') {
 		            				Ext.Msg.alert('알림', '회원이름, 연락처, 이메일을 선택하세요');
@@ -545,6 +611,7 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		            			if(userGrade.getValue() == 'ROLE_EACH') {
 		            				gradeArr = Ext.Object.getKeys(chkGrp.getValue());
 		            				
+		            				var expireArr = [];
 		            				if(gradeArr.length == 0) {
 		            					Ext.Msg.alert('알림', '개별이용 서비스를 선택하세요');
 			            				return;
@@ -553,15 +620,34 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		            				var len = gradeArr.length;
 		            				for(var i=0; i<len; i++) {
 		            					gradeArr[i] = gradeArr[i].replace('-inputEl', '');
+		            					expire = Ext.getCmp('each-' + gradeArr[i]).getRawValue();
+		            					if(!expire) {
+		            						Ext.Msg.alert('', '개별서비스 이용 만기일을 선택하세요');
+		            						return;
+		            					}
+		            					
+		            					expireArr.push(gradeArr[i] + ':' + expire);
 		            				}
+		            				
+		            				gradeExpire = expireArr.join(',');
 		            				
 		            				//gradeArr = gradeArr.join(',');
 		            			}
-		            			else {
+		            			else if(userGrade.getValue() == 'ROLE_ALL'){
+		            				expire = Ext.getCmp('user-all-expire').getRawValue();
+		            				if(!expire) {
+		            					Ext.Msg.alert('', '전체서비스 이용 만기일을 선택하세요');
+		            					return;
+		            				}
+		            				
 		            				gradeArr = [userGrade.getValue()];
+		            				gradeExpire = userGrade.getValue() + ':' + expire;
 		            			}
-		            		
+		            			else {
+		            				gradeArr =[];
+		            			}
 		            			
+		            		
 		            			commFn.ajax({
 		    						url: '/user/auth/modify',
 		    						method:'POST',
@@ -573,6 +659,7 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		            					email:email,
 		            					grade: gradeArr.join(','),
 		            					gradeArr: gradeArr,
+		            					gradeExpire: gradeExpire,
 		            					admin: (Ext.getCmp('user-auth-admin-check').checked ? 'Y' : 'N'),
 		            					qaAdmin: (Ext.getCmp('user-auth-qaadmin-check').checked ? 'Y' : 'N')
 		            				},

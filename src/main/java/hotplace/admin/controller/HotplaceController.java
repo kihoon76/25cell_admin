@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import hotplace.admin.utils.SessionUtil;
 import hotplace.admin.utils.StringUtil;
 
 @Controller
@@ -18,7 +19,7 @@ public class HotplaceController {
 	@GetMapping("main")
 	public String index(ModelMap m) {
 		
-		String accountId = SecurityContextHolder.getContext().getAuthentication().getName();
+		String accountId = SessionUtil.getSessionUserId();
 		Calendar now = Calendar.getInstance();
 		int year = now.get(Calendar.YEAR);
 		int month = now.get(Calendar.MONTH);

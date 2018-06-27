@@ -9,4 +9,6 @@ public interface PaymentDao {
 
 	ExtjsStoreVO<Payment> selectPaymentList(Map map);
 
+	void updatePayment(Map<String, String> param);
+
 }

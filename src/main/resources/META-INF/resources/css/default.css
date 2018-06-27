@@ -81,6 +81,14 @@
 
 #qna-process-combo-inputEl.x-form-text {height: 22px;}
 
+/*결제내역*/
+#paymentDate-inputEl.x-form-text {height: 22px;}
 
 
 .spUser {color:#ff0000; font-weight:bolder;}
+
+/*회원정보*/
+input[id*='each-ROLE_'].x-form-text {height: 22px;}
+#user-all-expire-inputEl.x-form-text {height: 22px;}
+
+

@@ -20,4 +20,8 @@ public class PaymentService {
 		return paymentDao.selectPaymentList(map);
 	}
 
+	public void confirmPayment(Map<String, String> param) {
+		paymentDao.updatePayment(param);
+	}
+
 }

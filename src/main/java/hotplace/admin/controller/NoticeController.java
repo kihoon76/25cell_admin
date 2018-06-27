@@ -32,6 +32,7 @@ import hotplace.admin.domain.AjaxVO;
 import hotplace.admin.domain.ExtjsStoreVO;
 import hotplace.admin.domain.Notice;
 import hotplace.admin.service.NoticeService;
+import hotplace.admin.utils.SessionUtil;
 
 @RequestMapping("/notice")
 @Controller
@@ -129,7 +130,7 @@ public class NoticeController {
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("title", title);
 		map.put("content", content);
-		map.put("id", "0");
+		map.put("id", SessionUtil.getSessionUserId());
 		
 		try {
 			

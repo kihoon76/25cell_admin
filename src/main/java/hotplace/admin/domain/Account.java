@@ -15,6 +15,7 @@ public class Account {
 	private String regDate;
 	private String grade;
 	private String gradeNum;
+	private String gradeExpire;
 	private String admin;
 	private String qaAdmin;
 	private String out;
@@ -99,5 +100,11 @@ public class Account {
 	}
 	public void setQaAdmin(String qaAdmin) {
 		this.qaAdmin = qaAdmin;
+	}
+	public String getGradeExpire() {
+		return gradeExpire;
+	}
+	public void setGradeExpire(String gradeExpire) {
+		this.gradeExpire = gradeExpire;
 	}
 }

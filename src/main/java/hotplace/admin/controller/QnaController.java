@@ -22,6 +22,7 @@ import hotplace.admin.domain.AjaxVO;
 import hotplace.admin.domain.ExtjsStoreVO;
 import hotplace.admin.domain.QnA;
 import hotplace.admin.service.QnaService;
+import hotplace.admin.utils.SessionUtil;
 
 @RequestMapping("/qna")
 @Controller
@@ -52,7 +53,7 @@ public class QnaController {
 	@ResponseBody
 	public AjaxVO processOpen(@RequestParam("type") String process, @RequestParam("seq") String seq) {
 		
-		String currUser = SecurityContextHolder.getContext().getAuthentication().getName();
+		String currUser = SessionUtil.getSessionUserId();
 		AjaxVO vo = new AjaxVO();
 		Map<String, String> m = new HashMap<String, String>();
 		m.put("seq", seq);
@@ -128,7 +129,7 @@ public class QnaController {
 	@PostMapping("process/resolve")
 	@ResponseBody
 	public AjaxVO<Map<String, String>> processResolve(@RequestBody Map<String, String> param) {
-		String currUser = SecurityContextHolder.getContext().getAuthentication().getName();
+		String currUser = SessionUtil.getSessionUserId();
 		
 		AjaxVO<Map<String, String>> vo = new AjaxVO<Map<String, String>>();
 		

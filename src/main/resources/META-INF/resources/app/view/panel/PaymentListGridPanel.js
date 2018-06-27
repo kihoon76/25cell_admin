@@ -139,7 +139,7 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 				flex: 0
 			}, {
 				text: '입금자명',
-				dataIndex: 'applyComment',
+				dataIndex: 'depositor',
 				flex: 0
 			}],
 			tbar: [{
@@ -173,7 +173,7 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 				xtype: 'pagingtoolbar',
 				store: store,
 				displayInfo: true,
-				displayMsg: '로그 리스트 {0} - {1} of {2}',
+				displayMsg: '결제내역 리스트 {0} - {1} of {2}',
 				dock: 'bottom',
 				doRefresh: function() {
 					Ext.getCmp('paymentListGrid').getStore().load();
@@ -211,12 +211,33 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 			}
 		});
 		
-		function confirmPayment() {
-			
+		function confirmPayment(key) {
+			//결제일자
+			var paymentDate = Ext.getCmp('paymentDate').getRawValue();
+			console.log(paymentDate);
+			commFn.ajax({
+				url: '/payment/confirm',
+				method:'POST',
+				headers: { 'Content-Type': 'application/json' }, 
+				jsonData: {
+					paymentDate: paymentDate,
+					key: key.toString()
+				},
+				timeout:60000,
+				success: function(jo) {
+					if(jo.success) {
+						Ext.Msg.alert('', '결제완료처리 되었습니다.');
+					}
+					else {
+						Ext.Msg.alert('', jo.errMsg);
+					}
+				}
+			});
 		}
 		
 		function showDetailWin(rec) {
 			var datas = rec.getData();
+			var key = datas.key;
 			
 			var win = Ext.create('Ext.window.Window',{
 				iconCls: 'icon-window',
@@ -240,7 +261,7 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 		            defaultType: 'textfield',
 		            items: [{
 		            	fieldLabel: '결제번호',
-						value: datas.key
+						value: key
 		            }, {
 		            	fieldLabel: '사용자계정',
 		            	value: datas.accountId
@@ -257,8 +278,16 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 		            	fieldLabel: '결제신청일',
 		            	value: datas.applyDate
 		            }, {
+		            	xtype: 'datefield',
+		            	//width: 200,
 		            	fieldLabel: '결제일자',
-		            	value: datas.paymentDate
+		            	anchor: '50%',
+		            	id: 'paymentDate',
+		            	format: 'Y-m-d',
+		            	editable: false,
+		            	readOnly: false
+		            	//value: new Date()
+		            	//value: datas.paymentDate
 		            }, {
 		            	fieldLabel: '결제확인일자',
 		            	value: datas.paymentConfirmDate
@@ -274,7 +303,7 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 						click: function() {
 							Ext.Msg.confirm('', '결제확인을 하시겠습니까?', function(button) {
 								if(button == 'yes') {
-									
+									confirmPayment(key);
 								}
 								else {
 									
