@@ -158,7 +158,7 @@ Ext.define('Hotplace.view.panel.CouponFormPanel', {
 			height: 200,
 			modal: true,
 			resizable: false,
-			closeAction: 'close',
+			closeAction: 'destroy',
 			items: [{
 				xtype: 'form',
 				id: 'publishCouponForm',
@@ -267,7 +267,7 @@ Ext.define('Hotplace.view.panel.CouponFormPanel', {
 			height: 120,
 			modal: true,
 			resizable: false,
-			closeAction: 'close',
+			closeAction: 'destroy',
 			items: [{
 				xtype: 'form',
 				id: 'regJehuForm',
