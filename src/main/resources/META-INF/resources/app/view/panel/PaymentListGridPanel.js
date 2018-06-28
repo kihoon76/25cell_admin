@@ -11,6 +11,7 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 			searchComboArr = [], 
 			searchType = '', 
 			searchValue = '',
+			win = null,
 			that = this;
 		
 		try {
@@ -238,7 +239,9 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 				timeout:60000,
 				success: function(jo) {
 					if(jo.success) {
-						Ext.Msg.alert('', '결제완료처리 되었습니다.');
+						Ext.Msg.alert('', '결제완료처리 되었습니다.', function() {
+							win.close();
+						});
 					}
 					else {
 						Ext.Msg.alert('', jo.errMsg);
@@ -253,7 +256,7 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 			console.log(rec);
 			var isY = datas.status == 'Y';
 			
-			var win = Ext.create('Ext.window.Window',{
+			win = Ext.create('Ext.window.Window',{
 				iconCls: 'icon-window',
 				width: 800,
 				height: 450,
