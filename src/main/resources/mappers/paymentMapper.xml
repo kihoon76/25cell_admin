@@ -29,6 +29,8 @@
 		<result column="결제내용"		property="applyComment" javaType="string" />
 		<result column="입금자명"		property="depositor" javaType="string" />
 		<result column="환불내역번호"	property="refundId" javaType="string" />
+		<result column="처리담당자계정"	property="processorId" javaType="string" />
+		<result column="처리담당자이름"	property="processorName" javaType="string" />
 	</resultMap>
 	
 	<select id="selectPaymentList" resultMap="RM_selectPaymentList" parameterType="map">
@@ -45,14 +47,17 @@
 		  	  	<when test="searchType != null and searchType == 'couponNum'">
 		  	  		where 쿠폰번호 = #{searchValue}
 		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'useCoupon'">
+		  	  		where 쿠폰사용여부 = #{searchValue}
+		  	  	</when>
 		  	  	<when test="searchType != null and searchType == 'paymentDate'">
-		  	  		where 결제일자 = #{searchValue}
+		  	  		where DATEDIFF(DD, #{searchValue}, [결제일자]) = 0
 		  	  	</when>
 		  	  	<when test="searchType != null and searchType == 'paymentConfirmDate'">
-		  	  		where 결제확인일자 = #{searchValue}
+		  	  		where DATEDIFF(DD, #{searchValue}, [결제확인일자]) = 0 
 		  	  	</when>
 		  	  	<when test="searchType != null and searchType == 'applyDate'">
-		  	  		where 결제신청일자 = #{searchValue}
+		  	  		where DATEDIFF(DD, #{searchValue}, [결제신청일자]) = 0 
 		  	  	</when>
 		  	  	<when test="searchType != null and searchType == 'status'">
 		  	  		where 결제완료여부 = #{searchValue}
@@ -63,7 +68,7 @@
 	</select>
 	
 	<select id="selectPayment" parameterType="map" resultMap="RM_selectPayment">
-		select 일련번호, 결제일자, 결제확인일자, 결제신청일자, 결제금액, 쿠폰사용여부, tb1.쿠폰번호, 결제완료여부, 입금자명, 환불내역번호, 서비스타입, 서비스서브타입, 사용자계정,
+		select 일련번호, 결제일자, 결제확인일자, 결제신청일자, 결제금액, 쿠폰사용여부, tb1.쿠폰번호, 결제완료여부, 입금자명, 환불내역번호, 서비스타입, 서비스서브타입, 사용자계정, 아이디 as 처리담당자계정, 이름  as 처리담당자이름,
 			   case when 서비스타입 = 'ALL' then 
 					case when 서비스서브타입 = 'YEAR' then '전체서비스(연간결제)' 
 					 	 else '전체서비스(월간결제)'
@@ -100,6 +105,7 @@
 		  	  </choose>
 		  ) tb1
 		  left outer join [웹].[dbo].[발행쿠폰] tb2 on tb1.쿠폰번호 = tb2.쿠폰번호
+		  left outer join [웹].[dbo].[계정] tb3 on tb1.처리담당자 = tb3.아이디
 		where rownum between (#{start} + 1) and (#{start} + #{limit})
 	</select>
 	

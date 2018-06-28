@@ -21,6 +21,8 @@ public class Payment {
 	private String status;						//결제완료여부('N', 'Y')
 	private String depositor;					//입금자명
 	private String refundId;					//환불내역번호
+	private String processorId;					//결제처리담당자계정
+	private String processorName;				//결제처리담당자이름
 	
 	public String getAccountId() {
 		return accountId;
@@ -117,5 +119,17 @@ public class Payment {
 	}
 	public void setRefundId(String refundId) {
 		this.refundId = refundId;
+	}
+	public String getProcessorId() {
+		return processorId;
+	}
+	public void setProcessorId(String processorId) {
+		this.processorId = processorId;
+	}
+	public String getProcessorName() {
+		return processorName;
+	}
+	public void setProcessorName(String processorName) {
+		this.processorName = processorName;
 	}
 }

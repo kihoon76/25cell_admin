@@ -27,7 +27,10 @@ Ext.define('Hotplace.store.PaymentListStore', {
 	       'serviceType', 
 	       'serviceSubTypes', 
 	       'applyComment',
-	       'depositor'
+	       'depositor',
+	       'status',
+	       'processorId',
+	       'processorName'
 	  ],
 	  autoLoad : true
 });

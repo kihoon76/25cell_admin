@@ -8,6 +8,9 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 			commFn = Hotplace.util.CommonFn,
 			categoryPanel = Ext.getCmp('app-category'),
 			contentPanel = Ext.getCmp('app-contents'),
+			searchComboArr = [], 
+			searchType = '', 
+			searchValue = '',
 			that = this;
 		
 		try {
@@ -26,88 +29,44 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 		
 		var searchComboArr = [], searchType = '', searchValue = '';
 		
-		var searchWin = Ext.create('Ext.window.Window',{
-			iconCls: 'icon-window',
-			width: 300,
-			height: 150,
-			modal: true,
-			draggable: false,
-			resizable: false,
-			closeAction: 'hide',
-			items: [{
-				xtype: 'form',
-				id: 'logSearchForm',
-				bodyPadding: 5,
-				height: 300,
-				defaults: {
-	                width: 250,
-	                height: 22,
-	                labelWidth: 70
-	            },
-	            defaultType: 'textfield',
-	            items: [{
-	            	fieldLabel: '아이피',
-					name: 'txtLogSearchIp',
-					id: 'txtLogSearchIp'
-	            }, {
-	            	fieldLabel: '아이디',
-					name: 'txtLogSearchId',
-					id: 'txtLogSearchId'
-	            }, {
-	            	xtype: 'datefield',
-	            	fieldLabel: '접속시간',
-	            	height: 22,
-	            	editable: false,
-	            	name: 'dateLogSearch',
-					id: 'dateLogSearch',
-			    	format: 'Y-m-d',
-	            }]
-			}],
-			buttons: [{
-				xtype: 'button',
-				iconCls: 'icon-search',
-				text: '검색',
-				listeners: {
-					click: function() {
-						var ip = Ext.getCmp('txtLogSearchIp');
-						var id = Ext.getCmp('txtLogSearchId');
-						var date = Ext.getCmp('dateLogSearch');
-						
-						if(Ext.String.trim(ip.getValue()) == '' 
-						   && Ext.String.trim(id.getValue()) == ''
-						   && date.getValue() == null) return;
-						
-						store.getProxy().setExtraParam('ip', Ext.String.trim(ip.getValue()));
-						store.getProxy().setExtraParam('id', Ext.String.trim(id.getValue()));
-						store.getProxy().setExtraParam('regDate', (date.getRawValue()) ? date.getRawValue().substring(0,10) : null);
-						store.loadPage(1, {
-							params: {
-								limit: Ext.getCmp('log-paging-combo').getValue()
-							}
-						});
-					}
+		function search() {
+			searchType = Ext.getCmp('payment-searchtype-combo').getValue();
+			
+			if(searchType == 'applyDate' || searchType == 'paymentDate' || searchType == 'paymentConfirmDate') {
+				searchValue = Ext.getCmp('payment-search-date').getRawValue();
+			}
+			else {
+				searchValue = Ext.getCmp('payment-search-text').getValue();
+			}
+			
+			  
+			if(!searchValue) {
+				Ext.Msg.alert('알림', '값을 입력하세요');
+				return;
+			}
+			
+			store.load({
+				params: {
+					searchType: searchType,
+					searchValue: searchValue
 				}
-			}, {
-				xtype: 'button',
-				iconCls: 'icon-close',
-				text: '닫기',
-				listeners: {
-					click: function() {
-						searchWin.hide();
-					}
-				}
-			}]
-		});
+			});    
+		}
 		
 		Ext.apply(this, {
 			store: store,
 			columns: [{
 				text: '결제번호',
 				dataIndex: 'key',
-				flex: 0
+				flex: 0,
+				_search: false
 			}, {
 				text: '사용자계정',
 				dataIndex: 'accountId',
+				flex: 0
+			}, {
+				text: '처리완료',
+				dataIndex: 'status',
 				flex: 0
 			}, {
 				text: '결제금액',
@@ -136,35 +95,71 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 			}, {
 				text: '결제내용',
 				dataIndex: 'applyComment',
-				flex: 0
+				flex: 0,
+				_search: false
 			}, {
 				text: '입금자명',
 				dataIndex: 'depositor',
 				flex: 0
 			}],
-			tbar: [{
+			tbar: ['->', '검색항목 : ', Ext.create('Ext.form.field.ComboBox', {
+		    	queryMode: 'local',
+		    	id:'payment-searchtype-combo',
+		    	displayField: 'name',
+		    	valueField: 'value',
+		    	editable: false,
+		    	store:searchComboStore,
+		    	listeners: {
+		    		change: function(combo, nV, oV) {
+		    			var txt = Ext.getCmp('payment-search-text');
+	    				var date = Ext.getCmp('payment-search-date');
+	    				
+		    			if(nV == 'all') {
+		    				txt.setValue('');
+		    				date.setRawValue('');
+		    				txt.setVisible(true);
+		    				date.setVisible(false);
+		    				store.load();      
+		    			}
+		    			else if(nV == 'applyDate' || nV == 'paymentDate' || nV == 'paymentConfirmDate') {
+		    				txt.setValue('');
+		    				date.setRawValue('');
+		    				txt.setVisible(false);
+		    				date.setVisible(true);
+		    			}
+		    			else {
+		    				txt.setValue('');
+		    				date.setRawValue('');
+		    				txt.setVisible(true);
+		    				date.setVisible(false);
+		    			}
+		
+		    		}
+		    	}
+		     }), {
+            	xtype: 'textfield',
+				id: 'payment-search-text',
+				enableKeyEvents: true,
+				listeners: {
+					keydown: function(t, e) {
+						//전체를 선택한 경우 동작 안함
+						if(e.keyCode == 13) {
+							search();
+						}
+					}
+				}
+			}, {
+				xtype: 'datefield',
+				id: 'payment-search-date',
+				format: 'Y-m-d',
+				hidden: true
+			}, {
 				xtype: 'button',
 				iconCls: 'icon-search',
 				text: '검색',
 				listeners: {
 					click: function(btn, e) {
-						searchWin.showAt(btn.getPosition());
-					}
-				}
-			}, {
-				xtype: 'button',
-				iconCls: 'icon-refresh',
-				text: '전체보기',
-				listeners: {
-					click: function() {
-						store.getProxy().setExtraParam('ip', null);
-						store.getProxy().setExtraParam('id', null);
-						store.getProxy().setExtraParam('regDate', null);
-						store.loadPage(1, {
-							params: {
-								limit: Ext.getCmp('log-paging-combo').getValue()
-							}
-						});
+						search();
 					}
 				}
 			}],
@@ -203,8 +198,25 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 			}],
 			listeners: {
 				afterrender: function(grid, eOpts) {
-					
-				},
+    				var columns = that.columns;
+    				var len = columns.length;
+    					
+    				console.log(columns);
+    				searchComboArr.push({name: '전체', value: 'all'});
+    				for(var i=0; i<len; i++) {
+    					if(columns[i]._search === false) {
+    						continue;
+    					}
+    					
+    					searchComboArr.push({
+    						name: columns[i].text,
+    						value:columns[i].dataIndex
+    					});
+    				}
+    					
+    				searchComboStore.loadData(searchComboArr);
+    				Ext.getCmp('payment-searchtype-combo').select('all');
+    			},
 				itemdblclick: function(grid, rec, item) {
 					showDetailWin(rec);
 				}
@@ -213,7 +225,7 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 		
 		function confirmPayment(key) {
 			//결제일자
-			var paymentDate = Ext.getCmp('paymentDate').getRawValue();
+			var paymentDate = Ext.getCmp('paymentDateWin').getRawValue();
 			console.log(paymentDate);
 			commFn.ajax({
 				url: '/payment/confirm',
@@ -238,15 +250,17 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 		function showDetailWin(rec) {
 			var datas = rec.getData();
 			var key = datas.key;
+			console.log(rec);
+			var isY = datas.status == 'Y';
 			
 			var win = Ext.create('Ext.window.Window',{
 				iconCls: 'icon-window',
 				width: 800,
-				height: 800,
+				height: 450,
 				modal: true,
 				draggable: true,
-				resizable: true,
-				closeAction: 'close',
+				resizable: false,
+				closeAction: 'destroy',
 				items: [{
 					xtype: 'form',
 					bodyPadding: 5,
@@ -254,7 +268,7 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 					defaults: {
 		                width: 250,
 		                height: 22,
-		                labelWidth: 80,
+		                labelWidth: 90,
 		                anchor: '100%',
 		                readOnly: true
 		            },
@@ -281,24 +295,34 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 		            	xtype: 'datefield',
 		            	//width: 200,
 		            	fieldLabel: '결제일자',
-		            	anchor: '50%',
-		            	id: 'paymentDate',
+		            	anchor: '30%',
+		            	id: 'paymentDateWin',
 		            	format: 'Y-m-d',
 		            	editable: false,
-		            	readOnly: false
-		            	//value: new Date()
-		            	//value: datas.paymentDate
+		            	readOnly: isY,
+		            	value: (datas.paymentDate) ? datas.paymentDate.substring(0, 10) : ''
 		            }, {
 		            	fieldLabel: '결제확인일자',
 		            	value: datas.paymentConfirmDate
 		            }, {
+		            	xtype: 'textareafield',
+		            	grow: true,
+		            	anchor: '100%', 
+		            	height: 100,
 		            	fieldLabel: '결제내용',
 		            	value: datas.applyComment
+		            }, {
+		            	fieldLabel: '결제처리상태',
+		            	value: (datas.status == 'Y') ? '결제처리완료' : ''
+		            }, {
+		            	fieldLabel: '결제처리담당자',
+		            	value: (datas.processorId) ? datas.processorName + '(' + datas.processorId + ')' : ''
 		            }]
 				}],
 				buttons: [{
 					xtype: 'button',
 					text: '결제확인',
+					disabled: isY,
 					listeners: {
 						click: function() {
 							Ext.Msg.confirm('', '결제확인을 하시겠습니까?', function(button) {
