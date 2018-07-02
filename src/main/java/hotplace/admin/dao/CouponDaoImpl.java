@@ -9,6 +9,8 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
 import hotplace.admin.domain.Authority;
+import hotplace.admin.domain.CouponHistory;
+import hotplace.admin.domain.ExcelCouponVO;
 import hotplace.admin.domain.ExtjsStoreVO;
 
 @Repository("couponDao")
@@ -39,6 +41,16 @@ public class CouponDaoImpl implements CouponDao {
 	public void insertCoupon(Map map) {
 		msSqlSession.insert(namespace + ".insertCoupon", map);
 		
+	}
+
+	@Override
+	public List<ExcelCouponVO> selectCouponsForExcel() {
+		return msSqlSession.selectList(namespace + ".selectCouponsForExcel");
+	}
+
+	@Override
+	public ExtjsStoreVO<CouponHistory> selectCouponHistoryList(Map map) {
+		return msSqlSession.selectOne(namespace + ".selectCouponHistoryList", map);
 	}
 
 }

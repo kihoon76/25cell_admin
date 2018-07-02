@@ -1,6 +1,6 @@
 Ext.define('Hotplace.controller.CouponController', {
 	extend : 'Hotplace.controller.BaseController',
-	views: ['panel.CouponFormPanel'],
+	views: ['panel.CouponFormPanel', 'panel.CouponHistoryListGridPanel'],
 	onLaunch : function() {
 		this.callParent(arguments);
 	},
@@ -10,9 +10,14 @@ Ext.define('Hotplace.controller.CouponController', {
 		if(recObj.leaf) {
 			if(!this.categoryPanel.isAttachedCategory(recObj.id)) {
 				switch(recObj.id) {
-				case 'cate-coupon' :
+				case 'cate-coupon-info' :
 					this.addContentTabPanel(recObj.id, recObj.text, {
 						xtype: 'couponpanel'
+					});
+					break;
+				case 'cate-coupon-history' :
+					this.addContentTabPanel(recObj.id, recObj.text, {
+						xtype: 'couponhisgrid'
 					});
 					break;
 				default :

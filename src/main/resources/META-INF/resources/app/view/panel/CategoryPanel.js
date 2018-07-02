@@ -48,7 +48,12 @@ Ext.define('Hotplace.view.panel.CategoryPanel', {
 					 }, {
 						 text: '문의사항관리', leaf : true, cate : 'qna', id : 'cate-qna' 
 					 }, {
-						 text: '쿠폰관리', leaf : true, cate : 'coupon', id : 'cate-coupon' 
+						 text: '쿠폰관리', expand: true, iconCls : 'tree-expand'
+						,children : [{
+							text: '쿠폰발행내역', leaf : true, cate : 'log', id : 'cate-coupon-history'
+						},{
+							text: '쿠폰발행 및 쿠폰정보', leaf : true, cate : 'log', id : 'cate-coupon-info'
+						}]
 					 }, {
 						 text: '결제관리', expand: true, iconCls : 'tree-expand'
 						,children : [{

@@ -14,6 +14,18 @@
 					select="selectCoupon" />
 	</resultMap>
 	
+	<resultMap id="RM_selectCouponHistoryList" type="ExtjsStoreVO">
+		<result column="발행내역수" property="total" javaType="int"/>
+		<result column="검색타입" property="searchType" javaType="string"/>
+		<result column="검색값" property="searchValue" javaType="string"/>
+		<result column="시작" property="start" javaType="int" />
+		<result column="끝" property="limit" javaType="int" />
+		<collection property="datas" column="{start=시작, limit=끝, searchType=검색타입, searchValue=검색값}" 
+					javaType="java.util.ArrayList"
+					ofType="Coupon" 
+					select="selectCouponHistory" />
+	</resultMap>
+	
 	<resultMap id="RM_selectCoupon" type="Coupon">
 		<result column="쿠폰번호"		property="couponNum" javaType="string"/>
 		<result column="발행대상"		property="couponTarget" javaType="string"/>
@@ -22,6 +34,16 @@
 		<result column="발행일자"		property="publishDate" javaType="string"/>
 		<result column="할인값"		property="discountValue" javaType="string"/>
 		<result column="할인단위"		property="discountUnit" javaType="string" />
+	</resultMap>
+	
+	<resultMap id="RM_selectCouponHistory" type="CouponHistory">
+		<result column="내역번호"		property="key" javaType="string"/>
+		<result column="발행날짜"		property="pubDate" javaType="string"/>
+		<result column="발행대상"		property="pubTarget" javaType="string" />
+		<result column="발행대상명"		property="pubTargetName" javaType="string" />
+		<result column="발행인아이디"	property="pubId" javaType="string"/>
+		<result column="발행인명"		property="pubName" javaType="string"/>
+		<result column="발행수"		property="pubCount" javaType="int"/>
 	</resultMap>
 	
 	<select id="selectCouponList" resultMap="RM_selectCouponList" parameterType="map">
@@ -67,6 +89,47 @@
 		where rownum between (#{start} + 1) and (#{start} + #{limit})
 	</select>
 	
+	<select id="selectCouponHistoryList" resultMap="RM_selectCouponHistoryList" parameterType="map">
+		select (
+			select count(*) 
+			  from [웹].[dbo].[쿠폰발행내역]
+			   <choose>
+		  	  	<when test="searchType != null and searchType == 'couponNum'">
+		  	  		where 발행대상 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'couponTarget'">
+		  	  		where 발행인아이디 = #{searchValue}
+		  	  	</when>
+		  	  	<when test="searchType != null and searchType == 'used'">
+		  	  		where 발행날짜 = #{searchValue}
+		  	  	</when>
+		  	  	<otherwise></otherwise>
+		  	  </choose>
+			) 발행내역수, #{searchType} 검색타입, #{searchValue} 검색값, #{start} 시작, #{limit} 끝
+	</select>
+	
+	<select id="selectCouponHistory" parameterType="map" resultMap="RM_selectCouponHistory">
+		select 내역번호, 발행날짜, 발행대상, 발행인아이디, 발행수, tb2.이름 as 발행인명, tb3.업체명 as 발행대상명
+		  from ( 
+		  		select row_number() over(order by 내역번호 desc) rownum, * from [웹].[dbo].[쿠폰발행내역]
+		  		<choose>
+			  	  	<when test="searchType != null and searchType == 'couponNum'">
+			  	  		where 쿠폰번호 = #{searchValue}
+			  	  	</when>
+			  	  	<when test="searchType != null and searchType == 'couponTarget'">
+			  	  		where 발행대상 = #{searchValue}
+			  	  	</when>
+			  	  	<when test="searchType != null and searchType == 'used'">
+			  	  		where 사용여부 = #{searchValue}
+			  	  	</when>
+			  	  	<otherwise></otherwise>
+			  	</choose> 
+		  ) tb1
+		  inner join [웹].[dbo].[계정] tb2 on tb1.발행인아이디 = tb2.아이디
+		  inner join [웹].[dbo].[쿠폰제휴업체] tb3 on tb1.발행대상 = tb3.업체번호
+		where rownum between (#{start} + 1) and (#{start} + #{limit})
+	</select>
+	
 	<insert id="insertJehu" parameterType="string">
 		insert into [웹].[dbo].[쿠폰제휴업체](업체명) values (#{jehuName})
 	</insert>
@@ -81,7 +144,15 @@
 		#{count, mode=IN, jdbcType=SMALLINT, javaType=int},
 		#{jehuNum, mode=IN, jdbcType=SMALLINT, javaType=int},
 		#{discountUnit, mode=IN, jdbcType=CHAR, javaType=string},
-		#{discountValue, mode=IN, jdbcType=INTEGER, javaType=int}
+		#{discountValue, mode=IN, jdbcType=INTEGER, javaType=int},
+		#{pubId, mode=IN, jdbcType=CHAR, javaType=string}
 	)}
 	</insert>
+	
+	<select id="selectCouponsForExcel" resultType="ExcelCouponVO">
+		select 쿠폰번호 couponNum, 발행대상 targetNum, 업체명 targetName
+		  from [웹].[dbo].[발행쿠폰] T1
+		 inner join [웹].[dbo].[쿠폰제휴업체] T2
+		    on T1.발행대상 = T2.업체번호
+	</select>
 </mapper>

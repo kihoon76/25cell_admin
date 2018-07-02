@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import hotplace.admin.domain.AjaxVO;
 import hotplace.admin.domain.Authority;
+import hotplace.admin.domain.CouponHistory;
 import hotplace.admin.domain.ExtjsStoreVO;
 import hotplace.admin.service.CouponService;
+import hotplace.admin.utils.SessionUtil;
 
 @RequestMapping("/coupon")
 @Controller
@@ -94,6 +96,8 @@ public class CouponController {
 			map.put("count", Integer.parseInt(String.valueOf(map.get("count"))));
 			map.put("discountValue", Integer.parseInt(String.valueOf(map.get("discountValue"))));
 			map.put("jehuNum", Integer.parseInt(String.valueOf(map.get("jehuNum"))));
+			map.put("pubId", SessionUtil.getSessionUserId());
+			
 			couponService.publishCoupon(map);
 			vo.setSuccess(true);
 		}
@@ -103,5 +107,22 @@ public class CouponController {
 		}
 		
 		return vo;
+	}
+	
+	@PostMapping("historylist")
+	@ResponseBody
+	public ExtjsStoreVO<CouponHistory> getCouponHistoryList(
+			@RequestParam("limit") int limit,
+			@RequestParam("start") int start,
+			@RequestParam(name="searchType", required=false) String searchType,
+			@RequestParam(name="searchValue", required=false) String searchValue) {
+		
+		Map map = new HashMap();
+		map.put("start", start);
+		map.put("limit", limit);
+		map.put("searchType", searchType);
+		map.put("searchValue", searchValue);
+		
+		return couponService.getCouponHistoryList(map);
 	}
 }

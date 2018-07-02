@@ -158,7 +158,7 @@ Ext.define('Hotplace.view.panel.CouponFormPanel', {
 			height: 200,
 			modal: true,
 			resizable: false,
-			closeAction: 'destroy',
+			closeAction: 'hide',
 			items: [{
 				xtype: 'form',
 				id: 'publishCouponForm',
@@ -257,7 +257,12 @@ Ext.define('Hotplace.view.panel.CouponFormPanel', {
 						publishCouponWin.close();
 					}
 				}
-			}]
+			}],
+			listeners: {
+				beforeshow: function() {
+					discountUnitComboStore.reload();
+				}
+			}
 		});
 		
 		var regJehuWin = Ext.create('Ext.window.Window',{
@@ -267,7 +272,7 @@ Ext.define('Hotplace.view.panel.CouponFormPanel', {
 			height: 120,
 			modal: true,
 			resizable: false,
-			closeAction: 'destroy',
+			closeAction: 'hide',
 			items: [{
 				xtype: 'form',
 				id: 'regJehuForm',
