@@ -432,7 +432,12 @@ Ext.define('Hotplace.view.panel.CouponFormPanel', {
 	    			displayMsg: '쿠폰 리스트 {0} - {1} of {2}',
 	    			dock: 'bottom',
 	    			doRefresh: function() {
-	    				store.load();
+	    				store.load({
+	    					params: {
+	    						searchType: searchType,
+	    						searchValue: searchValue
+	    					}
+	    				});    
 	    			},
 	    			items: ['-', {
 	    				text: '목록수 : '
@@ -455,7 +460,13 @@ Ext.define('Hotplace.view.panel.CouponFormPanel', {
 	    						}
 	    					}
 	    				})
-	    			]
+	    			],
+	    			listeners: {
+	    				beforechange: function() {
+	    					store.getProxy().setExtraParam('searchType', searchType);
+							store.getProxy().setExtraParam('searchValue', searchValue);
+		    			}
+	    			}
     			}],
 	    		listeners: {
 	    			afterrender: function(grid, eOpts) {
@@ -471,7 +482,7 @@ Ext.define('Hotplace.view.panel.CouponFormPanel', {
 	    				}
 	    					
 	    				searchComboStore.loadData(searchComboArr);
-	    				Ext.getCmp('coupon-searchtype-combo').select('all');
+	    				//Ext.getCmp('coupon-searchtype-combo').select('all');
 	    			},
 	    			itemclick: function(view, record) {
 	    				selectedRecord = record;
@@ -490,7 +501,7 @@ Ext.define('Hotplace.view.panel.CouponFormPanel', {
 	    				
 	    				var discount = Ext.getCmp('coupon-discount'); 
 	    				discount.setValue(data.discountValue + data.discountUnit);
-	    			}
+	    			},
 	    		}
 			}, {
 				columnWidth: 0.4,

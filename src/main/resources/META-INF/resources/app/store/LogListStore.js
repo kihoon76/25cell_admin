@@ -19,6 +19,5 @@ Ext.define('Hotplace.store.LogListStore', {
 	  },
 	  fields : ['ip', 'accountId', 'referer', 'url', 'parameter', 'accessTime', 'userAgent', 'isMobile'],
 	  autoLoad : true,
-	  
 	  pageSize : Hotplace.util.Constants.gridPageSize
 });

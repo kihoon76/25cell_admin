@@ -16,5 +16,6 @@ Ext.define('Hotplace.store.CouponListStore', {
 	       }
 	  },
 	  fields : ['couponNum', 'couponTarget', 'couponTargetName', 'publishDate', 'used', 'discountValue', 'discountUnit'],
-	  autoLoad : true
+	  autoLoad : true,
+	  pageSize : Hotplace.util.Constants.gridPageSize
 });
