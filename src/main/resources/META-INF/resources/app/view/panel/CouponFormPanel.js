@@ -182,7 +182,7 @@ Ext.define('Hotplace.view.panel.CouponFormPanel', {
 	            	xtype: 'numberfield',
 	            	id: 'coupon-count-text',
 	            	value: 1,
-	                maxValue: 100,
+	                maxValue: 1000,
 	                minValue: 1,
 	                step: 1,
 	            	fieldLabel: '발행쿠폰갯수'
