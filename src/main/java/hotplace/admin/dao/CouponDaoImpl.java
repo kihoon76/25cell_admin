@@ -44,8 +44,8 @@ public class CouponDaoImpl implements CouponDao {
 	}
 
 	@Override
-	public List<ExcelCouponVO> selectCouponsForExcel() {
-		return msSqlSession.selectList(namespace + ".selectCouponsForExcel");
+	public List<ExcelCouponVO> selectCouponsForExcel(String key) {
+		return msSqlSession.selectList(namespace + ".selectCouponsForExcel", key);
 	}
 
 	@Override

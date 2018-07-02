@@ -18,7 +18,7 @@ public interface CouponDao {
 
 	void insertCoupon(Map map);
 
-	List<ExcelCouponVO> selectCouponsForExcel();
+	List<ExcelCouponVO> selectCouponsForExcel(String key);
 
 	ExtjsStoreVO<CouponHistory> selectCouponHistoryList(Map map);
 

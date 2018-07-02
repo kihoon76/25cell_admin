@@ -149,10 +149,11 @@
 	)}
 	</insert>
 	
-	<select id="selectCouponsForExcel" resultType="ExcelCouponVO">
+	<select id="selectCouponsForExcel" resultType="ExcelCouponVO" parameterType="string">
 		select 쿠폰번호 couponNum, 발행대상 targetNum, 업체명 targetName
 		  from [웹].[dbo].[발행쿠폰] T1
 		 inner join [웹].[dbo].[쿠폰제휴업체] T2
 		    on T1.발행대상 = T2.업체번호
+		 where T1.발행내역번호 = #{key}
 	</select>
 </mapper>

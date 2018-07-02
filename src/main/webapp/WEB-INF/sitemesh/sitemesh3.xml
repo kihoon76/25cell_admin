@@ -8,4 +8,5 @@
 	<mapping path="/*" decorator="/WEB-INF/views/layout/default.jsp" />
 	<mapping path="/signin" exclude="true" />
 	<mapping path="/result" exclude="true" />
+	<mapping path="/coupon/excel" exclude="true" />
 </sitemesh>

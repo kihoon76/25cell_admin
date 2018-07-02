@@ -1,11 +1,17 @@
 package hotplace.admin.controller;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -124,5 +130,38 @@ public class CouponController {
 		map.put("searchValue", searchValue);
 		
 		return couponService.getCouponHistoryList(map);
+	}
+	
+	@PostMapping("excel")
+	public void getCouponListExcel(
+			@RequestParam("key") String key,
+			HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		
+		System.err.println("==============" + key);
+		//XSSFWorkbook excel =  couponService.getCouponExcel();
+		Map<String, Object> result = couponService.getCouponExcel(key);
+		XSSFWorkbook excel = (XSSFWorkbook)result.get("workbook");
+		
+		
+		//한글파일명 라우저 별 처리
+		String fileName = "발행쿠폰_" + (String)result.get("target");
+		if(request.getHeader("User-Agent").contains("MSIE") || request.getHeader("User-Agent").contains("Trident")) {
+			fileName = URLEncoder.encode(fileName, "UTF-8").replaceAll("\\+", "%20");
+		}
+		else {
+			fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
+		}
+				
+		response.setHeader("Content-Transper-Encoding", "binary");
+		response.setHeader("Content-Disposition", "inline; filename=" + fileName + ".xlsx");
+		response.setContentType("application/octet-stream");
+		
+		
+		
+		OutputStream os = response.getOutputStream();
+		excel.write(os);
+		
+		os.close();
 	}
 }

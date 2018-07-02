@@ -130,32 +130,7 @@ Ext.define('Hotplace.view.panel.CouponHistoryListGridPanel', {
 				dataIndex: 'pubCount',
 				flex: 0
 			}],
-			tbar: [{
-				xtype: 'button',
-				iconCls: 'icon-search',
-				text: '검색',
-				listeners: {
-					click: function(btn, e) {
-						searchWin.showAt(btn.getPosition());
-					}
-				}
-			}, {
-				xtype: 'button',
-				iconCls: 'icon-refresh',
-				text: '전체보기',
-				listeners: {
-					click: function() {
-						store.getProxy().setExtraParam('ip', null);
-						store.getProxy().setExtraParam('id', null);
-						store.getProxy().setExtraParam('regDate', null);
-						store.loadPage(1, {
-							params: {
-								limit: Ext.getCmp('log-paging-combo').getValue()
-							}
-						});
-					}
-				}
-			}],
+			tbar: ['<span style="color:#ff0000;font-weight:bold;">★ 각 행을 더블클릭 (엑셀파일 다운로드) ★</span>'],
 			
 			dockedItems: [{
 				xtype: 'pagingtoolbar',
@@ -194,127 +169,36 @@ Ext.define('Hotplace.view.panel.CouponHistoryListGridPanel', {
 					
 				},
 				itemdblclick: function(grid, rec, item) {
-					showDetailWin(rec);
+					showExcel(rec);
 				}
 			}
 		});
 		
-		function showDetailWin(rec) {
-			var datas = rec.getData();
-			var b = getBrowserKind(datas.isMobile, datas.userAgent);
-			
-			var win = Ext.create('Ext.window.Window',{
-				iconCls: 'icon-window',
-				width: 800,
-				height: 800,
-				modal: true,
-				draggable: true,
-				resizable: true,
-				closeAction: 'close',
-				items: [{
-					xtype: 'form',
-					bodyPadding: 5,
-					height: 700,
-					defaults: {
-		                width: 250,
-		                height: 22,
-		                labelWidth: 80,
-		                anchor: '100%',
-		                readOnly: true
-		            },
-		            defaultType: 'textfield',
-		            items: [{
-		            	fieldLabel: '아이피',
-						value: datas.ip
-		            }, {
-		            	fieldLabel: '아이디',
-		            	value: datas.accountId,
-		            	focusOnToFront: false,
-		            	listeners: {
-		            		focus: function(text) {
-		            			console.log('focus');
-		            		}
-		            	}
-		            }, {
-		            	fieldLabel: '유입경로',
-		            	value: datas.referer
-		            }, {
-		            	fieldLabel: '요청리소스',
-		            	value: datas.url
-		            }, {
-		            	xtype: 'textareafield',
-		            	height: 300,
-		            	grow: true,
-		            	fieldLabel: '파라미터',
-		            	value: datas.parameter
-		            }, {
-		            	fieldLabel: '접속시간',
-		            	value: datas.accessTime
-		            }, {
-		            	fieldLabel: '브라우저정보',
-		            	value: datas.userAgent
-		            }, {
-		            	fieldLabel: '모바일여부',
-		            	value: datas.isMobile
-		            }, {
-		            	xtype: 'radiogroup',
-		            	fieldLabel: '브라우저종류',
-	            		items: [{
-	            			xtype: 'radio',
-	            			boxLabel: 'IE(edge)',
-	            			readOnly: true,
-	            			checked: b.msedge
-	            		}, {
-	            			xtype: 'radio',
-	            			boxLabel: 'IE(11)',
-	            			readOnly: true,
-	            			checked: b.msie && b.msie_ver == '11'
-	            		}, {
-	            			xtype: 'radio',
-	            			boxLabel: 'IE(10)',
-	            			readOnly: true,
-	            			checked: b.msie && b.msie_ver == '10'
-	            		}, {
-	            			xtype: 'radio',
-	            			boxLabel: 'IE(9)',
-	            			readOnly: true,
-	            			checked: b.msie && b.msie_ver == '10'
-	            		}, {
-	            			xtype: 'radio',
-	            			boxLabel: '크롬',
-	            			readOnly: true,
-	            			checked: b.chrome
-	            		}, {
-	            			xtype: 'radio',
-	            			boxLabel: '파이어폭스',
-	            			readOnly: true,
-	            			checked: b.firefox
-	            		}, {
-	            			xtype: 'radio',
-	            			boxLabel: '사파리',
-	            			readOnly: true,
-	            			checked: b.safari
-	            		}, {
-	            			xtype: 'radio',
-	            			boxLabel: '오페라',
-	            			readOnly: true,
-	            			checked: b.opera
-	            		}]
-		            }]
-				}],
-				buttons: [{
-					xtype: 'button',
-					text: '닫기',
-					listeners: {
-						click: function() {
-							win.close();
-						}
+		function showExcel(rec) {
+			Ext.Msg.confirm('엑셀출력', '선택하신 발행내역 결과를 엑셀로 출력하시겠습니까?', function(button) {
+				if(button == 'yes') {
+					var url = '/coupon/excel';
+					var params = {
+						key: rec.data.key
 					}
-				}]
-				
+					
+					var form = Ext.create('Ext.form.Panel', {
+						standardSubmit: true,
+						url: url,
+						params: params
+					});
+					
+					 form.submit({
+				        target: '_blank', // Avoids leaving the page. 
+				        params: params
+				    });
+					  // Clean-up the form after 100 milliseconds.
+				    // Once the submit is called, the browser does not care anymore with the form object.
+				    Ext.defer(function(){
+				        form.close();
+				    }, 100);
+				}
 			});
-			
-			win.show();
 		}
 		
 		this.callParent(arguments);

@@ -126,13 +126,17 @@ public class Excel {
 
         int rowCount = list.size();
 
+        //header
+        XSSFRow rowHeader = sheet.createRow(0);
+        rowHeader.createCell(0).setCellValue("쿠폰번호(총 " + rowCount + "개)");
+        
         for(int r = 0; r < rowCount; r++) {
-        	XSSFRow row = sheet.createRow(r);
+        	XSSFRow row = sheet.createRow(r+1);
             //XSSFCell curCell;
             //XSSFCell cell = row.createCell(0);
             row.createCell(0).setCellValue(list.get(r).getCouponNum());
-            row.createCell(1).setCellValue(list.get(r).getTargetNum());
-            row.createCell(2).setCellValue(list.get(r).getTargetName());
+            //row.createCell(1).setCellValue(list.get(r).getTargetNum());
+            //row.createCell(2).setCellValue(list.get(r).getTargetName());
         }
 
         //fos = new FileOutputStream(fileOutPath);
@@ -142,6 +146,6 @@ public class Excel {
 	}
 
     public XSSFWorkbook getWorkbook(List<ExcelCouponVO> list) {
-       return writeXlsx(list, "result");
+       return writeXlsx(list, "발행쿠폰");
     }
 }
