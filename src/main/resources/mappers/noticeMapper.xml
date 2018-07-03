@@ -61,7 +61,7 @@
 	<update id="updateNoticeOne" parameterType="map">
 	<![CDATA[
 		update [웹].[dbo].[공지사항]
-		   set 내용 = REPLACE(#{content}, '"', '\"'), 제목 = #{title} 
+		   set 내용 = REPLACE(#{content}, '"', '\"'), 제목 = #{title}, 작성자 = #{id} 
 		 where 글번호 = #{writeNum}
 	]]>
 	</update>
