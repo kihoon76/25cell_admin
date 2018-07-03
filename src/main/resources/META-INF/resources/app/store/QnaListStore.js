@@ -16,7 +16,7 @@ Ext.define('Hotplace.store.QnaListStore', {
 	    	   }
 	       }
 	  },
-	  fields : ['seq', 'phone', 'question', 'processYN', 'processor', 'reqTime', 'processor', 'processTime', 'processContent'],
+	  fields : ['seq', 'phone', 'question', 'processYN', 'processor', 'reqTime', 'processor', 'processorName', 'processTime', 'processContent'],
 	  autoLoad : true,
 	  pageSize : Hotplace.util.Constants.gridPageSize
 });

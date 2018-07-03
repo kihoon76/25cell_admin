@@ -3,8 +3,10 @@ Ext.define('Hotplace.view.panel.CouponFormPanel', {
 	xtype: 'couponpanel',
 	id: 'couponform',
 	initComponent: function() {
-		var that = this;
-		   
+		var that = this,
+			regJehuWin = null,
+			publishCouponWin = null;
+		
 		var constants = Hotplace.util.Constants,
 			commFn = Hotplace.util.CommonFn,
 			selectedRecord = null,
@@ -151,173 +153,177 @@ Ext.define('Hotplace.view.panel.CouponFormPanel', {
 			});
 		}
 		
-		var publishCouponWin = Ext.create('Ext.window.Window',{
-			iconCls: 'icon-window',
-			title: '쿠폰발행',
-			width: 400,
-			height: 200,
-			modal: true,
-			resizable: false,
-			closeAction: 'hide',
-			items: [{
-				xtype: 'form',
-				id: 'publishCouponForm',
-				bodyPadding: 15,
-				defaults: {
-	                anchor: '100%',
-	                height: 22,
-	                labelWidth: 80
-	            },
-	            defaultType: 'textfield',
-	            items: [{
-	            	fieldLabel: '제휴업체',
-	            	id: 'jehu-combo',
-	            	xtype: 'combobox',
-	            	displayField: 'name',
-	            	valueField: 'value',
-	            	queryMode: 'remote',
-	            	editable: false,
-	            	store: jehuStore
-	            }, {
-	            	xtype: 'numberfield',
-	            	id: 'coupon-count-text',
-	            	value: 1,
-	                maxValue: 1000,
-	                minValue: 1,
-	                step: 1,
-	            	fieldLabel: '발행쿠폰갯수'
-	            }, {
-	            	xtype: 'numberfield',
-	            	id: 'coupon-discount-text',
-	            	step: 1,
-	                minValue: 1,
-	            	fieldLabel: '할인값'
-	            }, {
-	            	fieldLabel: '할인단위',
-	            	id: 'coupon-discount-combo',
-	            	xtype: 'combobox',
-	            	displayField: 'name',
-	            	valueField: 'value',
-	            	queryMode: 'local',
-	            	editable: false,
-	            	store: discountUnitComboStore
-	            }]
-			}],
-			buttons: [{
-				xtype: 'button',
-				iconCls: 'reg',
-				text: '발행',
+		function showPublishCouponWin() {
+			publishCouponWin = Ext.create('Ext.window.Window',{
+				iconCls: 'icon-window',
+				title: '쿠폰발행',
+				width: 400,
+				height: 200,
+				modal: true,
+				resizable: false,
+				closeAction: 'destroy',
+				items: [{
+					xtype: 'form',
+					id: 'publishCouponForm',
+					bodyPadding: 15,
+					defaults: {
+		                anchor: '100%',
+		                height: 22,
+		                labelWidth: 80
+		            },
+		            defaultType: 'textfield',
+		            items: [{
+		            	fieldLabel: '제휴업체',
+		            	id: 'jehu-combo',
+		            	xtype: 'combobox',
+		            	displayField: 'name',
+		            	valueField: 'value',
+		            	queryMode: 'remote',
+		            	editable: false,
+		            	store: jehuStore
+		            }, {
+		            	xtype: 'numberfield',
+		            	id: 'coupon-count-text',
+		            	value: 1,
+		                maxValue: 1000,
+		                minValue: 1,
+		                step: 1,
+		            	fieldLabel: '발행쿠폰갯수'
+		            }, {
+		            	xtype: 'numberfield',
+		            	id: 'coupon-discount-text',
+		            	step: 1,
+		                minValue: 1,
+		            	fieldLabel: '할인값'
+		            }, {
+		            	fieldLabel: '할인단위',
+		            	id: 'coupon-discount-combo',
+		            	xtype: 'combobox',
+		            	displayField: 'name',
+		            	valueField: 'value',
+		            	queryMode: 'local',
+		            	editable: false,
+		            	store: discountUnitComboStore
+		            }]
+				}],
+				buttons: [{
+					xtype: 'button',
+					iconCls: 'reg',
+					text: '발행',
+					listeners: {
+						click: function() {
+							var jehuName = Ext.getCmp('jehu-combo').getValue();
+							var couponCountEl = Ext.getCmp('coupon-count-text');
+							var discountValueEl = Ext.getCmp('coupon-discount-text');
+							var discountUnit = Ext.getCmp('coupon-discount-combo').getValue();
+							
+							var couponCount = couponCountEl.getValue();
+							var discountValue = discountValueEl.getValue();
+							//couponCount = Ext.util.Format.trim(couponCount)
+							
+							console.log(jehuName + '/' + couponCount);
+							
+							if(!jehuName) {
+								Ext.Msg.alert('', '업체를 선택해 주세요');
+								return;
+							}
+							
+							if(!couponCount || !couponCountEl.validate()) {
+								Ext.Msg.alert('', '발행쿠폰수를 설정해 주세요');
+								return;
+							}
+							
+							if(!discountValue || !discountValueEl.validate()) {
+								Ext.Msg.alert('', '할인값을 설정해 주세요');
+								return;
+							}
+							
+							if(!discountUnit) {
+								Ext.Msg.alert('', '할인단위를 선택해 주세요');
+								return;
+							}
+							
+							publishCoupon({
+								jehuNum: jehuName + '',
+								count: couponCount + '',
+								discountValue: discountValue + '',
+								discountUnit: discountUnit
+							});
+						}
+					}
+				}, {
+					xtype: 'button',
+					iconCls: 'icon-close',
+					text: '닫기',
+					listeners: {
+						click: function() {
+							publishCouponWin.close();
+						}
+					}
+				}],
 				listeners: {
-					click: function() {
-						var jehuName = Ext.getCmp('jehu-combo').getValue();
-						var couponCountEl = Ext.getCmp('coupon-count-text');
-						var discountValueEl = Ext.getCmp('coupon-discount-text');
-						var discountUnit = Ext.getCmp('coupon-discount-combo').getValue();
-						
-						var couponCount = couponCountEl.getValue();
-						var discountValue = discountValueEl.getValue();
-						//couponCount = Ext.util.Format.trim(couponCount)
-						
-						console.log(jehuName + '/' + couponCount);
-						
-						if(!jehuName) {
-							Ext.Msg.alert('', '업체를 선택해 주세요');
-							return;
-						}
-						
-						if(!couponCount || !couponCountEl.validate()) {
-							Ext.Msg.alert('', '발행쿠폰수를 설정해 주세요');
-							return;
-						}
-						
-						if(!discountValue || !discountValueEl.validate()) {
-							Ext.Msg.alert('', '할인값을 설정해 주세요');
-							return;
-						}
-						
-						if(!discountUnit) {
-							Ext.Msg.alert('', '할인단위를 선택해 주세요');
-							return;
-						}
-						
-						publishCoupon({
-							jehuNum: jehuName + '',
-							count: couponCount + '',
-							discountValue: discountValue + '',
-							discountUnit: discountUnit
-						});
+					beforeshow: function() {
+						discountUnitComboStore.reload();
 					}
 				}
-			}, {
-				xtype: 'button',
-				iconCls: 'icon-close',
-				text: '닫기',
-				listeners: {
-					click: function() {
-						publishCouponWin.close();
-					}
-				}
-			}],
-			listeners: {
-				beforeshow: function() {
-					discountUnitComboStore.reload();
-				}
-			}
-		});
+			}).show();
+		}
 		
-		var regJehuWin = Ext.create('Ext.window.Window',{
-			iconCls: 'icon-window',
-			title: '제휴업체등록',
-			width: 400,
-			height: 120,
-			modal: true,
-			resizable: false,
-			closeAction: 'hide',
-			items: [{
-				xtype: 'form',
-				id: 'regJehuForm',
-				bodyPadding: 15,
-				defaults: {
-	                anchor: '100%',
-	                height: 22,
-	                labelWidth: 70
-	            },
-	            defaultType: 'textfield',
-	            items: [{
-	            	fieldLabel: '제휴업체명',
-					id: 'txtJehuName'
-	            }]
-			}],
-			buttons: [{
-				xtype: 'button',
-				iconCls: 'reg',
-				text: '등록',
-				listeners: {
-					click: function() {
-						var jehuName = Ext.getCmp('txtJehuName').getValue();
-						jehuName = Ext.util.Format.trim(jehuName)
-						
-						
-						if(jehuName == '') {
-							Ext.Msg.alert('', '업체명을 입력해 주세요');
-						}
-						else {
-							regJehu(jehuName);
+		function showRegJehuWin() {
+			regJehuWin = Ext.create('Ext.window.Window',{
+				iconCls: 'icon-window',
+				title: '제휴업체등록',
+				width: 400,
+				height: 120,
+				modal: true,
+				resizable: false,
+				closeAction: 'destroy',
+				items: [{
+					xtype: 'form',
+					id: 'regJehuForm',
+					bodyPadding: 15,
+					defaults: {
+		                anchor: '100%',
+		                height: 22,
+		                labelWidth: 70
+		            },
+		            defaultType: 'textfield',
+		            items: [{
+		            	fieldLabel: '제휴업체명',
+						id: 'txtJehuName'
+		            }]
+				}],
+				buttons: [{
+					xtype: 'button',
+					iconCls: 'reg',
+					text: '등록',
+					listeners: {
+						click: function() {
+							var jehuName = Ext.getCmp('txtJehuName').getValue();
+							jehuName = Ext.util.Format.trim(jehuName)
+							
+							
+							if(jehuName == '') {
+								Ext.Msg.alert('', '업체명을 입력해 주세요');
+							}
+							else {
+								regJehu(jehuName);
+							}
 						}
 					}
-				}
-			}, {
-				xtype: 'button',
-				iconCls: 'icon-close',
-				text: '닫기',
-				listeners: {
-					click: function() {
-						regJehuWin.close();
+				}, {
+					xtype: 'button',
+					iconCls: 'icon-close',
+					text: '닫기',
+					listeners: {
+						click: function() {
+							regJehuWin.close();
+						}
 					}
-				}
-			}]
-		});
-
+				}]
+			}).show();
+		}
+		
 		Ext.apply(this,{
 			frame: true,
 			bodyPadding: 5,
@@ -349,7 +355,7 @@ Ext.define('Hotplace.view.panel.CouponFormPanel', {
 	            	text: '제휴업체등록',
 	            	listeners: {
 	            		click: function() {
-	            			regJehuWin.show();
+	            			showRegJehuWin();
 	            		}
 	            	}
 	            }, {
@@ -358,7 +364,7 @@ Ext.define('Hotplace.view.panel.CouponFormPanel', {
 	            	text: '쿠폰발행',
 	            	listeners: {
 	            		click: function() {
-	            			publishCouponWin.show();
+	            			showPublishCouponWin();
 	            		}
 	            	}
 	            }, 

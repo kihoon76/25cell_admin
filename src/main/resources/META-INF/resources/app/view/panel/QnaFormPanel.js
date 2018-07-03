@@ -16,15 +16,15 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 		}
 		
 		var constants = Hotplace.util.Constants,
-		commonFn = Hotplace.util.CommonFn,
-		searchComboArr = [], 
-		searchType = '', 
-		searchValue = '',
-		authUrl = 'authority/define';
+			commonFn = Hotplace.util.CommonFn,
+			searchComboArr = [], 
+			searchType = '', 
+			searchValue = '',
+			authUrl = 'authority/define';
 		
 		var searchComboStore = Ext.create('Ext.data.Store', {
 			 fields   : ['name', 'value'],
-			 data: [{name: '전체', value: 'all'}, {name: '연락처', value:'phone'},{name: '처리여부', value:'processYN'}]
+			 //data: [{name: '전체', value: 'all'}, {name: '연락처', value:'phone'},{name: '처리여부', value:'processYN'}]
 		});
 		
 		var searchComboStoreProcessYN = Ext.create('Ext.data.Store', {
@@ -40,6 +40,9 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 			}
 			else if(searchType == 'processYN') {
 				searchValue = Ext.getCmp('qna-search-combo').getValue() ;
+			}
+			else if(searchType == 'reqTime' || searchType == 'processTime') {
+				searchValue = Ext.getCmp('qna-search-date').getRawValue() ;
 			}
 			
 			  
@@ -127,7 +130,8 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
                     text   	 : '일련번호',
                     width    : 60,
                     sortable : true,
-                    dataIndex: 'seq'
+                    dataIndex: 'seq',
+                    _search: false
                 },{
                     text   : '연락처',
                     width    : 120,
@@ -139,10 +143,23 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
                     sortable : true,
                     dataIndex: 'processYN'
                 },{
+                    text   : '요청일자',
+                    width    : 40,
+                    sortable : true,
+                    dataIndex: 'reqTime',
+                    hidden: true
+                },{
+                    text   : '처리일자',
+                    width    : 40,
+                    sortable : true,
+                    dataIndex: 'processTime',
+                    hidden: true
+                },{
                     text   : '문의사항',
                     flex    : 1,
                     sortable : true,
-                    dataIndex: 'question'
+                    dataIndex: 'question',
+                    _search: false
                 }],
                 tbar: ['->',
     			       '검색항목 : ',
@@ -159,14 +176,22 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
     			    			   if(nV == 'phone') {
     			    				   Ext.getCmp('qna-search-text').show();
     			    				   Ext.getCmp('qna-search-combo').hide();
+    			    				   Ext.getCmp('qna-search-date').hide();
     			    			   }
     			    			   else if(nV == 'processYN') {
     			    				   Ext.getCmp('qna-search-text').hide();
+    			    				   Ext.getCmp('qna-search-date').hide();
     			    				   Ext.getCmp('qna-search-combo').show(); 
+    			    			   }
+    			    			   else if(nV == 'reqTime' || nV == 'processTime') {
+    			    				   Ext.getCmp('qna-search-date').show();
+    			    				   Ext.getCmp('qna-search-text').hide();
+    			    				   Ext.getCmp('qna-search-combo').hide();
     			    			   }
     			    			   else if(nV == 'all') {
     			    				   Ext.getCmp('qna-search-text').show();
-    			    				   Ext.getCmp('qna-search-combo').hide(); 
+    			    				   Ext.getCmp('qna-search-combo').hide();
+    			    				   Ext.getCmp('qna-search-date').hide();
     			    				   search();
     			    			   }
     			    		   }
@@ -192,6 +217,12 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
     					  editable:false,
     					  store:searchComboStoreProcessYN,
     					  hidden: true
+    				   }, {
+    						xtype: 'datefield',
+    						id: 'qna-search-date',
+    						format: 'Y-m-d',
+    						editable:false,
+    						hidden: true
     				   }, {
     					   xtype: 'button',
     					   iconCls: 'icon-search',
@@ -232,23 +263,32 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 	    							    });
 	    						}
 	    					}
-	    				})]
+	    				})],
+	    				listeners: {
+	    					beforechange: function() {
+	        					store.getProxy().setExtraParam('searchType', searchType);
+	    						store.getProxy().setExtraParam('searchValue', searchValue);
+	    	    			}
+	    				}
     				}],
 	    			listeners: {
 	    				afterrender: function(grid, eOpts) {
-	    					/*var columns = Ext.getCmp('user-auth-grid').columns;
-	    					var len = columns.length;
-	    					
-	    					searchComboArr.push({name: '전체', value: 'all'});
-	    					for(var i=0; i<len; i++) {
-	    						searchComboArr.push({
-	    							name: columns[i].text,
-	    							value:columns[i].dataIndex
-	    						});
-	    					}
-	    					
-	    					searchComboStore.loadData(searchComboArr);
-	    					Ext.getCmp('user-auth-searchtype-combo').select('all');*/
+	    					var columns = Ext.getCmp('qna-grid').columns;
+	        				var len = columns.length;
+	        					
+	        				searchComboArr.push({name: '전체', value: 'all'});
+	        				for(var i=0; i<len; i++) {
+	        					if(columns[i]._search === false) {
+	        						continue;
+	        					}
+	        					
+	        					searchComboArr.push({
+	        						name: columns[i].text,
+	        						value:columns[i].dataIndex
+	        					});
+	        				}
+	        					
+	        				searchComboStore.loadData(searchComboArr);
 	    				},
 	    				itemclick: function(view, record) {
 	    					var phone = Ext.getCmp('qna-phone');
@@ -274,7 +314,7 @@ Ext.define('Hotplace.view.panel.QnaFormPanel', {
 	    							}
 	    							
 	    							if(data.processor != undefined) {
-	    								processor.setValue(data.processor);
+	    								processor.setValue(data.processor + '(' + data.processorName + ')');
 	    							}
 	    							
 	    							processContent.setValue(data.processContent);

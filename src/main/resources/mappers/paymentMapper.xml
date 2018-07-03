@@ -39,7 +39,7 @@
 			  from [웹].[dbo].[결제내역]
 			   <choose>
 		  	  	<when test="searchType != null and searchType == 'accountId'">
-		  	  		where 사용자계정 = #{searchValue}
+		  	  		where 사용자계정 like #{searchValue} + '%'
 		  	  	</when>
 		  	  	<when test="searchType != null and searchType == 'depositor'">
 		  	  		where 입금자명 = #{searchValue}
@@ -81,7 +81,7 @@
 		  		  from [웹].[dbo].[결제내역]
 		  		<choose>
 		  	  	<when test="searchType != null and searchType == 'accountId'">
-		  	  	 where 사용자계정 = #{searchValue}
+		  	  	 where 사용자계정 like #{searchValue} + '%'
 		  	  	</when>
 		  	  	<when test="searchType != null and searchType == 'depositor'">
 		  	  	 where 입금자명 = #{searchValue}
@@ -90,13 +90,13 @@
 		  	  	 where 쿠폰번호 = #{searchValue}
 		  	  	</when>
 		  	  	<when test="searchType != null and searchType == 'paymentDate'">
-		  	  	 where 결제일자 = #{searchValue}
+		  	  	 where DATEDIFF(DD, #{searchValue}, [결제일자]) = 0
 		  	  	</when>
 		  	  	<when test="searchType != null and searchType == 'paymentConfirmDate'">
-		  	  	 where 결제확인일자 = #{searchValue}
+		  	  	 where DATEDIFF(DD, #{searchValue}, [결제확인일자]) = 0
 		  	  	</when>
 		  	  	<when test="searchType != null and searchType == 'applyDate'">
-		  	  	 where 결제신청일자 = #{searchValue}
+		  	  	 where DATEDIFF(DD, #{searchValue}, [결제신청일자]) = 0
 		  	  	</when>
 		  	  	<when test="searchType != null and searchType == 'status'">
 		  	  	 where 결제완료여부 = #{searchValue}

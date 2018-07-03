@@ -16,9 +16,9 @@ Ext.define('Hotplace.controller.PaymentController', {
 					});
 					break;
 				case 'cate-refund' :
-					this.addContentTabPanel(recObj.id, recObj.text, {
+					/*this.addContentTabPanel(recObj.id, recObj.text, {
 						xtype: 'couponpanel'
-					});
+					});*/
 					break;
 				default :
 					break;

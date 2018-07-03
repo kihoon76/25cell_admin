@@ -32,5 +32,6 @@ Ext.define('Hotplace.store.PaymentListStore', {
 	       'processorId',
 	       'processorName'
 	  ],
-	  autoLoad : true
+	  autoLoad : true,
+	  pageSize : Hotplace.util.Constants.gridPageSize
 });

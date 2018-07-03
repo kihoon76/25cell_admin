@@ -4,6 +4,7 @@ Ext.define('Hotplace.view.panel.YaggwanFormPanel', {
 	requires : ['Hotplace.util.Constants'],
 	initComponent: function() {
 		var that = this;
+		var yaggwanWin = null;
 		var selectedRecord = null;
 		var soonseoComboArr = [];
 		var commFn = Hotplace.util.CommonFn;
@@ -46,76 +47,79 @@ Ext.define('Hotplace.view.panel.YaggwanFormPanel', {
 			commFn.loadJsError();
 		}
 		
-		
-		var yaggwanWin = Ext.create('Ext.window.Window',{
-			iconCls: 'icon-window',
-			title: '약관등록',
-			width: 600,
-			height: 450,
-			modal: true,
-			resizable: false,
-			closeAction: 'hide',
-			items: [{
-				xtype: 'form',
-				id: 'yaggwanRegForm',
-				bodyPadding: 15,
-				//height: 200,
-				defaults: {
-	                //width: 250,
-	                anchor: '100%',
-	                height: 22,
-	                labelWidth: 70
-	            },
-	            defaultType: 'textfield',
-	            items: [{
-	            	fieldLabel: '카테고리명',
-					id: 'txtCategoryName'
-	            }, {
-	            	fieldLabel: '내용',
-					xtype: 'textareafield',
-					grow: true,
-					height: 300,
-					id: 'txtCategoryContent'
+		function showYaggwanWin() {
+			yaggwanWin = Ext.create('Ext.window.Window',{
+				iconCls: 'icon-window',
+				title: '약관등록',
+				width: 600,
+				height: 450,
+				modal: true,
+				resizable: false,
+				closeAction: 'destroy',
+				items: [{
+					xtype: 'form',
+					id: 'yaggwanRegForm',
+					bodyPadding: 15,
+					//height: 200,
+					defaults: {
+		                //width: 250,
+		                anchor: '100%',
+		                height: 22,
+		                labelWidth: 70
+		            },
+		            defaultType: 'textfield',
+		            items: [{
+		            	fieldLabel: '카테고리명',
+						id: 'txtCategoryName'
+		            }, {
+		            	fieldLabel: '내용',
+						xtype: 'textareafield',
+						grow: true,
+						height: 300,
+						id: 'txtCategoryContent'
 
-	            }, {
-	                xtype: 'radiogroup',
-	                fieldLabel: '필수여부',
-	                id: 'rdoRequired',
-	                //width: 150,
-	                columns: 2,
-	                defaults: {
-	                    name: 'winrequired' //Each radio has the same name so the browser will make sure only one is checked at once
-	                },
-	                items: [{
-	                    inputValue: 'Y',
-	                    checked: true,
-	                    boxLabel: '예'
-	                }, {
-	                    inputValue: 'N',
-	                    boxLabel: '아니오'
-	                }]
-	            }]
-			}],
-			buttons: [{
-				xtype: 'button',
-				iconCls: 'reg',
-				text: '등록',
-				listeners: {
-					click: function() {
-						regYaggwan();
+		            }, {
+		                xtype: 'radiogroup',
+		                fieldLabel: '필수여부',
+		                id: 'rdoRequired',
+		                //width: 150,
+		                columns: 2,
+		                defaults: {
+		                    name: 'winrequired' //Each radio has the same name so the browser will make sure only one is checked at once
+		                },
+		                items: [{
+		                    inputValue: 'Y',
+		                    checked: true,
+		                    boxLabel: '예'
+		                }, {
+		                    inputValue: 'N',
+		                    boxLabel: '아니오'
+		                }]
+		            }]
+				}],
+				buttons: [{
+					xtype: 'button',
+					iconCls: 'reg',
+					text: '등록',
+					listeners: {
+						click: function() {
+							regYaggwan();
+						}
 					}
-				}
-			}, {
-				xtype: 'button',
-				iconCls: 'icon-close',
-				text: '닫기',
-				listeners: {
-					click: function() {
-						yaggwanWin.hide();
+				}, {
+					xtype: 'button',
+					iconCls: 'icon-close',
+					text: '닫기',
+					listeners: {
+						click: function() {
+							yaggwanWin.close();
+						}
 					}
-				}
-			}]
-		});
+				}]
+			}).show();
+		}
+		
+		
 		
 		function regYaggwan() {
 			var categoryName = Ext.String.trim(Ext.getCmp('txtCategoryName').getValue()),
@@ -145,7 +149,7 @@ Ext.define('Hotplace.view.panel.YaggwanFormPanel', {
 						Ext.getCmp('txtCategoryContent').setValue('');
 						Ext.getCmp('rdoRequired').setValue({winrequired: 'Y'});
 						
-						yaggwanWin.hide();
+						yaggwanWin.close();
 						
 					}
 					else {
@@ -241,7 +245,8 @@ Ext.define('Hotplace.view.panel.YaggwanFormPanel', {
 	            	text: '약관등록',
 	            	listeners: {
 	            		click: function() {
-	            			yaggwanWin.show();
+	            			showYaggwanWin();
+	            			//yaggwanWin.show();
 	            		}
 	            	}
 	            }, {

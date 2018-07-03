@@ -72,7 +72,8 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 			}, {
 				text: '결제금액',
 				dataIndex: 'sum',
-				flex: 0
+				flex: 0,
+				_search: false
 			}, {
 				text: '쿠폰사용여부',
 				dataIndex: 'useCoupon',
@@ -153,6 +154,7 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 				xtype: 'datefield',
 				id: 'payment-search-date',
 				format: 'Y-m-d',
+				editable:false,
 				hidden: true
 			}, {
 				xtype: 'button',
@@ -195,7 +197,13 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 							});
 						}
 					}
-				})]
+				})],
+				listeners: {
+					beforechange: function() {
+    					store.getProxy().setExtraParam('searchType', searchType);
+						store.getProxy().setExtraParam('searchValue', searchValue);
+	    			}
+				}
 			}],
 			listeners: {
 				afterrender: function(grid, eOpts) {
@@ -216,7 +224,7 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
     				}
     					
     				searchComboStore.loadData(searchComboArr);
-    				Ext.getCmp('payment-searchtype-combo').select('all');
+    				//Ext.getCmp('payment-searchtype-combo').select('all');
     			},
 				itemdblclick: function(grid, rec, item) {
 					showDetailWin(rec);

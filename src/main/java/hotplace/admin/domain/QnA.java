@@ -10,6 +10,7 @@ public class QnA {
 	private String reqTime;				//요청일자
 	private String processTime;			//처리일자
 	private String processor;			//처리자 계정
+	private String processorName;		//처리자명
 	private String question;			//문의사항
 	private String processYN;			//처리여부
 	private String processContent;		//처리내용
@@ -61,5 +62,11 @@ public class QnA {
 	}
 	public void setProcessContent(String processContent) {
 		this.processContent = processContent;
+	}
+	public String getProcessorName() {
+		return processorName;
+	}
+	public void setProcessorName(String processorName) {
+		this.processorName = processorName;
 	}
 }

@@ -90,33 +90,6 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 							
 						},
 					});
-					
-					
-					/*Ext.Ajax.request({
-						url: Hotplace.util.Constants.context + '/user/auth/out',
-						method:'POST',
-						headers: { 'Content-Type': 'application/json' }, 
-						jsonData: {
-							accountId: delUserId
-						},
-						timeout:60000,
-						success: function(response) {
-							
-							var jo = Ext.decode(response.responseText);
-							
-							Ext.getCmp('user-auth-grid').getStore().reload();
-							if(jo.success) {
-								Ext.Msg.alert('', '회원계정(' + delUserId + ')이 탈퇴 처리되었습니다.');
-							}
-							else {
-								Ext.Msg.alert('에러', jo.errMsg);
-							}
-							
-						},
-						failure: function(response) {
-							Ext.Msg.alert('', '오류가 발생했습니다.');
-						}
-					});*/
 				}
 				else {
 					
@@ -240,6 +213,13 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	    				itemclick: function(view, record) {
 	    					selectedRecord = record;
 	    					var data = record.data;
+	    					
+	    					if(data.grade && data.grade.indexOf('ROLE_ALL,R') > -1) {
+	    						Ext.Msg.alert('알림', '전체서비스와 개별서비스 정보가 모두있습니다. 별도처리가 필요합니다.');
+	    						return;
+	    					}
+	    					
+	    					
 	    					var userName = Ext.getCmp('user-auth-userName');
 	    					userName.setValue(data.userName);
 	    					
@@ -329,9 +309,10 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	    							var gradesExpires = data.gradeExpire.split(',');
 	    							
 	    							for(var c=0; c<eachChkLen; c++) {
+	    								var idx = Ext.Array.indexOf(grades, eachItems[c]._value);
 	    								
-	    								if(Ext.Array.contains(grades, eachItems[c]._value)) {
-	    									var expire = gradesExpires[c].split(':');
+	    								if(idx > -1) {
+	    									var expire = gradesExpires[idx].split(':');
 	    									eachItems[c].setValue(true);
 	    									Ext.getCmp('each-' + expire[0]).setRawValue(expire[1]);
 	    								}

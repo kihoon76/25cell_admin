@@ -40,8 +40,12 @@ Ext.application({
    ,appFolder: '/resources/app'
    ,autoCreateViewport: true
    ,controllers : [
-        'Hotplace.controller.NoticeController',
-        'Hotplace.controller.QnaController'
+          'Hotplace.controller.NoticeController',
+          'Hotplace.controller.LogController',
+          'Hotplace.controller.YaggwanController',
+          'Hotplace.controller.QnaController',
+          'Hotplace.controller.CouponController',
+          'Hotplace.controller.PaymentController'
    ]
    ,launch:function(){
 	   
