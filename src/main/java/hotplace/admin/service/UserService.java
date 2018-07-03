@@ -1,5 +1,6 @@
 package hotplace.admin.service;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -53,5 +54,9 @@ public class UserService {
 	public void outUser(Account account) {
 		userDao.updateUserOut(account);
 		
+	}
+	
+	public Map getPaymentUserInfo(String accountId) {
+		return userDao.selectPaymentUserInfo(accountId);
 	}
 }

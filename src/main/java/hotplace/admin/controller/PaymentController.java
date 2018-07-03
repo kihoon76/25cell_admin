@@ -6,16 +6,19 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import hotplace.admin.domain.Account;
 import hotplace.admin.domain.AjaxVO;
 import hotplace.admin.domain.ExtjsStoreVO;
 import hotplace.admin.domain.Payment;
 import hotplace.admin.service.PaymentService;
+import hotplace.admin.service.UserService;
 import hotplace.admin.utils.SessionUtil;
 
 @RequestMapping("/payment")
@@ -24,6 +27,9 @@ public class PaymentController {
 
 	@Resource(name="paymentService")
 	PaymentService paymentService;
+	
+	@Resource(name="userService")
+	UserService userService;
 	
 	@PostMapping("list")
 	@ResponseBody
@@ -52,6 +58,24 @@ public class PaymentController {
 		
 		try {
 			paymentService.confirmPayment(param);
+			vo.setSuccess(true);
+		}
+		catch(Exception e) {
+			vo.setSuccess(false);
+			vo.setErrMsg(e.getMessage());
+		}
+		
+		return vo;
+	}
+	
+	@GetMapping("userinfo")
+	@ResponseBody
+	public AjaxVO confirmPayment(@RequestParam("accountId") String accountId) {
+		AjaxVO vo = new AjaxVO();
+		
+		try {
+			Map account = userService.getPaymentUserInfo(accountId);
+			vo.addObject(account);
 			vo.setSuccess(true);
 		}
 		catch(Exception e) {

@@ -14,6 +14,8 @@ public interface UserDao {
 	int insertUserGrade(Account account);
 
 	Account selectUserInfo(String accountId);
+	
+	Map selectPaymentUserInfo(String accountId);
 
 	void updateUserInfo(Account account);
 

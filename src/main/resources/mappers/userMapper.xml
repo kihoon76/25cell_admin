@@ -177,6 +177,12 @@
 	        on t1.아이디 = t3.계정_아이디 and t3.권한번호 = (select 권한번호 from [웹].[dbo].[권한] where 권한이름 = 'ROLE_QA_ADMIN')
 	</select>
 	
+	<select id="selectPaymentUserInfo" parameterType="string" resultType="map">
+		select 이름 name, 연락처 phone, 이메일 email
+		  from [웹].[dbo].[계정]
+		 where 아이디 = #{accountId}
+	</select>
+	
 	<resultMap id="RM_selectAccount" type="Account">
 		<result column="아이디" property="accountId" javaType="string"/>
 		<result column="비번" property="password" javaType="string"/>

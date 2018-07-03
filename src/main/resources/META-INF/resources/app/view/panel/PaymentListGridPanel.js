@@ -11,6 +11,7 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 			searchComboArr = [], 
 			searchType = '', 
 			searchValue = '',
+			paymentUserInfo = null,
 			win = null,
 			that = this;
 		
@@ -267,7 +268,7 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 			win = Ext.create('Ext.window.Window',{
 				iconCls: 'icon-window',
 				width: 800,
-				height: 450,
+				height: 470,
 				modal: true,
 				draggable: true,
 				resizable: false,
@@ -275,7 +276,7 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 				items: [{
 					xtype: 'form',
 					bodyPadding: 5,
-					height: 700,
+					height: 470,
 					defaults: {
 		                width: 250,
 		                height: 22,
@@ -289,7 +290,40 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 						value: key
 		            }, {
 		            	fieldLabel: '사용자계정',
-		            	value: datas.accountId
+		            	value: datas.accountId,
+		            },{
+		            	xtype: 'button',
+		            	anchor: '30%',
+		            	margin: '0 0 5 94',
+		            	text: '사용자계정정보',
+		            	listeners: {
+		            		click: function(t, event) {
+		            			if(paymentUserInfo != null) {
+		            				Ext.Msg.alert('', '아이디: ' + datas.accountId + '<br/>이름: ' + paymentUserInfo.name + '<br/>전화번호: ' + paymentUserInfo.phone + '<br/>이메일: ' + paymentUserInfo.email);
+		            				return;
+		            			}
+		            			
+		            			commFn.ajax({
+		            				url: '/payment/userinfo',
+		            				params: { accountId: datas.accountId }, 
+		            				timeout:60000,
+		            				success: function(jo) {
+		            					if(jo.success) {
+		            						if(jo.datas.length > 0) {
+		            							paymentUserInfo = jo.datas[0];
+		            							Ext.Msg.alert('', '아이디: ' + datas.accountId + '<br/>이름: ' + paymentUserInfo.name + '<br/>전화번호: ' + paymentUserInfo.phone + '<br/>이메일: ' + paymentUserInfo.email);
+		            						}
+		            						else {
+		            							Ext.Msg.alert('', datas.accountId + '정보가 존재하지 않습니다.');
+		            						}
+		            					}
+		            					else {
+		            						Ext.Msg.alert('', jo.errMsg);
+		            					}
+		            				}
+		            			}); 
+		            		}
+		            	}
 		            }, {
 		            	fieldLabel: '결제금액',
 		            	value: datas.sum
@@ -354,7 +388,12 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 							win.close();
 						}
 					}
-				}]
+				}],
+				listeners: {
+					close: function() {
+						paymentUserInfo = null;
+					}
+				}
 				
 			});
 			

@@ -59,4 +59,9 @@ public class UserDaoImpl implements UserDao {
 		msSqlSession.insert(namespace + ".insertUserGradeQaAdmin", account);
 		
 	}
+
+	@Override
+	public Map selectPaymentUserInfo(String accountId) {
+		return msSqlSession.selectOne(namespace + ".selectPaymentUserInfo", accountId);
+	}
 }
