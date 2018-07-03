@@ -268,7 +268,7 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 			win = Ext.create('Ext.window.Window',{
 				iconCls: 'icon-window',
 				width: 800,
-				height: 470,
+				height: 500,
 				modal: true,
 				draggable: true,
 				resizable: false,
@@ -276,7 +276,7 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 				items: [{
 					xtype: 'form',
 					bodyPadding: 5,
-					height: 470,
+					height: 500,
 					defaults: {
 		                width: 250,
 		                height: 22,
@@ -333,6 +333,9 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 		            }, {
 		            	fieldLabel: '쿠폰번호',
 		            	value: datas.couponNum
+		            }, {
+		            	fieldLabel: '입금자명',
+		            	value: datas.depositor
 		            }, {
 		            	fieldLabel: '결제신청일',
 		            	value: datas.applyDate
