@@ -184,6 +184,7 @@ Ext.define('Hotplace.view.panel.LogListGridPanel', {
 				displayMsg: '로그 리스트 {0} - {1} of {2}',
 				dock: 'bottom',
 				doRefresh: function() {
+					makeParam(false, false, true);
 					Ext.getCmp('logListGrid').getStore().load();
 				},
 				items: ['-', {
