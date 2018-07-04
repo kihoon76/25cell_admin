@@ -36,7 +36,7 @@
 			  from [웹].[dbo].[계정]
 			   <choose>
 		  	  	<when test="searchType != null and searchType == 'accountId'">
-		  	  		where 아이디 = #{searchValue}
+		  	  		where 아이디  like '%' + #{searchValue} + '%'
 		  	  	</when>
 		  	  	<when test="searchType != null and searchType == 'userName'">
 		  	  		where 이름 = #{searchValue}
@@ -68,7 +68,7 @@
 			  		select row_number() over(order by 가입일자 desc) rownum, * from [웹].[dbo].[계정]
 			  		<choose>
 				  	  	<when test="searchType != null and searchType == 'accountId'">
-				  	  		where 아이디 = #{searchValue}
+				  	  		where 아이디 like '%' + #{searchValue} + '%'
 				  	  	</when>
 				  	  	<when test="searchType != null and searchType == 'userName'">
 				  	  		where 이름 = #{searchValue}

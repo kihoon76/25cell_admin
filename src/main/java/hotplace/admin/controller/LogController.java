@@ -29,7 +29,7 @@ public class LogController {
 			@RequestParam("start") int start,
 			@RequestParam(name="ip", required=false) String ip,
 			@RequestParam(name="id", required=false) String id,
-			@RequestParam(name="", required=false) String regDate) {
+			@RequestParam(name="regDate", required=false) String regDate) {
 
 	
 		Map map = new HashMap();

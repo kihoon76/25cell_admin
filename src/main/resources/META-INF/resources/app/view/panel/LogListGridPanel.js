@@ -8,6 +8,7 @@ Ext.define('Hotplace.view.panel.LogListGridPanel', {
 			commFn = Hotplace.util.CommonFn,
 			categoryPanel = Ext.getCmp('app-category'),
 			contentPanel = Ext.getCmp('app-contents'),
+			//searchWin = null,
 			that = this;
 		
 		try {
@@ -69,22 +70,7 @@ Ext.define('Hotplace.view.panel.LogListGridPanel', {
 				text: '검색',
 				listeners: {
 					click: function() {
-						var ip = Ext.getCmp('txtLogSearchIp');
-						var id = Ext.getCmp('txtLogSearchId');
-						var date = Ext.getCmp('dateLogSearch');
-						
-						if(Ext.String.trim(ip.getValue()) == '' 
-						   && Ext.String.trim(id.getValue()) == ''
-						   && date.getValue() == null) return;
-						
-						store.getProxy().setExtraParam('ip', Ext.String.trim(ip.getValue()));
-						store.getProxy().setExtraParam('id', Ext.String.trim(id.getValue()));
-						store.getProxy().setExtraParam('regDate', (date.getRawValue()) ? date.getRawValue().substring(0,10) : null);
-						store.loadPage(1, {
-							params: {
-								limit: Ext.getCmp('log-paging-combo').getValue()
-							}
-						});
+						makeParam(true, false);
 					}
 				}
 			}, {
@@ -98,6 +84,43 @@ Ext.define('Hotplace.view.panel.LogListGridPanel', {
 				}
 			}]
 		});
+		
+		function makeParam(validate, init, isProxy) {
+			var ip = Ext.getCmp('txtLogSearchIp');
+			var id = Ext.getCmp('txtLogSearchId');
+			var date = Ext.getCmp('dateLogSearch');
+			
+			if(validate && Ext.String.trim(ip.getValue()) == '' 
+			   && Ext.String.trim(id.getValue()) == ''
+			   && date.getValue() == null) return;
+			
+			if(init) {
+				ip.setValue('');
+				id.setValue('');
+				date.setRawValue('');
+			}
+			
+			var ipV = Ext.String.trim(ip.getValue());
+			var idV = Ext.String.trim(id.getValue());
+			var regDateV = (date.getRawValue()) ? date.getRawValue().substring(0,10) : null;
+			
+			if(isProxy) {
+				store.getProxy().setExtraParam('ip', ipV);
+				store.getProxy().setExtraParam('id', idV);
+				store.getProxy().setExtraParam('regDate', regDateV);
+				store.getProxy().setExtraParam('limit', Ext.getCmp('log-paging-combo').getValue());
+				return;
+			}
+			
+			store.loadPage(1, {
+				params: {
+					limit: Ext.getCmp('log-paging-combo').getValue(),
+					ip: ipV,
+					id: idV,
+					regDate: regDateV
+				}
+			});
+		}
 		
 		Ext.apply(this, {
 			store: store,
@@ -149,14 +172,7 @@ Ext.define('Hotplace.view.panel.LogListGridPanel', {
 				text: '전체보기',
 				listeners: {
 					click: function() {
-						store.getProxy().setExtraParam('ip', null);
-						store.getProxy().setExtraParam('id', null);
-						store.getProxy().setExtraParam('regDate', null);
-						store.loadPage(1, {
-							params: {
-								limit: Ext.getCmp('log-paging-combo').getValue()
-							}
-						});
+						makeParam(false, true);
 					}
 				}
 			}],
@@ -183,15 +199,15 @@ Ext.define('Hotplace.view.panel.LogListGridPanel', {
 					store: Ext.create('Hotplace.store.PagingSize'),
 					listeners: {
 						change: function(cb, nV, oV) {
-							store.pageSize = nV;
-							store.loadPage(1, {
-								 params: {
-									 limit: nV
-								 }
-							});
+							makeParam(false, false);
 						}
 					}
-				})]
+				})],
+				listeners: {
+    				beforechange: function() {
+    					makeParam(false, false, true);
+	    			}
+    			}
 			}],
 			listeners: {
 				afterrender: function(grid, eOpts) {

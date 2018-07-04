@@ -36,7 +36,7 @@
 		  	  		아이피주소 = #{ip}
 		  	  		</if>
 		  	  		<if test="id != null and id != ''">
-		  	  		and 아이디 = #{id}
+		  	  		and 아이디 like '%' + #{id} + '%'
 		  	  		</if>
 		  	  		<if test="regDate != null and regDate != ''">
 		  	  		and DATEDIFF(DD, #{regDate}, [접속시간]) = 0 
@@ -55,7 +55,7 @@
 		  	  	아이피주소 = #{ip}
 		  	  	</if>
 		  	  	<if test="id != null and id != ''">
-		  	  	and 아이디 = #{id}
+		  	  	and 아이디 like '%' + #{id} + '%'
 		  	  	</if>
 		  	  	<if test="regDate != null and regDate != ''">
 		  	  	and DATEDIFF(DD, #{regDate}, [접속시간]) = 0 

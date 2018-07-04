@@ -145,7 +145,10 @@ Ext.define('Hotplace.view.panel.UserListGridPanel', {
 				    			   Ext.getCmp('user-search-regDate').hide();
 				    			   Ext.getCmp('user-search-out').hide(); 
 			    				  
-			    				   store.load();      
+				    			   searchType = '', searchValue = '';
+			    				   store.loadPage(1, {
+									    params: { searchType: searchType, searchValue: searchValue}
+								   });    
 			    			   }
 			    			   else if(nV == 'grade') {
 			    				  Ext.getCmp('user-search-text').hide();
@@ -261,26 +264,36 @@ Ext.define('Hotplace.view.panel.UserListGridPanel', {
 							store.pageSize = nV;
 							that.getStore()
 							    .loadPage(1, {
-								    params: { limit: nV}
+								    params: { limit: nV, searchType: searchType, searchValue: searchValue}
 							    });
 						}
 					}
-				})]
+				})],
+				listeners: {
+    				beforechange: function() {
+    					store.getProxy().setExtraParam('searchType', searchType);
+						store.getProxy().setExtraParam('searchValue', searchValue);
+	    			}
+    			}
 			}],
 			listeners: {
 				afterrender: function(grid, eOpts) {
-					var len = that.columns.length;
+					var columns = that.columns;
+					var len = columns.length;
 					
 					searchComboArr.push({name: '전체', value: 'all'});
 					for(var i=0; i<len; i++) {
+						if(columns[i]._search === false) {
+    						continue;
+    					}
+						
 						searchComboArr.push({
 							name: that.columns[i].text,
 							value: that.columns[i].dataIndex
 						});
 					}
-					
 					searchComboStore.loadData(searchComboArr);
-					Ext.getCmp('user-searchtype-combo').select('all');
+					//Ext.getCmp('user-searchtype-combo').select('all');
 				}
 			}
 		});

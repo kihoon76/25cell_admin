@@ -56,12 +56,9 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 				return;
 			}
 			
-			store.load({
-				params: {
-					searchType: searchType,
-					searchValue: searchValue
-				}
-			});    
+			store.loadPage(1, {
+			    params: {searchType: searchType, searchValue: searchValue}
+		    });
 		}
 		
 		function outUser() {
@@ -136,7 +133,11 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
     			    		   change: function(combo, nV, oV) {
     			    			   if(nV == 'all') {
     			    				   Ext.getCmp('user-auth-search-text').setValue('');
-    			    				   store.load();      
+    			    				   searchType = '', 
+    			    				   searchValue = '';
+    			    				   store.loadPage(1, {
+    									    params: { searchType: searchType, searchValue: searchValue}
+    								   });          
     			    			   }
     			    		   }
     			    	   }
@@ -188,11 +189,17 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	    							store.pageSize = nV;
 	    							Ext.getCmp('user-auth-grid').getStore()
 	    							    .loadPage(1, {
-	    								    params: { limit: nV}
+	    								    params: { limit: nV, searchType: searchType, searchValue: searchValue}
 	    							    });
 	    						}
 	    					}
-	    				})]
+	    				})],
+	    				listeners: {
+	        				beforechange: function() {
+	        					store.getProxy().setExtraParam('searchType', searchType);
+	    						store.getProxy().setExtraParam('searchValue', searchValue);
+	    	    			}
+	        			}
     				}],
 	    			listeners: {
 	    				afterrender: function(grid, eOpts) {
@@ -201,6 +208,10 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	    					
 	    					searchComboArr.push({name: '전체', value: 'all'});
 	    					for(var i=0; i<len; i++) {
+	    						if(columns[i]._search === false) {
+	        						continue;
+	        					}
+	    						
 	    						searchComboArr.push({
 	    							name: columns[i].text,
 	    							value:columns[i].dataIndex
@@ -208,7 +219,7 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	    					}
 	    					
 	    					searchComboStore.loadData(searchComboArr);
-	    					Ext.getCmp('user-auth-searchtype-combo').select('all');
+	    					//Ext.getCmp('user-auth-searchtype-combo').select('all');
 	    				},
 	    				itemclick: function(view, record) {
 	    					selectedRecord = record;

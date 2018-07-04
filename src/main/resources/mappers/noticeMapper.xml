@@ -24,11 +24,11 @@
 				select count(*) 
 				  from [웹].[dbo].[공지사항]
 				  <if test='searchType != null and searchValue != null'>
-				  	<if test='searchType.equals("title")'>
+				  	<if test='"title".equals(searchType)'>
 				  	where 제목 like '%' + #{searchValue} + '%' escape '\'
 				  	</if>
-				  	<if test='searchType.equals("content")'>
-				  	where 내용 like '%' + #{searchValue} + '%' escape '\'
+				  	<if test='"writeDate".equals(searchType)'>
+				  	where DATEDIFF(DD, #{searchValue}, [작성일]) = 0
 				  	</if>
 				  </if>
 				) 글수, #{searchType} 검색타입, #{searchValue} 검색값, #{start} 시작, #{limit} 끝
@@ -41,11 +41,11 @@
 		  	select row_number() over(order by 글번호 desc) rownum, *
 		  	  from [웹].[dbo].[공지사항]
 		  	  <if test="searchType != null and searchValue != null">
-		  	  	<if test="searchType == 'title'">
+		  	  	<if test='"title".equals(searchType)'>
 				where 제목 like '%' + #{searchValue} + '%' escape '\'
 				</if>
-				<if test="searchType == 'content'">
-				  	where 내용 like '%' + #{searchValue} + '%' escape '\'
+				<if test='"writeDate".equals(searchType)'>
+				where DATEDIFF(DD, #{searchValue}, [작성일]) = 0
 				</if>
 		  	  </if>
 		  ) tb1
