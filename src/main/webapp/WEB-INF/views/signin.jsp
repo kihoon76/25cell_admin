@@ -6,6 +6,7 @@
 <c:set var="uri" value="${req.requestURI}" />
 <head>
 	<title>Hotplace25 관리자</title>
+	<link rel="icon" href="${fn:substring(url, 0, fn:length(url) - fn:length(uri))}${req.contextPath}/resources/images/favicon.png" type="image/png" />
 	<link rel="stylesheet" href="/resources/core/ver/4.1.1-rc2/css/ext-all-gray.css"/>
 </head>
 <body>
