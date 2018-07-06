@@ -98,6 +98,7 @@
 		     	 	select 권한번호 
 		     	 	  from [웹].[dbo].[권한] 
 		     	 	 where 권한이름 = 'ROLE_JOINED' or 권한이름 = 'ROLE_ADMIN' or 권한이름 = 'ROLE_QA_ADMIN')
+		     	   and DATEDIFF(DD, getDate(), [만기일]) <![CDATA[<]]>= 0 
 		     ) tb2 on tb1.아이디 = tb2.계정_아이디 
 		     left outer join [웹].[dbo].[권한] tb3 on tb3.권한번호 = tb2.권한번호 
 		     left outer join [웹].[dbo].[계정_권한] tb4 on tb1.아이디 = tb4.계정_아이디 

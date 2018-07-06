@@ -175,7 +175,7 @@ Ext.define('Hotplace.view.panel.LogListGridPanel', {
 						makeParam(false, true);
 					}
 				}
-			}],
+			}], 
 			
 			dockedItems: [{
 				xtype: 'pagingtoolbar',

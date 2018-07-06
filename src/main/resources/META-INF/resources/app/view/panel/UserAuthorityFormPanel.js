@@ -225,7 +225,7 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	    					selectedRecord = record;
 	    					var data = record.data;
 	    					
-	    					if(data.grade && data.grade.indexOf('ROLE_ALL,R') > -1) {
+	    					if(data.grade && (data.grade.indexOf('ROLE_ALL,R') > -1 || data.grade.indexOf(',ROLE_ALL') > -1)) {
 	    						Ext.Msg.alert('알림', '전체서비스와 개별서비스 정보가 모두있습니다. 별도처리가 필요합니다.');
 	    						return;
 	    					}
