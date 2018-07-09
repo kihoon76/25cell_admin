@@ -237,6 +237,11 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 			//결제일자
 			var paymentDate = Ext.getCmp('paymentDateWin').getRawValue();
 			console.log(paymentDate);
+			if(paymentDate == '') {
+				Ext.Msg.alert('', '입금한 날자를 입력하세요.');
+				return;
+			}
+			
 			commFn.ajax({
 				url: '/payment/confirm',
 				method:'POST',
