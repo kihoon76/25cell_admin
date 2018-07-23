@@ -164,7 +164,16 @@ Ext.define('Hotplace.view.window.AdminAuthWindow', {
 				timeout:60000,
 				success: function(jo) {
 					if(jo.success) {
-						Ext.Msg.alert('', '설정이 수정되었습니다.');
+						Ext.Msg.alert('', '설정이 수정되었습니다.', function() {
+							var el = Ext.getCmp('admin-id-text');
+							var accountId = el.getValue();
+							
+							if(Ext.String.trim(accountId) != '') {
+								store.load({
+								    params: {accountId: accountId}
+							    });
+							}
+						});
 					}
 					else {
 						Ext.Msg.alert('에러', jo.errMsg);
