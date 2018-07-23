@@ -27,4 +27,9 @@ public class PaymentDaoImpl implements PaymentDao {
 	public void updatePayment(Map<String, String> param) {
 		msSqlSession.update(namespace + ".updatePayment", param);
 	}
+
+	@Override
+	public void insertMockPayment(Map<String, String> param) {
+		msSqlSession.insert(namespace + ".insertMockPayment", param);
+	}
 }

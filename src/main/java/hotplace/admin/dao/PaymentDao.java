@@ -11,4 +11,6 @@ public interface PaymentDao {
 
 	void updatePayment(Map<String, String> param);
 
+	void insertMockPayment(Map<String, String> param);
+
 }

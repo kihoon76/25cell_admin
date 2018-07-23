@@ -61,7 +61,7 @@ Ext.define('Hotplace.view.panel.UserListGridPanel', {
 					return;
 				}
 				
-				store.load({
+				store.loadPage(1, {
 					params: {
 						searchType: searchType,
 						searchValue: searchValue

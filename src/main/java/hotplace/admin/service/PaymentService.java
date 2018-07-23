@@ -24,4 +24,9 @@ public class PaymentService {
 		paymentDao.updatePayment(param);
 	}
 
+	public void mockPayment(Map<String, String> param) {
+		paymentDao.insertMockPayment(param);
+		
+	}
+
 }

@@ -15,8 +15,6 @@ Ext.define('Hotplace.controller.PaymentController', {
 						xtype: 'paymentgrid'
 					});
 					break;
-				case 'cate-payment-manual' :
-					break;
 				case 'cate-refund' :
 					/*this.addContentTabPanel(recObj.id, recObj.text, {
 						xtype: 'couponpanel'

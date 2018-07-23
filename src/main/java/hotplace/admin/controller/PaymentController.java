@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,6 +59,26 @@ public class PaymentController {
 		
 		try {
 			paymentService.confirmPayment(param);
+			vo.setSuccess(true);
+		}
+		catch(Exception e) {
+			vo.setSuccess(false);
+			vo.setErrMsg(e.getMessage());
+		}
+		
+		return vo;
+	}
+	
+	@PostMapping("mockdo")
+	@ResponseBody
+	public AjaxVO mockPayment(@RequestBody Map<String, String> param) {
+		
+		AjaxVO vo = new AjaxVO();
+		
+		try {
+			paymentService.mockPayment(param);
+			ObjectMapper m = new ObjectMapper();
+			System.err.println(m.writeValueAsString(param));
 			vo.setSuccess(true);
 		}
 		catch(Exception e) {

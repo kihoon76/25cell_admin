@@ -13,6 +13,7 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 			searchValue = '',
 			paymentUserInfo = null,
 			win = null,
+			paymentMaualWin = null,
 			that = this;
 		
 		try {
@@ -105,7 +106,17 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 				dataIndex: 'depositor',
 				flex: 0
 			}],
-			tbar: ['->', '검색항목 : ', Ext.create('Ext.form.field.ComboBox', {
+			tbar: [{
+				xtype: 'button',
+				text: '수동처리',
+				iconCls: 'icon-modi',
+				listeners: {
+					click: function() {
+						showManualWin();
+					}
+				}
+					
+			},'->', '검색항목 : ', Ext.create('Ext.form.field.ComboBox', {
 		    	queryMode: 'local',
 		    	id:'payment-searchtype-combo',
 		    	displayField: 'name',
@@ -254,6 +265,12 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 				success: function(jo) {
 					if(jo.success) {
 						Ext.Msg.alert('', '결제완료처리 되었습니다.', function() {
+							store.load({
+								params: {
+									searchType: searchType,
+									searchValue: searchValue
+								}
+							});    
 							win.close();
 						});
 					}
@@ -406,6 +423,19 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 			});
 			
 			win.show();
+		}
+		
+		function showManualWin() {
+			paymentMaualWin = Ext.create('Hotplace.view.window.PaymentManualWindow', {
+				title: '결제수동처리',
+				iconCls: 'icon-window',
+				modal: true,
+				draggable: true,
+				resizable: false,
+				closeAction: 'destroy',
+			});
+			
+			paymentMaualWin.show();
 		}
 		
 		this.callParent(arguments);
