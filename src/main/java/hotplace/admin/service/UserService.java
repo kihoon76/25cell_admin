@@ -29,11 +29,32 @@ public class UserService {
 			   rollbackFor=Exception.class,
 			   timeout=10)//timeout 초단위
 	public boolean modifyUserAuth(Account account) throws Exception {
-		userDao.deleteUserGrade(account);
+		//userDao.deleteUserGrade(account);
+		
+		userDao.deleteUserGradeNotAdmin(account);
 		
 		if(account.getGrade() != null && !"".equals(account.getGrade())) {
 			userDao.insertUserGrade(account);
 		}
+		
+//		if("Y".equals(account.getAdmin())) {
+//			userDao.insertUserGradeAdmin(account);
+//		}
+//		else if("Y".equals(account.getQaAdmin())) {
+//			userDao.insertUserGradeQaAdmin(account);
+//		}
+		
+		userDao.updateUserInfo(account);
+		
+		return true;
+	}
+	
+	@Transactional(isolation=Isolation.DEFAULT, 
+			   propagation=Propagation.REQUIRED, 
+			   rollbackFor=Exception.class,
+			   timeout=10)//timeout 초단위
+	public boolean modifyUserAdminAuth(Account account) {
+		userDao.deleteUserGradeAdmin(account);
 		
 		if("Y".equals(account.getAdmin())) {
 			userDao.insertUserGradeAdmin(account);
@@ -42,9 +63,8 @@ public class UserService {
 			userDao.insertUserGradeQaAdmin(account);
 		}
 		
-		userDao.updateUserInfo(account);
-		
 		return true;
+		
 	}
 
 	public Account getUserInfo(String accountId) {
@@ -58,5 +78,9 @@ public class UserService {
 	
 	public Map getPaymentUserInfo(String accountId) {
 		return userDao.selectPaymentUserInfo(accountId);
+	}
+
+	public List<Map<String, String>> getAdminUserList(String accountId) {
+		return userDao.selectAdminUserList(accountId);
 	}
 }

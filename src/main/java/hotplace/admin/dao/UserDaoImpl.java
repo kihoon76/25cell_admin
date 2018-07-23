@@ -1,5 +1,6 @@
 package hotplace.admin.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -63,5 +64,20 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public Map selectPaymentUserInfo(String accountId) {
 		return msSqlSession.selectOne(namespace + ".selectPaymentUserInfo", accountId);
+	}
+
+	@Override
+	public List<Map<String, String>> selectAdminUserList(String accountId) {
+		return msSqlSession.selectList(namespace + ".selectAdminUserList", accountId);
+	}
+
+	@Override
+	public int deleteUserGradeNotAdmin(Account account) {
+		return msSqlSession.delete(namespace + ".deleteUserGradeNotAdmin", account);
+	}
+
+	@Override
+	public int deleteUserGradeAdmin(Account account) {
+		return msSqlSession.delete(namespace + ".deleteUserGradeAdmin", account);
 	}
 }

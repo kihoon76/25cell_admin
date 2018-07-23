@@ -1,6 +1,7 @@
 package hotplace.admin.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -42,6 +43,27 @@ public class UserController {
 		return userService.getUserList(map);
 	}
 	
+	@PostMapping("adminlist")
+	@ResponseBody
+	public AjaxVO getAdminUserList(@RequestParam("accountId") String accountId) {
+		
+		AjaxVO vo = new AjaxVO();
+		
+		try {
+			List<Map<String, String>> list = userService.getAdminUserList(accountId);
+			
+			vo.setSuccess(true);
+			vo.setDatas(list);
+		}
+		catch(Exception e) {
+			vo.setSuccess(false);
+			vo.setErrMsg(e.getMessage());
+		}
+		
+		return vo;
+	}
+	
+	
 	@PostMapping("auth/modify")
 	@ResponseBody
 	public AjaxVO modifyUserAuth(@RequestBody Account account) {
@@ -54,6 +76,30 @@ public class UserController {
 			}
 			
 			boolean result = userService.modifyUserAuth(account);
+			if(result) {
+				vo.setSuccess(true);
+			}
+			else {
+				vo.setSuccess(false);
+			}
+		}
+		catch(Exception e) {
+			vo.setSuccess(false);
+			vo.setErrMsg(e.getMessage());
+		}
+	
+		return vo;
+	}
+	
+	@PostMapping("admin/modify")
+	@ResponseBody
+	public AjaxVO modifyUserAdminAuth(@RequestBody Account account) {
+		
+		AjaxVO vo = new AjaxVO();
+		
+		try {
+			
+			boolean result = userService.modifyUserAdminAuth(account);
 			if(result) {
 				vo.setSuccess(true);
 			}

@@ -1,6 +1,6 @@
 Ext.define('Hotplace.controller.AuthorityController', {
 	extend : 'Hotplace.controller.BaseController',
-	views: ['panel.AuthorityFormPanel'],
+	views: ['panel.AuthorityFormPanel', 'window.AdminAuthWindow'],
 	onLaunch : function() {
 		this.callParent(arguments);
 	},
@@ -14,6 +14,17 @@ Ext.define('Hotplace.controller.AuthorityController', {
 					this.addContentTabPanel(recObj.id, recObj.text, {
 						xtype: 'authoritypanel'
 					});
+					break;
+				case 'cate-admin' :
+					var win = Ext.create('Hotplace.view.window.AdminAuthWindow', {
+						title: '관리자 권한설정',
+						iconCls: 'icon-window',
+						modal: true,
+						draggable: true,
+						resizable: false,
+						closeAction: 'destroy',
+					});
+					win.show();
 					break;
 				default :
 					break;

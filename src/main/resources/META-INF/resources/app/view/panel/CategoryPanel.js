@@ -19,6 +19,8 @@ Ext.define('Hotplace.view.panel.CategoryPanel', {
 						 text: '권한관리', expand: true, iconCls : 'tree-expand'
 						,children : [{
 							text: '권한리스트', leaf : true, cate : 'authority', id : 'cate-authority-list'
+						},{
+							text: '관리자권한', leaf : true, cate : 'authority', id : 'cate-admin'
 						}]
 					 },{
 						 text : '공지사항관리', expand : true, iconCls : 'tree-expand'
@@ -58,6 +60,8 @@ Ext.define('Hotplace.view.panel.CategoryPanel', {
 						 text: '결제관리', expand: true, iconCls : 'tree-expand'
 						,children : [{
 							text: '결제처리', leaf : true, cate : 'log', id : 'cate-payment'
+						},{
+							text: '결제수동처리', leaf : true, cate : 'log', id : 'cate-payment-manual'
 						},{
 							text: '환불처리', leaf : true, cate : 'log', id : 'cate-refund'
 						}]

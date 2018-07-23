@@ -120,6 +120,22 @@
 			  from A TBL1 
 	</select>
 	
+	<select id="selectAdminUserList" parameterType="string" resultType="map">
+		select 아이디 as accountId, 이름 as userName, case when t2.권한번호 is null then 'N' else 'Y' end as isAdmin, case when t3.권한번호 is null then 'N' else 'Y' end as isQaAdmin 
+		  from [웹].[dbo].[계정] t1
+		  left outer join [웹].[dbo].[계정_권한] t2 
+		    on t1.아이디 = t2.계정_아이디 
+		   and t2.권한번호 = (
+		       select 권한번호 from [웹].[dbo].[권한] where 권한이름 = 'ROLE_ADMIN'
+		  ) 
+		  left outer join [웹].[dbo].[계정_권한] t3 on t1.아이디 = t3.계정_아이디 
+		   and t3.권한번호 = (
+		       select 권한번호 from [웹].[dbo].[권한] where 권한이름 = 'ROLE_QA_ADMIN'
+		  )  
+		 where 탈퇴여부 = 'N'
+		   and 아이디 like '%' + #{accountId} + '%' 
+	</select>
+	
 	<delete id="deleteUserGrade" parameterType="Account">
 		delete from [웹].[dbo].[계정_권한] 
 		 where 계정_아이디 = #{accountId} 
@@ -127,6 +143,29 @@
 		   	select 권한번호 
 		   	  from [웹].[dbo].[권한] 
 		   	 where 권한이름 = 'ROLE_JOINED'
+		   ) 
+	</delete>
+	
+	<delete id="deleteUserGradeNotAdmin" parameterType="Account">
+		delete from [웹].[dbo].[계정_권한] 
+		 where 계정_아이디 = #{accountId} 
+		   and 권한번호 not in (
+		   	select 권한번호 
+		   	  from [웹].[dbo].[권한] 
+		   	 where 권한이름 = 'ROLE_JOINED' 
+		   	    or 권한이름 = 'ROLE_ADMIN'
+		   	    or 권한이름 = 'ROLE_QA_ADMIN'
+		   ) 
+	</delete>
+	
+	<delete id="deleteUserGradeAdmin" parameterType="Account">
+		delete from [웹].[dbo].[계정_권한] 
+		 where 계정_아이디 = #{accountId} 
+		   and 권한번호  in (
+		   	select 권한번호 
+		   	  from [웹].[dbo].[권한] 
+		   	 where 권한이름 = 'ROLE_ADMIN'
+		   	    or 권한이름 = 'ROLE_QA_ADMIN'
 		   ) 
 	</delete>
 	
