@@ -14,7 +14,16 @@ Ext.define('Hotplace.view.window.AdminAuthWindow', {
 	        	id: 'admin-id-text',
             	xtype: 'textfield',
             	fieldLabel: '아이디 검색',
-            	width: 230
+            	enableKeyEvents: true,
+            	width: 230,
+            	listeners: {
+				   keydown: function(t, e) {
+					   //전체를 선택한 경우 동작 안함
+					   if(e.keyCode == 13) {
+						   search();
+					   }
+				   }
+			   }
 	        }, {
 	        	xtype: 'button',
 	        	iconCls: 'icon-search',
