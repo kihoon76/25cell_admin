@@ -26,6 +26,7 @@
 		
 		<sec:intercept-url pattern="/authority/define" access="hasAnyRole('ROLE_QA_ADMIN', 'ROLE_ADMIN')" />
 		<sec:intercept-url pattern="/user/list" access="hasAnyRole('ROLE_QA_ADMIN', 'ROLE_ADMIN')" />
+		<sec:intercept-url pattern="/user/adminlist" access="hasAnyRole('ROLE_QA_ADMIN', 'ROLE_ADMIN')" />
 		<sec:intercept-url pattern="/user/auth/modify" access="hasAnyRole('ROLE_QA_ADMIN', 'ROLE_ADMIN')" />
 		<sec:intercept-url pattern="/**" access="hasRole('ROLE_ADMIN')"/>
 		
