@@ -11,7 +11,7 @@ import hotplace.admin.domain.ExtjsStoreVO;
 @Repository("configureDao")
 public class ConfigureDaoImpl implements ConfigureDao {
 
-private final static String namespace = "mappers.configureMapper";
+	private final static String namespace = "mappers.configureMapper";
 	
 	@Resource(name = "msSqlSession")
 	SqlSession msSqlSession;

@@ -21,11 +21,15 @@
 			function submit() {
 				var form = Ext.getCmp('form').getForm();
 	        	if (form.isValid()) {
+	        		var myMask = new Ext.LoadMask(Ext.getBody(), {msg:"로그인 중입니다..."});
+	    			myMask.show();
+	    			
 	            	form.submit({
 	            		success: function(form, action) {
 	                        window.location.href = '/main';
 	                     },
 	                     failure: function(form, action) {
+	                    	myMask.hide();
 	                     	var result = action.result;
 	                    	var msg;
 	                    	 
