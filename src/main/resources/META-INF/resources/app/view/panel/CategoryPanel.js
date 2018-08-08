@@ -63,6 +63,8 @@ Ext.define('Hotplace.view.panel.CategoryPanel', {
 						},{
 							text: '환불처리', leaf : true, cate : 'log', id : 'cate-refund'
 						}]
+					 }, {
+						 text: 'DB모니터링', leaf : true, cate : 'monitoring', id : 'cate-monitor-db' 
 					 }]
     	    	 }
     	    })

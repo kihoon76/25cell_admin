@@ -27,6 +27,7 @@
 		<xmlbeans-version>2.6.0</xmlbeans-version>
 		<bootstrap-version>3.3.7-1</bootstrap-version>
 		<thrift-version>0.10.0</thrift-version>
+		<jackson.databind-version>2.5.3</jackson.databind-version>
 	</properties>
 	
 	<dependencies>
@@ -69,6 +70,11 @@
 		    <version>${spring.security-version}</version>
 		</dependency>
 		
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-websocket</artifactId>
+		    <version>${spring.security-version}</version>
+		</dependency>
 		
 		<!-- 스프링 서큐리티 어노테이션을 사용하기 위해 CGLib 가 필요하다.-->
 		<dependency>
@@ -195,6 +201,13 @@
 		    <artifactId>jackson-mapper-asl</artifactId>
 		    <version>${jackson.mapper-version}</version>
 		</dependency>
+		
+		<dependency>
+	        <groupId>com.fasterxml.jackson.core</groupId>
+	        <artifactId>jackson-databind</artifactId>
+	        <version>${jackson.databind-version}</version>
+	        <scope>runtime</scope>
+	    </dependency>
 		
 		<!-- excel -->
 		<dependency>

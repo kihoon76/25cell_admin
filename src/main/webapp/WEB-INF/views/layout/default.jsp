@@ -38,6 +38,9 @@
 	<sitemesh:write property="body" /> 
 	<script src="/resources/core/ver/4.1.1-rc2/js/ext-all.js"></script>
 	
+	<!-- socketJs -->
+	<script src="/resources/js/sockjs.min.js"></script>
+	
 	<!-- locale -->
 	<script src="/resources/core/locale/ext-lang-ko.js"></script>
 	

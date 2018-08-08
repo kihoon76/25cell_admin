@@ -3,6 +3,8 @@ package hotplace.admin.utils;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -28,21 +30,28 @@ public class ScheduleUtil {
 	@Value("#{dsCfg['mssql.datasource.password']}")
 	private String password;
 	
-	public void viewDatabaseConnection() {
+	public Map<String, Boolean> viewDatabaseConnection() {
+		Map<String, Boolean> result = null;
+		
 		try {
 			Class.forName(driverName);
 			
 			Connection conn = null;
 			String[] dbs = { url43, url42, url2 };
+			String[] key = { "43", "42", "2" };
 			
+			result = new HashMap<>(); 
+			
+			System.err.println("=========================");
 			for(int i=0; i<3; i++) {
 				try {
 					conn = DriverManager.getConnection(dbs[i], userName, password);
 					System.out.println(dbs[i] + " : connection OK");
-					
+					result.put(key[i], true);
 				}
 				catch(SQLException e) {
 					System.out.println(dbs[i] + " : connection FAIL");
+					result.put(key[i], false);
 				}
 				finally {
 					if(conn != null) {
@@ -59,5 +68,7 @@ public class ScheduleUtil {
 		catch(ClassNotFoundException e1) {
 			System.err.println("driver class load failed.....");
 		}
+		
+		return result;
 	}
 }

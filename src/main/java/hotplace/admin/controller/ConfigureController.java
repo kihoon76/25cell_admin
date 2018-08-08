@@ -1,5 +1,8 @@
 package hotplace.admin.controller;
 
+import java.io.IOException;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.springframework.scheduling.annotation.Scheduled;
@@ -8,6 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.socket.WebSocketSession;
+
+import com.google.gson.Gson;
 
 import hotplace.admin.domain.AjaxVO;
 import hotplace.admin.domain.Configure;
@@ -15,6 +21,7 @@ import hotplace.admin.domain.ExtjsStoreVO;
 import hotplace.admin.service.ConfigureService;
 import hotplace.admin.service.ThriftService;
 import hotplace.admin.utils.ScheduleUtil;
+import hotplace.admin.websocket.HpWebSocketHandler;
 
 @RequestMapping("/configure")
 @Controller
@@ -28,6 +35,9 @@ public class ConfigureController {
 	
 	@Resource(name="schedule")
 	ScheduleUtil schedule;
+	
+	@Resource(name="hpWebSocketHandler")
+	HpWebSocketHandler hpWebSocketHandler;
 
 	@PostMapping("list")
 	@ResponseBody
@@ -74,6 +84,19 @@ public class ConfigureController {
 	
 	@Scheduled(cron="0 0/1 * * * *")
 	public void checkDb() {
-		schedule.viewDatabaseConnection();
+		//schedule.viewDatabaseConnection();
+		try {
+			Map<String, Boolean> result = schedule.viewDatabaseConnection();
+			if(result != null) {
+				hpWebSocketHandler.sendDatabaseMsg(new Gson().toJson(result));
+			}
+			else {
+				hpWebSocketHandler.sendDatabaseMsg("error");
+			}
+		} 
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
