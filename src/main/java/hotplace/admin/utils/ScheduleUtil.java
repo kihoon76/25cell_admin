@@ -28,24 +28,13 @@ public class ScheduleUtil {
 	@Value("#{dsCfg['mssql.datasource.password']}")
 	private String password;
 	
-	private boolean isClassLoaded = false;
-	
-	public ScheduleUtil() {
-		
+	public void viewDatabaseConnection() {
 		try {
 			Class.forName(driverName);
-			isClassLoaded = true;
-		} 
-		catch (ClassNotFoundException e) {
-			System.err.println(driverName + " : load error");
-		}
-	}
-	
-	
-	public void viewDatabaseConnection() {
-		if(isClassLoaded) {
+			
 			Connection conn = null;
 			String[] dbs = { url43, url42, url2 };
+			
 			
 			
 			for(int i=0; i<3; i++) {
@@ -68,6 +57,9 @@ public class ScheduleUtil {
 					}
 				}
 			}
+		} 
+		catch(ClassNotFoundException e1) {
+			System.err.println("driver class load failed.....");
 		}
 	}
 }
