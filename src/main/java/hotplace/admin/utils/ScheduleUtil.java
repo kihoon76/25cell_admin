@@ -35,8 +35,6 @@ public class ScheduleUtil {
 			Connection conn = null;
 			String[] dbs = { url43, url42, url2 };
 			
-			
-			
 			for(int i=0; i<3; i++) {
 				try {
 					conn = DriverManager.getConnection(dbs[i], userName, password);

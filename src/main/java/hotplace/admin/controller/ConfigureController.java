@@ -1,8 +1,5 @@
 package hotplace.admin.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.annotation.Resource;
 
 import org.springframework.scheduling.annotation.Scheduled;
