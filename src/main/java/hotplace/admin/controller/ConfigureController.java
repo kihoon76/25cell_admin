@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import hotplace.admin.domain.Configure;
 import hotplace.admin.domain.ExtjsStoreVO;
 import hotplace.admin.service.ConfigureService;
 import hotplace.admin.service.ThriftService;
+import hotplace.admin.utils.ScheduleUtil;
 
 @RequestMapping("/configure")
 @Controller
@@ -26,6 +28,9 @@ public class ConfigureController {
 	
 	@Resource(name="thriftService")
 	ThriftService thriftService;
+	
+	@Resource(name="schedule")
+	ScheduleUtil schedule;
 
 	@PostMapping("list")
 	@ResponseBody
@@ -68,5 +73,10 @@ public class ConfigureController {
 		}
 		
 		return vo;
+	}
+	
+	@Scheduled(cron="* */1 * * * *")
+	public void checkDb() {
+		schedule.viewDatabaseConnection();
 	}
 }
