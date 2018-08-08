@@ -13,13 +13,13 @@ public class ScheduleUtil {
 	@Value("#{dsCfg['mssql.datasource.driverClassName']}")
 	private String driverName;
 	
-	@Value("#{dsCfg['mssql.datasource.url'}")
+	@Value("#{dsCfg['mssql.datasource.url']}")
 	private String url43;
 	
-	@Value("#{dsCfg['mssql.datasource.url42'}")
+	@Value("#{dsCfg['mssql.datasource.url42']}")
 	private String url42;
 	
-	@Value("#{dsCfg['mssql.datasource.url2'}")
+	@Value("#{dsCfg['mssql.datasource.url2']}")
 	private String url2;
 	
 	@Value("#{dsCfg['mssql.datasource.username']}")
