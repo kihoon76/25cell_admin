@@ -72,7 +72,7 @@ public class ConfigureController {
 		return vo;
 	}
 	
-	@Scheduled(cron="* */1 * * * *")
+	//@Scheduled(cron="* */1 * * * *")
 	public void checkDb() {
 		schedule.viewDatabaseConnection();
 	}
