@@ -114,6 +114,11 @@ public class ConfigureController {
 	
 	private void recoveryFolicy(Map<String, Boolean> result) {
 		heartbeat++;
+		
+		heartbeatStatus[0] = heartbeatStatus[0] || result.get("43");
+		heartbeatStatus[1] = heartbeatStatus[1] || result.get("42");
+		heartbeatStatus[2] = heartbeatStatus[2] || result.get("2");
+		
 		if(heartbeat >= 5) {
 			StringBuilder msg = new StringBuilder();
 			boolean err = false;
@@ -163,11 +168,6 @@ public class ConfigureController {
 			else {
 				mailSendCount = 3;
 			}
-		}
-		else {
-			heartbeatStatus[0] = heartbeatStatus[0] || result.get("43");
-			heartbeatStatus[1] = heartbeatStatus[1] || result.get("42");
-			heartbeatStatus[2] = heartbeatStatus[2] || result.get("2");
 		}
 	}
 }
