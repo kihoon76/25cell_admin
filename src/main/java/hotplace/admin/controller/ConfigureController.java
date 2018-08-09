@@ -114,19 +114,23 @@ public class ConfigureController {
 	
 	private void recoveryFolicy(Map<String, Boolean> result) {
 		heartbeat++;
-		if(heartbeat >= 1) {
+		if(heartbeat >= 5) {
 			StringBuilder msg = new StringBuilder();
+			boolean err = false;
 			
 			if(!heartbeatStatus[0]) {
 				msg.append("192.168.0.43 : 5분동안 반응없음 <br/>");
+				err = true;
 			} 
 			
 			if(!heartbeatStatus[1]) {
 				msg.append("192.168.0.42 : 5분동안 반응없음 <br/>");
+				err = true;
 			} 
 			
 			if(!heartbeatStatus[2]) {
 				msg.append("192.168.0.2 : 5분동안 반응없음 <br/>");
+				err = true;
 			} 
 			
 			//초기화
@@ -136,7 +140,7 @@ public class ConfigureController {
 			heartbeatStatus[2] = false;
 			
 			
-			if(msg.length() > 0) {
+			if(err) {
 				try {
 					if(mailSendCount > 0) {
 						Email email = new Email();
