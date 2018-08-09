@@ -40,16 +40,16 @@ Ext.define('Hotplace.view.panel.CategoryPanelQa', {
 					}, {
 						 text: '쿠폰관리', expand: true, iconCls : 'tree-expand'
 						,children : [{
-							text: '쿠폰발행내역', leaf : true, cate : 'log', id : 'cate-coupon-history'
+							text: '쿠폰발행내역', leaf : true, cate : 'coupon', id : 'cate-coupon-history'
 						},{
-							text: '쿠폰발행 및 쿠폰정보', leaf : true, cate : 'log', id : 'cate-coupon-info'
+							text: '쿠폰발행 및 쿠폰정보', leaf : true, cate : 'coupon', id : 'cate-coupon-info'
 						}]
 					 }, {
 						 text: '결제관리', expand: true, iconCls : 'tree-expand'
 						,children : [{
-							text: '결제처리', leaf : true, cate : 'log', id : 'cate-payment'
+							text: '결제처리', leaf : true, cate : 'payment', id : 'cate-payment'
 						},{
-							text: '환불처리', leaf : true, cate : 'log', id : 'cate-refund'
+							text: '환불처리', leaf : true, cate : 'payment', id : 'cate-refund'
 						}]
 					 }]
     	    	 }

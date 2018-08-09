@@ -119,7 +119,7 @@ public class ConfigureController {
 		heartbeatStatus[1] = heartbeatStatus[1] || result.get("42");
 		heartbeatStatus[2] = heartbeatStatus[2] || result.get("2");
 		
-		if(heartbeat >= 5) {
+		if(heartbeat == 5) {
 			StringBuilder msg = new StringBuilder();
 			boolean err = false;
 			
