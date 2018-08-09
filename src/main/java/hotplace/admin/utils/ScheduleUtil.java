@@ -42,7 +42,6 @@ public class ScheduleUtil {
 			
 			result = new HashMap<>(); 
 			
-			System.err.println("=========================");
 			for(int i=0; i<3; i++) {
 				try {
 					conn = DriverManager.getConnection(dbs[i], userName, password);

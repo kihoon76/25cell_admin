@@ -224,6 +224,7 @@ Ext.define('Hotplace.view.window.AdminAuthWindow', {
 		Ext.apply(this, {
 			width: 800,
 			height: 530,
+			closeAction: 'destroy',
 			items: {
 				xtype: 'panel',
 				layout: 'border',

@@ -7,7 +7,7 @@ Ext.define('Hotplace.controller.NoticeController', {
 	onItemClick : function(tree, record, item, idx, e) {
 		var recObj = record.raw;
 		
-		if(recObj.leaf) {
+		if(recObj.leaf && recObj.cate == 'notice') {
 			if(!this.categoryPanel.isAttachedCategory(recObj.id)) {
 				switch(recObj.id) {
 				case 'cate-notice-list' :

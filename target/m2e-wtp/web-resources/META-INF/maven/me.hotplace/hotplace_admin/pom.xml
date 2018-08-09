@@ -28,6 +28,8 @@
 		<bootstrap-version>3.3.7-1</bootstrap-version>
 		<thrift-version>0.10.0</thrift-version>
 		<jackson.databind-version>2.5.3</jackson.databind-version>
+		<javax.mail-version>1.4.7</javax.mail-version>
+		
 	</properties>
 	
 	<dependencies>
@@ -195,6 +197,13 @@
 			<scope>test</scope>
 		</dependency>
 		
+		<!-- javax mail -->
+		<dependency>
+		    <groupId>javax.mail</groupId>
+		    <artifactId>mail</artifactId>
+		    <version>${javax.mail-version}</version>
+		</dependency>
+		
 		<!-- Jackson -->
 		<dependency>
 		    <groupId>org.codehaus.jackson</groupId>
@@ -319,7 +328,7 @@
         		<directory>src/main/resources</directory>
         	</resource>
         	<resource>
-        		<directory>src/main/resources-${environment}</directory>
+        		<directory>src/main/resources-${env}</directory>
         	</resource>
         </resources>
     </build>
@@ -330,19 +339,19 @@
     			<activeByDefault>true</activeByDefault>
     		</activation>
     		<properties>
-    			<environment>local</environment>
+    			<env>local</env>
     		</properties>
     	</profile>
     	<profile>
     		<id>development</id>
     		<properties>
-    			<environment>development</environment>
+    			<env>development</env>
     		</properties>
     	</profile>
     	<profile>
     		<id>production</id>
     		<properties>
-    			<environment>production</environment>
+    			<env>production</env>
     		</properties>
     	</profile>
     </profiles>

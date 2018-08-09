@@ -8,7 +8,7 @@ Ext.define('Hotplace.controller.YaggwanController', {
 		
 		var recObj = record.raw;
 		
-		if(recObj.leaf) {
+		if(recObj.leaf && recObj.cate == 'yaggwan') {
 			if(!this.categoryPanel.isAttachedCategory(recObj.id)) {
 				switch(recObj.id) {
 				case 'cate-yaggwan' :

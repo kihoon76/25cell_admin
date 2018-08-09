@@ -7,7 +7,7 @@ Ext.define('Hotplace.controller.PaymentController', {
 	onItemClick : function(tree, record, item, idx, e) {
 		var recObj = record.raw;
 		
-		if(recObj.leaf) {
+		if(recObj.leaf && recObj.cate == 'payment') {
 			if(!this.categoryPanel.isAttachedCategory(recObj.id)) {
 				switch(recObj.id) {
 				case 'cate-payment' :
