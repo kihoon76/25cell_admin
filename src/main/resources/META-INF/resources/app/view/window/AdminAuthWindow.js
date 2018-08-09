@@ -45,6 +45,7 @@ Ext.define('Hotplace.view.window.AdminAuthWindow', {
             defaultType: 'textfield',
 		};
 		
+		//columns id속성을 주면 중복될 경우 탭 문제 발생
 		var grid = Ext.create('Ext.grid.Panel', {
 			store: store,
 			width: 400,
@@ -52,8 +53,7 @@ Ext.define('Hotplace.view.window.AdminAuthWindow', {
 		    region: 'west',
 			height: 500,
             columns: [{
-	            id       :'accountId',
-	            text   	 : '아이디',
+	            text   	: '아이디',
 	            flex    : 1,
 	            sortable : true,
 	            dataIndex: 'accountId'

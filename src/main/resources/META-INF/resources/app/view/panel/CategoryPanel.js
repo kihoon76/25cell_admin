@@ -20,7 +20,7 @@ Ext.define('Hotplace.view.panel.CategoryPanel', {
 						,children : [{
 							text: '권한리스트', leaf : true, cate : 'authority', id : 'cate-authority-list'
 						},{
-							text: '관리자권한', leaf : true, cate : 'authority', id : 'cate-admin'
+							text: '관리자권한', leaf : true, cate : 'authority', id : 'cate-authority-admin'
 						}]
 					 },{
 						 text : '공지사항관리', expand : true, iconCls : 'tree-expand'

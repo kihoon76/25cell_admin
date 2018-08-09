@@ -15,14 +15,13 @@ Ext.define('Hotplace.controller.AuthorityController', {
 						xtype: 'authoritypanel'
 					});
 					break;
-				case 'cate-admin' :
+				case 'cate-authority-admin' :
 					var win = Ext.create('Hotplace.view.window.AdminAuthWindow', {
 						title: '관리자 권한설정',
 						iconCls: 'icon-window',
 						modal: true,
 						draggable: true,
 						resizable: false,
-						closeAction: 'destroy',
 					});
 					win.show();
 					break;

@@ -109,7 +109,6 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	            height: 800,
 	            title:'회원목록',
 	            columns: [{
-                    id       :'accountId',
                     text   	 : '아이디',
                     flex    : 1,
                     sortable : true,
