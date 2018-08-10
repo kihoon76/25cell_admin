@@ -348,11 +348,5 @@
     			<env>development</env>
     		</properties>
     	</profile>
-    	<profile>
-    		<id>production</id>
-    		<properties>
-    			<env>production</env>
-    		</properties>
-    	</profile>
     </profiles>
 </project>

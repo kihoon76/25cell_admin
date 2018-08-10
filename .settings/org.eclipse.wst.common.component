@@ -6,7 +6,6 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources-local"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources-development"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources-production"/>
         <property name="context-root" value="hotplace_admin"/>
         <property name="java-output-path" value="/hotplace_admin/target/classes"/>
     </wb-module>
