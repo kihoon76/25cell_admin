@@ -26,7 +26,7 @@ public class MailUtil {
 	@Value("#{mailCfg['username']}")
 	String userName;
 	
-	@Value("#{mailCfg['up##2080']}")
+	@Value("#{mailCfg['password']}")
 	String password;
 	
 	@Value("#{mailCfg['port']}")
