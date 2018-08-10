@@ -25,4 +25,5 @@
 	
 	<util:properties id="pathCfg" location="classpath:/config/path.properties" />
 	<util:properties id="thriftCfg" location="classpath:/config/thrift.properties" />
+	<util:properties id="mailCfg" location="classpath:/config/mail.properties" />
 </beans>

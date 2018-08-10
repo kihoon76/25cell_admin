@@ -12,6 +12,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import hotplace.admin.domain.Email;
@@ -19,12 +20,22 @@ import hotplace.admin.domain.Email;
 @Component("mailUtil")
 public class MailUtil {
 	
+	@Value("#{mailCfg['host']}")
+	String host;
+	
+	@Value("#{mailCfg['username']}")
+	String userName;
+	
+	@Value("#{mailCfg['up##2080']}")
+	String password;
+	
+	@Value("#{mailCfg['port']}")
+	int port;
+	
+	@Value("#{mailCfg['address']}")
+	String address;
+	
 	public void sendMail(Email email) throws AddressException, MessagingException {
-		
-		String host = "smtp.naver.com";
-		String userName = "upmc2013";
-		String password = "up##2080";
-		int port = 587;
 		
 		String recipient = email.getAddress();
 		String cc = email.getAddressCC();
@@ -57,7 +68,7 @@ public class MailUtil {
 		session.setDebug(true);
 		
 		Message mimeMessage = new MimeMessage(session);
-		mimeMessage.setFrom(new InternetAddress("upmc2013@naver.com")); 
+		mimeMessage.setFrom(new InternetAddress(address)); 
 		
 		mimeMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
 		
