@@ -105,6 +105,10 @@ Ext.define('Hotplace.view.panel.PaymentListGridPanel', {
 				text: '입금자명',
 				dataIndex: 'depositor',
 				flex: 0
+			}, {
+				text: '결제방법',
+				dataIndex: 'method',
+				flex: 0
 			}],
 			tbar: [{
 				xtype: 'button',

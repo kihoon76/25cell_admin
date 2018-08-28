@@ -21,8 +21,8 @@ public class ScheduleUtil {
 	@Value("#{dsCfg['mssql.datasource.url42']}")
 	private String url42;
 	
-	@Value("#{dsCfg['mssql.datasource.url2']}")
-	private String url2;
+	//@Value("#{dsCfg['mssql.datasource.url2']}")
+	//private String url2;
 	
 	@Value("#{dsCfg['mssql.datasource.username']}")
 	private String userName;
@@ -37,12 +37,12 @@ public class ScheduleUtil {
 			Class.forName(driverName);
 			
 			Connection conn = null;
-			String[] dbs = { url43, url42, url2 };
-			String[] key = { "43", "42", "2" };
+			String[] dbs = { url43, url42 };
+			String[] key = { "43", "42" };
 			
 			result = new HashMap<>(); 
 			
-			for(int i=0; i<3; i++) {
+			for(int i=0; i<2; i++) {
 				try {
 					conn = DriverManager.getConnection(dbs[i], userName, password);
 					System.out.println(dbs[i] + " : connection OK");

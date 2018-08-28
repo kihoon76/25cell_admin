@@ -31,6 +31,7 @@
 		<result column="환불내역번호"	property="refundId" javaType="string" />
 		<result column="처리담당자계정"	property="processorId" javaType="string" />
 		<result column="처리담당자이름"	property="processorName" javaType="string" />
+		<result column="결제방법"		property="method" javaType="string" />
 	</resultMap>
 	
 	<select id="selectPaymentList" resultMap="RM_selectPaymentList" parameterType="map">
@@ -75,7 +76,10 @@
 					end
 			        else
 					'개별서비스(' + replace(replace(replace(replace(서비스서브타입, 'ROLE_TOOJA', '투자유망검색'), 'ROLE_GYEONGGONG', '경공매검색'), 'ROLE_MULGEON', '물건보기검색'), 'ROLE_HEATMAP', '히트맵보기') + ')'
-			    end 결제내용
+			    end 결제내용, 
+			  	case when 결제방법 = 'Bank' then '무통장'
+			  		 else '카드결제'
+			  	end 결제방법
 		  from ( 
 		  		select row_number() over(order by 결제신청일자 desc) rownum, * 
 		  		  from [웹].[dbo].[결제내역]

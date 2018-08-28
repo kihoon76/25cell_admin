@@ -23,6 +23,7 @@ public class Payment {
 	private String refundId;					//환불내역번호
 	private String processorId;					//결제처리담당자계정
 	private String processorName;				//결제처리담당자이름
+	private String method;						//결제방법(Bank:무통장 , Card:카드)
 	
 	public String getAccountId() {
 		return accountId;
@@ -131,5 +132,11 @@ public class Payment {
 	}
 	public void setProcessorName(String processorName) {
 		this.processorName = processorName;
+	}
+	public String getMethod() {
+		return method;
+	}
+	public void setMethod(String method) {
+		this.method = method;
 	}
 }

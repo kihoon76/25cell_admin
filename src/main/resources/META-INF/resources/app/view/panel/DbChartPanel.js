@@ -12,11 +12,11 @@ Ext.define('Hotplace.view.panel.DbChartPanel', {
 			
 			if(txt43 == null) txt43 = Ext.getCmp('192.168.0.43');
 			if(txt42 == null) txt42 = Ext.getCmp('192.168.0.42');
-			if(txt2 == null) txt2 = Ext.getCmp('192.168.0.2');
+			//if(txt2 == null) txt2 = Ext.getCmp('192.168.0.2');
 			
 			txt43.setFieldStyle('background-color: white');
 			txt42.setFieldStyle('background-color: white');
-			txt2.setFieldStyle('background-color: white');
+			//txt2.setFieldStyle('background-color: white');
 			
 			
 			if(event.data.indexOf('{') > -1) {
@@ -25,7 +25,7 @@ Ext.define('Hotplace.view.panel.DbChartPanel', {
 					
 					txt43.setFieldStyle(json['43'] == true ? 'background-color: red' : 'background-color: blue');
 					txt42.setFieldStyle(json['42'] == true ? 'background-color: red' : 'background-color: blue');
-					txt2.setFieldStyle(json['2'] == true ? 'background-color: red' : 'background-color: blue');
+					//txt2.setFieldStyle(json['2'] == true ? 'background-color: red' : 'background-color: blue');
 					
 					
 					fompanel.setTitle('DB CONNECTION STATUS (last updated: ' + Ext.Date.format(new Date(), 'Y-m-d H:i:s') + ')');
@@ -51,11 +51,11 @@ Ext.define('Hotplace.view.panel.DbChartPanel', {
 				 fieldLabel: '192.168.0.42',
 				 id: '192.168.0.42',
 				 readOnly: true
-		    },{
+		    }/*,{
 				 fieldLabel: '192.168.0.2',
 				 id: '192.168.0.2',
 				 readOnly: true
-		    }],
+		    }*/],
 		});
 		
 		Ext.apply(this, {

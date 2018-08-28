@@ -46,7 +46,7 @@ public class ConfigureController {
 	@Resource(name="mailUtil")
 	MailUtil mailUtil;
 	
-	private boolean[] heartbeatStatus = { false, false, false};
+	private boolean[] heartbeatStatus = { false, false };
 	private int heartbeat = 0;
 	private int mailSendCount = 3;
 
@@ -117,7 +117,7 @@ public class ConfigureController {
 		
 		heartbeatStatus[0] = heartbeatStatus[0] || result.get("43");
 		heartbeatStatus[1] = heartbeatStatus[1] || result.get("42");
-		heartbeatStatus[2] = heartbeatStatus[2] || result.get("2");
+		//heartbeatStatus[2] = heartbeatStatus[2] || result.get("2");
 		
 		if(heartbeat == 5) {
 			StringBuilder msg = new StringBuilder();
@@ -133,16 +133,16 @@ public class ConfigureController {
 				err = true;
 			} 
 			
-			if(!heartbeatStatus[2]) {
-				msg.append("192.168.0.2 : 5분동안 반응없음 <br/>");
-				err = true;
-			} 
+//			if(!heartbeatStatus[2]) {
+//				msg.append("192.168.0.2 : 5분동안 반응없음 <br/>");
+//				err = true;
+//			} 
 			
 			//초기화
 			heartbeat = 0;
 			heartbeatStatus[0] = false;
 			heartbeatStatus[1] = false;
-			heartbeatStatus[2] = false;
+			//heartbeatStatus[2] = false;
 			
 			
 			if(err) {
