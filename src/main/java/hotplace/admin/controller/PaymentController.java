@@ -34,7 +34,7 @@ public class PaymentController {
 	
 	@PostMapping("list")
 	@ResponseBody
-	public ExtjsStoreVO<Payment> getCouponList(
+	public ExtjsStoreVO<Payment> getPaymentList(
 			@RequestParam("limit") int limit,
 			@RequestParam("start") int start,
 			@RequestParam(name="searchType", required=false) String searchType,

@@ -28,5 +28,4 @@ public class PaymentService {
 		paymentDao.insertMockPayment(param);
 		
 	}
-
 }
