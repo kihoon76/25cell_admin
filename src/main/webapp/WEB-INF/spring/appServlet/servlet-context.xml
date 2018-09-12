@@ -28,6 +28,9 @@
 			<mapping path="/**"/>
 			<beans:bean class="hotplace.admin.interceptor.SSLInterceptor" />
 		</interceptor>
+		<beans:bean  id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            <beans:property name="paramName" value="lang" />
+        </beans:bean>
 	</interceptors>
 	
 	<sec:global-method-security secured-annotations="enabled" pre-post-annotations="enabled" />
