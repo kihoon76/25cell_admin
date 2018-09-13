@@ -19,6 +19,8 @@ public class Account {
 	private String admin;
 	private String qaAdmin;
 	private String out;
+	private String paymentHistory;					//결제이력이 있는 사용자여부 
+	
 	private List<String> gradeArr;
 	
 	private List<Authority> authorities;
@@ -107,4 +109,11 @@ public class Account {
 	public void setGradeExpire(String gradeExpire) {
 		this.gradeExpire = gradeExpire;
 	}
+	public String getPaymentHistory() {
+		return paymentHistory;
+	}
+	public void setPaymentHistory(String paymentHistory) {
+		this.paymentHistory = paymentHistory;
+	}
+	
 }

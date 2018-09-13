@@ -96,6 +96,7 @@ public class ConfigureController {
 	@Scheduled(cron="0 0/1 * * * *")
 	public void checkDb() {
 		//schedule.viewDatabaseConnection();
+		
 		try {
 			Map<String, Boolean> result = schedule.viewDatabaseConnection();
 			if(result != null) {
@@ -151,7 +152,7 @@ public class ConfigureController {
 						Email email = new Email();
 						email.setContent(msg.toString());
 						email.setAddress("juninikim@naver.com");
-						email.setAddressCC("lovedeer118@gmail.com");
+						email.setAddressCC("lovedeer118@gmail.com,hotplace25@daum.net,uni7979@gmail.com");
 						mailUtil.sendMail(email);
 					}
 				} 

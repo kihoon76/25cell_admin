@@ -14,6 +14,8 @@
 		<result column="관리자권한"		property="admin" javaType="string" />
 		<result column="qa관리자권한"	property="qaAdmin" javaType="string"/>
 		<result column="탈퇴여부"		property="out"	javaType="string" />
+		<result column="결제이력"		property="paymentHistory"	javaType="string" />
+		
 	</resultMap>
 	
 	
@@ -108,7 +110,7 @@
 		     left outer join [웹].[dbo].[계정_권한] tb5 on tb1.아이디 = tb5.계정_아이디 
 		      and tb5.권한번호 = (
 		      	select 권한번호 from [웹].[dbo].[권한] where 권한이름 = 'ROLE_QA_ADMIN'
-		     )  
+		     ) 
 		    where rownum between (#{start} + 1) and (#{start} + #{limit})
 		    <if test="searchType != null and searchType == 'grade'">
 		 	  and tb3.권한번호 = #{searchValue}
@@ -116,8 +118,16 @@
 			select distinct TBL1.아이디, 
 			       STUFF((select ',' + 권한이름 from A TBL2 where TBL2.아이디=TBL1.아이디 for xml path('')),1,1,'') as 권한이름,
 			       STUFF((select ',' + 권한이름 + ':' + 만기일 from A TBL2 where TBL2.아이디=TBL1.아이디 for xml path('')),1,1,'') as 권한만기일,
-			       TBL1.이름, TBL1.연락처, TBL1.이메일, TBL1.가입일자, TBL1.탈퇴여부, TBL1.관리자권한, TBL1.qa관리자권한 
-			  from A TBL1 
+			       TBL1.이름, TBL1.연락처, TBL1.이메일, TBL1.가입일자, TBL1.탈퇴여부, TBL1.관리자권한, TBL1.qa관리자권한,
+			       case when TBL3.사용자계정 is null then 'N'
+			       		else 'Y'
+			       end 결제이력
+			  from A TBL1
+			  left outer join (
+			  	select distinct 사용자계정
+			  	  from [웹].[dbo].[결제내역]
+			  	 where [결제완료여부] = 'Y'
+			  ) TBL3 on TBL1.아이디 = TBL3.사용자계정  
 	</select>
 	
 	<select id="selectAdminUserList" parameterType="string" resultType="map">

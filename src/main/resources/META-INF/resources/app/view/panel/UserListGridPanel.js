@@ -101,7 +101,7 @@ Ext.define('Hotplace.view.panel.UserListGridPanel', {
 				text: '가입일자',
 				dataIndex: 'regDate',
 				flex: 0
-			},{
+			},/*{
 				text: '회원등급',
 				dataIndex: 'grade',
 				flex: 0,
@@ -121,10 +121,44 @@ Ext.define('Hotplace.view.panel.UserListGridPanel', {
 					
 					return v;
 				}
-			},{
+			},*/{
                 text   : '탈퇴여부',
                 width    : 80,
-                dataIndex: 'out'
+                dataIndex: 'out',
+               
+            }, {
+            	text: '만기일',
+            	width: 100,
+            	dataIndex: 'gradeExpire',
+            	renderer: function(value) {
+            		if(value) {
+            			var s = '';
+            			var token = value.split(',');
+            			var tLen = token.length;
+            			var item;
+            			for(var t=0; t<tLen; t++) {
+            				item = token[t].split(':');
+            				switch(item[0]) {
+            				case 'ROLE_ALL':
+            					s += '전체서비스(' + item[1] + ') ';
+            					break;
+            				default:
+            					s += item[0] +'(' + item[1] + ') ';
+            				break;
+            				} 
+            			}
+            			
+            			return s;
+            		}
+            		
+            		return value;
+            	},
+            	_search: false
+            },{
+                text   : '결제이력',
+                width    : 80,
+                dataIndex: 'paymentHistory',
+                _search: false
             }],
 			tbar: ['->',
 			       '검색항목 : ',
