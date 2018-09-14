@@ -16,7 +16,7 @@ Ext.define('Hotplace.store.UserListStore', {
 	    	   }
 	       }
 	  },
-	  fields : ['accountId', 'userName', 'phone', 'email', 'regDate', 'grade', 'gradeNum', 'gradeExpire', 'admin', 'out', 'qaAdmin', 'paymentHistory'],
+	  fields : ['accountId', 'userName', 'phone', 'email', 'regDate', 'grade', 'gradeNum', 'gradeExpire', 'admin', 'out', 'qaAdmin', 'paymentHistory', 'cheheom'],
 	  autoLoad : true,
 	  pageSize : Hotplace.util.Constants.gridPageSize
 });

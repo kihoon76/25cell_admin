@@ -264,6 +264,11 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 								eachItems[i].setValue(false);
 							}
 							
+							//체험판 체크박스 초기화
+							var chkCheheom = Ext.getCmp('user-auth-cheheom-check');
+							chkCheheom.setValue(false);
+							
+							
 							//만기일 초기화
 							//전체서비스
 							dateAllUser.setRawValue('');
@@ -302,12 +307,24 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	    					var combo = Ext.getCmp('user-auth-grade-combo');
 	    					
 	    					if(data.grade) {
+	    						//ROLE_ALL:2018-10-05@N
 	    						if(data.grade == 'ROLE_ALL') {
 	    							combo.setValue(data.grade);
 	    							eachFldst.setDisabled(true);
 	    							allFldst.setDisabled(false);
 	    							
-	    							dateAllUser.setRawValue((data.gradeExpire.split(':'))[1]);
+	    							var ex = data.gradeExpire.split(':');
+	    							var exSub = ex[1].split('@');
+	    							
+	    							dateAllUser.setRawValue(exSub[0]);
+	    							
+	    							//체험판은 전체 서비스에 한함
+	    							if(exSub[1] == 'Y') {
+	    								chkCheheom.setValue(true);
+	    							}
+	    							else {
+	    								chkCheheom.setValue(false);
+	    							}
 	    						}
 	    						else {
 	    							combo.setValue('ROLE_EACH');
@@ -324,7 +341,7 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 	    								if(idx > -1) {
 	    									var expire = gradesExpires[idx].split(':');
 	    									eachItems[c].setValue(true);
-	    									Ext.getCmp('each-' + expire[0]).setRawValue(expire[1]);
+	    									Ext.getCmp('each-' + expire[0]).setRawValue((expire[1].split('@'))[0]);
 	    								}
 	    							}
 	    						}
@@ -471,7 +488,12 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		            		labelWidth: 150,
 		            		format: 'Y-m-d',
 		            		editable: false
-		            	}],
+		            	},{
+			            	xtype: 'checkbox',
+			            	fieldLabel: '전체서비스 체험판이용',
+			            	labelWidth: 150,
+			            	id: 'user-auth-cheheom-check'
+			            }],
 		            	disabled: true
 		            },{
 		            	xtype: 'fieldset',
@@ -589,6 +611,7 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		            				email = Ext.String.trim(Ext.getCmp('user-auth-email').getValue()),
 		            				userGrade = Ext.getCmp('user-auth-grade-combo'),
 		            				chkGrp = Ext.getCmp('user-each-service-fldst-chkgrp'),
+		            				chkCheheum = Ext.getCmp('user-auth-cheheom-check'),
 		            				gradeArr = null,
 		            				expire = null,
 		            				gradeExpire = null;
@@ -617,7 +640,7 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		            						return;
 		            					}
 		            					
-		            					expireArr.push(gradeArr[i] + ':' + expire);
+		            					expireArr.push(gradeArr[i] + ':' + expire + '@N');
 		            				}
 		            				
 		            				gradeExpire = expireArr.join(',');
@@ -632,7 +655,7 @@ Ext.define('Hotplace.view.panel.UserAuthorityFormPanel', {
 		            				}
 		            				
 		            				gradeArr = [userGrade.getValue()];
-		            				gradeExpire = userGrade.getValue() + ':' + expire;
+		            				gradeExpire = userGrade.getValue() + ':' + expire + (chkCheheum.getValue() ? '@Y' : '@N');
 		            			}
 		            			else {
 		            				gradeArr =[];

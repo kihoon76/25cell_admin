@@ -140,10 +140,10 @@ Ext.define('Hotplace.view.panel.UserListGridPanel', {
             				item = token[t].split(':');
             				switch(item[0]) {
             				case 'ROLE_ALL':
-            					s += '전체서비스(' + item[1] + ') ';
+            					s += '전체서비스(' + (item[1].split('@'))[0] + ') ';
             					break;
             				default:
-            					s += item[0] +'(' + item[1] + ') ';
+            					s += item[0] +'(' + (item[1].split('@'))[0] + ') ';
             				break;
             				} 
             			}
@@ -154,6 +154,18 @@ Ext.define('Hotplace.view.panel.UserListGridPanel', {
             		return value;
             	},
             	_search: false
+            },{
+                text   : '체험판',
+                width    : 80,
+                dataIndex: 'cheheom',
+                _search: false,
+                renderer: function(value) {
+                	if(value) {
+                		return (value.split('@'))[1];
+                	}
+                	
+                	return value;
+                }
             },{
                 text   : '결제이력',
                 width    : 80,

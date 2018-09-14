@@ -20,6 +20,7 @@ public class Account {
 	private String qaAdmin;
 	private String out;
 	private String paymentHistory;					//결제이력이 있는 사용자여부 
+	private String cheheom;							//체험판여부
 	
 	private List<String> gradeArr;
 	
@@ -114,6 +115,12 @@ public class Account {
 	}
 	public void setPaymentHistory(String paymentHistory) {
 		this.paymentHistory = paymentHistory;
+	}
+	public String getCheheom() {
+		return cheheom;
+	}
+	public void setCheheom(String cheheom) {
+		this.cheheom = cheheom;
 	}
 	
 }
