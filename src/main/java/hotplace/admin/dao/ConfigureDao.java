@@ -14,4 +14,8 @@ public interface ConfigureDao {
 
 	void insertUpdateSystemUpdateInfo(SystemUpdate systemUpdate);
 
+	void updateSystemUpdateInfo(SystemUpdate systemUpdate);
+
+	void deleteSystemUpdateInfo(SystemUpdate systemUpdate);
+
 }

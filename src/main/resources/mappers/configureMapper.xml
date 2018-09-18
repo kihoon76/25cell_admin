@@ -49,7 +49,7 @@
 		select 일련번호 as idx,
 			       버전 as version, 
 			       내용 as content,
-			       적용일자 as applyDate,
+			   CONVERT(char(10), 적용일자, 126)  as applyDate,
 			       팝업템플릿 as tempNum,
 			       비고 as bigo   
 		  from [웹].[dbo].[업데이트관리]
@@ -67,4 +67,18 @@
 		</otherwise>
 		</choose>
 	</insert>
+	
+	<update id="updateSystemUpdateInfo" parameterType="SystemUpdate">
+		update [웹].[dbo].[업데이트관리]
+		   set 버전 = #{version},
+		   	       내용 = #{content},
+		   	       적용일자 = #{applyDate},
+		   	       비고 = #{bigo},
+		   	       팝업템플릿 = #{tempNum}
+		 where 일련번호 = #{idx}
+	</update>
+	
+	<delete id="deleteSystemUpdateInfo" parameterType="SystemUpdate">
+		delete from [웹].[dbo].[업데이트관리] where 일련번호 = #{idx}
+	</delete>
 </mapper>

@@ -184,13 +184,51 @@ public class ConfigureController {
 	@ResponseBody
 	public AjaxVO regUpdate(@RequestBody SystemUpdate systemUpdate) {
 		
-		System.err.println(new Gson().toJson(systemUpdate));
+		//System.err.println(new Gson().toJson(systemUpdate));
 		
 		AjaxVO vo = new AjaxVO();
 		vo.setSuccess(false);
 		
 		try {
 			configureService.regUpdate(systemUpdate);
+			vo.setSuccess(true);
+		}
+		catch(Exception e) {
+			vo.setErrMsg(e.getMessage());
+		}
+		
+		return vo;
+	}
+	
+	@PostMapping("modUpdate")
+	@ResponseBody
+	public AjaxVO modUpdate(@RequestBody SystemUpdate systemUpdate) {
+		//System.err.println(systemUpdate.getContent());
+		//System.err.println(new Gson().toJson(systemUpdate));
+		
+		AjaxVO vo = new AjaxVO();
+		vo.setSuccess(false);
+		
+		try {
+			configureService.modUpdate(systemUpdate);
+			vo.setSuccess(true);
+		}
+		catch(Exception e) {
+			vo.setErrMsg(e.getMessage());
+		}
+		
+		return vo;
+	}
+	
+	@PostMapping("delUpdate")
+	@ResponseBody
+	public AjaxVO delUpdate(@RequestBody SystemUpdate systemUpdate) {
+		
+		AjaxVO vo = new AjaxVO();
+		vo.setSuccess(false);
+		
+		try {
+			configureService.delUpdate(systemUpdate);
 			vo.setSuccess(true);
 		}
 		catch(Exception e) {

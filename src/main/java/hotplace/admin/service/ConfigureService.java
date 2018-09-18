@@ -29,5 +29,14 @@ public class ConfigureService {
 
 	public void regUpdate(SystemUpdate systemUpdate) {
 		configureDao.insertUpdateSystemUpdateInfo(systemUpdate);
+	}
+
+	public void modUpdate(SystemUpdate systemUpdate) {
+		configureDao.updateSystemUpdateInfo(systemUpdate);
+		
+	}
+
+	public void delUpdate(SystemUpdate systemUpdate) {
+		configureDao.deleteSystemUpdateInfo(systemUpdate);
 	} 
 }

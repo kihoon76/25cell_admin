@@ -41,4 +41,15 @@ public class ConfigureDaoImpl implements ConfigureDao {
 		
 	}
 
+	@Override
+	public void updateSystemUpdateInfo(SystemUpdate systemUpdate) {
+		msSqlSession.update(namespace + ".updateSystemUpdateInfo", systemUpdate);
+	}
+
+	@Override
+	public void deleteSystemUpdateInfo(SystemUpdate systemUpdate) {
+		msSqlSession.update(namespace + ".deleteSystemUpdateInfo", systemUpdate);
+		
+	}
+
 }
