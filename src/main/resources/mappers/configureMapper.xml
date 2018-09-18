@@ -57,13 +57,13 @@
 	</select>
 	
 	<insert id="insertUpdateSystemUpdateInfo" parameterType="SystemUpdate">
-		insert into [웹].[dbo].[업데이트관리](버전, 내용, 적용일자, 비고)
+		insert into [웹].[dbo].[업데이트관리](버전, 내용, 적용일자, 비고, 팝업템플릿)
 		<choose>
 		<when test="applyDate == ''.toString()">
-		values (#{version}, #{content}, getDate(), #{bigo})
+		values (#{version}, #{content}, getDate(), #{bigo}, #{tempNum})
 		</when>
 		<otherwise>
-		values (#{version}, #{content}, #{applyDate}, #{bigo})
+		values (#{version}, #{content}, #{applyDate}, #{bigo}, #{tempNum})
 		</otherwise>
 		</choose>
 	</insert>
