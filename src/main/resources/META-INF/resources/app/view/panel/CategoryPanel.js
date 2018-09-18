@@ -14,6 +14,8 @@ Ext.define('Hotplace.view.panel.CategoryPanel', {
 						 text: '설정관리', expand: true, iconCls : 'tree-expand'
 						,children : [{
 							text: '설정리스트', leaf : true, cate : 'configure', id : 'cate-configure-list'
+						},{
+							text: '시스템업데이트', leaf : true, cate : 'configure', id : 'cate-configure-system-update'
 						}]
 					 },{
 						 text: '권한관리', expand: true, iconCls : 'tree-expand'

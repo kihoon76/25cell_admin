@@ -10,6 +10,7 @@ import javax.mail.internet.AddressException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,6 +22,7 @@ import hotplace.admin.domain.AjaxVO;
 import hotplace.admin.domain.Configure;
 import hotplace.admin.domain.Email;
 import hotplace.admin.domain.ExtjsStoreVO;
+import hotplace.admin.domain.SystemUpdate;
 import hotplace.admin.service.ConfigureService;
 import hotplace.admin.service.ThriftService;
 import hotplace.admin.utils.MailUtil;
@@ -54,6 +56,12 @@ public class ConfigureController {
 	@ResponseBody
 	public ExtjsStoreVO<Configure> getConfigureList() {
 		return configureService.getConfigureList();
+	}
+	
+	@PostMapping("updatelist")
+	@ResponseBody
+	public ExtjsStoreVO<SystemUpdate> getUpdateList() {
+		return configureService.getUpdateList();
 	}
 	
 	@PostMapping("modify")
@@ -170,5 +178,25 @@ public class ConfigureController {
 				mailSendCount = 3;
 			}
 		}
+	}
+	
+	@PostMapping("regUpdate")
+	@ResponseBody
+	public AjaxVO regUpdate(@RequestBody SystemUpdate systemUpdate) {
+		
+		System.err.println(new Gson().toJson(systemUpdate));
+		
+		AjaxVO vo = new AjaxVO();
+		vo.setSuccess(false);
+		
+		try {
+			configureService.regUpdate(systemUpdate);
+			vo.setSuccess(true);
+		}
+		catch(Exception e) {
+			vo.setErrMsg(e.getMessage());
+		}
+		
+		return vo;
 	}
 }

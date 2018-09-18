@@ -94,4 +94,10 @@ input[id*='each-ROLE_'].x-form-text {height: 22px;}
 /*결제수동처리*/
 #fm-payment-body input[type=text] {height: 22px;}
 
+/*업데이트*/
+#up-version-inputEl.x-form-text {height: 22px;}
+#up-applyDate-inputEl.x-form-text {height: 22px;}
+#dtUpdateApplyDate-inputEl.x-form-text {height: 22px;}
+
+
 

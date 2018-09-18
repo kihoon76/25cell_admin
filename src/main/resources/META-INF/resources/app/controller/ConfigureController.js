@@ -1,6 +1,6 @@
 Ext.define('Hotplace.controller.ConfigureController', {
 	extend : 'Hotplace.controller.BaseController',
-	views: ['panel.ConfigureFormPanel'],
+	views: ['panel.ConfigureFormPanel', 'panel.UpdateFormPanel'],
 	onLaunch : function() {
 		this.callParent(arguments);
 	},
@@ -13,6 +13,11 @@ Ext.define('Hotplace.controller.ConfigureController', {
 				case 'cate-configure-list' :
 					this.addContentTabPanel(recObj.id, recObj.text, {
 						xtype: 'configurepanel'
+					});
+					break;
+				case 'cate-configure-system-update' :
+					this.addContentTabPanel(recObj.id, recObj.text, {
+						xtype: 'updatepanel'
 					});
 					break;
 				default :

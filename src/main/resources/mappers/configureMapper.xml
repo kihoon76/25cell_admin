@@ -10,6 +10,14 @@
 					select="selectConfigure" />
 	</resultMap>
 	
+	<resultMap id="RM_selectUpdateList" type="ExtjsStoreVO">
+		<result column="total" property="total" javaType="int"/>
+		<collection property="datas" column="total" 
+					javaType="java.util.ArrayList"
+					ofType="SystemUpdate" 
+					select="selectUpdate" />
+	</resultMap>
+	
 	<select id="selectConfigureList" resultMap="RM_selectConfigureList">
 		select (select count(*) from [웹].[dbo].[시스템설정]) as total 
 	</select>
@@ -31,4 +39,32 @@
 		   	       설정일자 = getDate()
 		 where 고유번호 = #{confNum}
 	</update>
+	
+	<!-- 시스템 업데이트 -->
+	<select id="selectUpdateList" resultMap="RM_selectUpdateList">
+		select (select count(*) from [웹].[dbo].[업데이트관리]) as total 
+	</select>
+	
+	<select id="selectUpdate" parameterType="int" resultType="SystemUpdate">
+		select 일련번호 as idx,
+			       버전 as version, 
+			       내용 as content,
+			       적용일자 as applyDate,
+			       팝업템플릿 as tempNum,
+			       비고 as bigo   
+		  from [웹].[dbo].[업데이트관리]
+		 order by 일련번호 desc
+	</select>
+	
+	<insert id="insertUpdateSystemUpdateInfo" parameterType="SystemUpdate">
+		insert into [웹].[dbo].[업데이트관리](버전, 내용, 적용일자, 비고)
+		<choose>
+		<when test="applyDate == ''.toString()">
+		values (#{version}, #{content}, getDate(), #{bigo})
+		</when>
+		<otherwise>
+		values (#{version}, #{content}, #{applyDate}, #{bigo})
+		</otherwise>
+		</choose>
+	</insert>
 </mapper>

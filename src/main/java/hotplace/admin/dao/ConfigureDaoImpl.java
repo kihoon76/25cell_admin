@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import hotplace.admin.domain.Configure;
 import hotplace.admin.domain.ExtjsStoreVO;
+import hotplace.admin.domain.SystemUpdate;
 
 @Repository("configureDao")
 public class ConfigureDaoImpl implements ConfigureDao {
@@ -27,6 +28,17 @@ public class ConfigureDaoImpl implements ConfigureDao {
 		if(r == 1) return param;
 		
 		return null;
+	}
+
+	@Override
+	public ExtjsStoreVO<SystemUpdate> selectUpdateList() {
+		return msSqlSession.selectOne(namespace + ".selectUpdateList");
+	}
+
+	@Override
+	public void insertUpdateSystemUpdateInfo(SystemUpdate systemUpdate) {
+		msSqlSession.insert(namespace + ".insertUpdateSystemUpdateInfo", systemUpdate);
+		
 	}
 
 }
