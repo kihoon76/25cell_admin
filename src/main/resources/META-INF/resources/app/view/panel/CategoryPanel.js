@@ -67,6 +67,8 @@ Ext.define('Hotplace.view.panel.CategoryPanel', {
 						}]
 					 }, {
 						 text: 'DB모니터링', leaf : true, cate : 'monitoring', id : 'cate-monitor-db' 
+					 },{
+						 text: '네이버지도', leaf : true, cate : 'map', id : 'cate-naver-map' 
 					 }]
     	    	 }
     	    })

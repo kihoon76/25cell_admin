@@ -2,15 +2,101 @@ Ext.define('Hotplace.view.panel.NMapPanel', {
 	extend: 'Ext.panel.Panel',
 	alias: 'widget.nmappanel',
 	initComponent: function() {
-		var mapHtml  = '<div id="map">';
-		    mapHtml += '<div class="buttons">';
-		    mapHtml += '	<input id="cadastral" type="button" class="control-btn control-btn-default" value="지적도" /> ';
-            mapHtml += '</div>'; 
+		var mapHtml  = '<div id="map" style="width: 100%; height: 800px;">';
+//		    mapHtml += '<div class="buttons" style="position: relative; top: 10px; left: 30px; z-index: 1000;">';
+//		    mapHtml += '	<input id="cadastral" type="button" class="control-btn control-btn-default" value="지적도" /> ';
+//            mapHtml += '</div>'; 
             mapHtml += '</div>';
+		var that = this;
+		var marker = null;
 		
-	
+        function search() {
+        	var lat = Ext.getCmp('nmap-lat');
+        	var lng = Ext.getCmp('nmap-lng');
+        	
+        	if(lat.validate() && lng.validate()) {
+        		morph(parseFloat(lat.getValue()), parseFloat(lng.getValue()));
+        	}
+        }
+        
+        function morph(lat, lng) {
+        	that.nmap.morph(new naver.maps.LatLng(lat, lng), 14, {duration: 100});
+        	getMarker(lat, lng);
+        }
+        
+        function getMarker(lat, lng) {
+        	if(marker == null) {
+        		marker = new naver.maps.Marker({
+        		    position: new naver.maps.LatLng(lat, lng),
+        		    map: that.nmap
+        		});
+        	}
+        	else {
+        		marker.setPosition(new naver.maps.LatLng(lat, lng));
+        	}
+        }
+        
+        function jijeokOnOff() {
+        	
+        }
+        
 		Ext.apply(this, {
-			html:mapHtml,
+			layout: {
+				align: 'stretch',
+				type: 'vbox'
+			},
+			items:[{
+				xtype: 'panel',
+				tbar: ['위도 : ', {
+					xtype: 'textfield',
+					id: 'nmap-lat',
+					value: '33.3590628',
+					allowBlank: false
+				}, '경도 : ', {
+					xtype: 'textfield',
+					id: 'nmap-lng',
+					allowBlank: false,
+					value: '126.534361',
+					enableKeyEvents: true,
+					listeners: {
+						keydown: function(t, e) {
+							//전체를 선택한 경우 동작 안함
+							if(e.keyCode == 13) {
+								search();
+							}
+						}
+					}
+				}, {
+					xtype: 'button',
+					iconCls: 'icon-search',
+					listeners: {
+						click: function() {
+							search();
+						}
+					}
+						
+				}, '->', {
+					xtype: 'button',
+					text: '지적도',
+					pressed: true,
+					listeners: {
+						click: function(button) {
+							var state = button.toggle();
+							console.log(state)
+							if(state.pressed) {
+								 that.cadastralLayer.setMap(that.nmap);
+							}
+							else {
+								that.cadastralLayer.setMap(null);
+							}
+						}
+					}
+				}]
+				
+			},{
+				html:mapHtml,
+			}]
+			
 		});
 		
 		this.callParent();
@@ -27,46 +113,13 @@ Ext.define('Hotplace.view.panel.NMapPanel', {
 		};
 		this.nmap = new naver.maps.Map('map', mapOptions);
 		
-		var btn = Ext.get('cadastral');
+		//var btn = Ext.get('cadastral');
 		
 		//지적편집도
-		var cadastralLayer = new naver.maps.CadastralLayer();
-		naver.maps.Event.addListener(that.nmap, 'cadastralLayer_changed', function(cadastralLayer) {
-		    if (cadastralLayer) {
-		    	btn.removeCls('control-btn-default');
-		    	btn.addCls('control-btn-primary');
-		    } 
-		    else {
-		    	btn.removeCls('control-btn-primary');
-		    	btn.addCls('control-btn-default');
-		    }
-		});
-
-		btn.on('click', function(e) {
-
-		    if (cadastralLayer.getMap()) {
-		        cadastralLayer.setMap(null);
-		    } else {
-		        cadastralLayer.setMap(that.nmap);
-		    }
-		});
-		
-		Ext.Ajax.request({
-			url: 'maptype/standard',
-			method: 'GET',
-			success: function(res) {
-				try {
-					var jo = Ext.decode(res.responseText);
-					that.createDotmap(jo.datas);
-				}
-				catch(e) {
-					console.log(e.message);
-				}
-			},
-			fail:function() {
+		this.cadastralLayer = new naver.maps.CadastralLayer();
 				
-			}
-		});
+		this.cadastralLayer.setMap(that.nmap);
+
 	},
 	afterFirstLayout: function() {
 		this.callParent();

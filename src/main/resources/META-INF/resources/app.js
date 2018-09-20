@@ -41,7 +41,7 @@ Ext.application({
    ,autoCreateViewport: true
    ,controllers : [
         'Hotplace.controller.NoticeController',
-        'Hotplace.controller.MapTypesController',
+        'Hotplace.controller.MapController',
         'Hotplace.controller.AuthorityController',
         'Hotplace.controller.LogController',
         'Hotplace.controller.ConfigureController',

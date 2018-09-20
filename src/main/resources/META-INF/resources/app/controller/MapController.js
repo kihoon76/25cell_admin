@@ -1,4 +1,4 @@
-Ext.define('Hotplace.controller.MapTypesController', {
+Ext.define('Hotplace.controller.MapController', {
 	extend : 'Hotplace.controller.BaseController',
 	views: ['panel.NMapPanel'],
 	onLaunch : function() {
@@ -7,12 +7,10 @@ Ext.define('Hotplace.controller.MapTypesController', {
 	,onItemClick : function(tree, record, item, idx, e) {
 		var recObj = record.raw;
 		
-		if(recObj.leaf) {
+		if(recObj.leaf && recObj.cate == 'map') {
 			if(!this.categoryPanel.isAttachedCategory(recObj.id)) {
 				switch(recObj.id) {
-				case 'cate-heatmap' :
-					break;
-				case 'cate-dotmap' :
+				case 'cate-naver-map' :
 					this.addContentTabPanel(recObj.id, recObj.text, {
 						xtype : 'nmappanel',
 					});
