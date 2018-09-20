@@ -36,10 +36,6 @@ Ext.define('Hotplace.view.panel.NMapPanel', {
         	}
         }
         
-        function jijeokOnOff() {
-        	
-        }
-        
 		Ext.apply(this, {
 			layout: {
 				align: 'stretch',
@@ -60,7 +56,6 @@ Ext.define('Hotplace.view.panel.NMapPanel', {
 					enableKeyEvents: true,
 					listeners: {
 						keydown: function(t, e) {
-							//전체를 선택한 경우 동작 안함
 							if(e.keyCode == 13) {
 								search();
 							}
@@ -113,11 +108,8 @@ Ext.define('Hotplace.view.panel.NMapPanel', {
 		};
 		this.nmap = new naver.maps.Map('map', mapOptions);
 		
-		//var btn = Ext.get('cadastral');
-		
 		//지적편집도
 		this.cadastralLayer = new naver.maps.CadastralLayer();
-				
 		this.cadastralLayer.setMap(that.nmap);
 
 	},
