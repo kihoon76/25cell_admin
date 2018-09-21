@@ -12,7 +12,7 @@
 		<tr>
 			<td>
 				<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#attention">
-				※공지글 등록시 주의사항
+				※ 공지글 등록시 주의사항
 				</button>
 			</td>
 		</tr>
