@@ -16,6 +16,7 @@
 		<jackson.mapper-version>1.9.13</jackson.mapper-version>
 		<hibernate.validator-version>5.4.0.Final</hibernate.validator-version>
 		<spring.security-version>4.2.2.RELEASE</spring.security-version>
+		<spring.websocket-version>4.2.2.RELEASE</spring.websocket-version>
 		<cglib-version>3.2.4</cglib-version>
 		<commons.lang-version>3.4</commons.lang-version>
 		<commons.collections4-version>4.1</commons.collections4-version>
@@ -75,7 +76,7 @@
 		<dependency>
 		    <groupId>org.springframework</groupId>
 		    <artifactId>spring-websocket</artifactId>
-		    <version>${spring.security-version}</version>
+		    <version>${spring.websocket-version}</version>
 		</dependency>
 		
 		<!-- 스프링 서큐리티 어노테이션을 사용하기 위해 CGLib 가 필요하다.-->
